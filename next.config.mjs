@@ -22,7 +22,7 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
-  assetPrefix: isProd ? `/${process.env.GIT_REPOSITORY}/` : '',
+  assetPrefix: isProd ? `/website/` : '',
   images: {
     unoptimized: true,
   },
