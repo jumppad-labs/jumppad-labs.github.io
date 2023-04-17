@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>Commit</title>
+        <link>undefined</link>
+        <description>Open-source Git client for macOS minimalists</description>
+        <lastBuildDate>Mon, 17 Apr 2023 10:07:05 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <image>
+            <title>Commit</title>
+            <url>undefined/favicon.ico</url>
+            <link>undefined</link>
+        </image>
+        <copyright>All rights reserved 2023</copyright>
+        <item>
+            <title><![CDATA[Commit message suggestions]]></title>
+            <link>undefined/#commit-message-suggestions</link>
+            <guid>undefined/#commit-message-suggestions</guid>
+            <pubDate>Thu, 06 Apr 2023 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[<div>Test</div><article><script type="text/metadata">{"id":"commit-message-suggestions","title":"Commit message suggestions","date":"2023-04-06T00:00Z"}</script>
+<div class="relative mt-8 overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-900 [&amp;+*]:mt-8"><img alt="" loading="lazy" width="1728" height="936" decoding="async" data-nimg="1" style="color:transparent" src="/undefined//_next/static/media/commit-suggestions.5cf789bd.png"/><div class="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10 dark:ring-white/10"></div></div>
+
+<p>In the latest release, I&#x27;ve added support for commit message and description suggestions via an integration with OpenAI. Commit looks at all of your changes, and feeds that into the machine with a bit of prompt-tuning to get back a commit message that does a surprisingly good job at describing the intent of your changes.</p>
+<p>It&#x27;s also been a pretty helpful way to remind myself what the hell I was working on at the end of the day yesterday when I get back to my computer and realize I didn&#x27;t commit any of my work.</p>
+<h3 id="-improvements"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="#38BDF8" d="M5.338 9.805c.11.418.439.747.857.857C7.282 10.948 8 11.44 8 12s-.718 1.052-1.805 1.338c-.418.11-.747.439-.857.857C5.052 15.281 4.56 16 4 16s-1.052-.718-1.338-1.805a1.205 1.205 0 0 0-.856-.857C.718 13.052 0 12.56 0 12s.718-1.052 1.806-1.338c.417-.11.746-.439.856-.857C2.948 8.718 3.441 8 4 8c.56 0 1.052.718 1.338 1.805Z"></path><path fill="#7DD3FC" d="M12.717 2.432c.1.42.43.75.85.852C15.026 3.633 16 4.27 16 5s-.975 1.367-2.432 1.716c-.42.101-.75.432-.851.852C12.367 9.025 11.729 10 11 10c-.729 0-1.367-.975-1.716-2.432-.101-.42-.431-.75-.851-.852C6.975 6.367 6 5.73 6 5c0-.73.975-1.367 2.433-1.717.42-.1.75-.43.85-.85C9.634.974 10.272 0 11 0c.73 0 1.367.975 1.717 2.432Z"></path></svg> Improvements</h3>
+<ul>
+<li>Added commit message and description suggestions powered by OpenAI</li>
+<li>Fixed race condition that could sometimes leave you in a broken rebase state</li>
+<li>Improved active project detection to try and ignore file changes triggered by the system instead of the user</li>
+<li>Fixed bug that sometimes reported the wrong number of changed files</li>
+</ul>
+</article>]]></content:encoded>
+            <author>crazy.joe@example.com (Joe Davola)</author>
+        </item>
+        <item>
+            <title><![CDATA[Project configuration files]]></title>
+            <link>undefined/#project-configuration-files</link>
+            <guid>undefined/#project-configuration-files</guid>
+            <pubDate>Fri, 17 Mar 2023 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[<article><script type="text/metadata">{"id":"project-configuration-files","title":"Project configuration files","date":"2023-03-17T00:00Z"}</script>
+<div class="relative mt-8 overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-900 [&amp;+*]:mt-8"><img alt="" loading="lazy" width="1728" height="666" decoding="async" data-nimg="1" style="color:transparent" src="/undefined//_next/static/media/configuration-files.7610785b.png"/><div class="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10 dark:ring-white/10"></div></div>
+
+<p>I&#x27;ve added support for creating per-project <code>.commitrc</code> files that override your global settings for that particular project. Went with YAML for these because personally I&#x27;m sick of quoting keys in JSON all the time, or accidentally leaving in a trailing comma.</p>
+<h3 id="-improvements-1"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="#38BDF8" d="M5.338 9.805c.11.418.439.747.857.857C7.282 10.948 8 11.44 8 12s-.718 1.052-1.805 1.338c-.418.11-.747.439-.857.857C5.052 15.281 4.56 16 4 16s-1.052-.718-1.338-1.805a1.205 1.205 0 0 0-.856-.857C.718 13.052 0 12.56 0 12s.718-1.052 1.806-1.338c.417-.11.746-.439.856-.857C2.948 8.718 3.441 8 4 8c.56 0 1.052.718 1.338 1.805Z"></path><path fill="#7DD3FC" d="M12.717 2.432c.1.42.43.75.85.852C15.026 3.633 16 4.27 16 5s-.975 1.367-2.432 1.716c-.42.101-.75.432-.851.852C12.367 9.025 11.729 10 11 10c-.729 0-1.367-.975-1.716-2.432-.101-.42-.431-.75-.851-.852C6.975 6.367 6 5.73 6 5c0-.73.975-1.367 2.433-1.717.42-.1.75-.43.85-.85C9.634.974 10.272 0 11 0c.73 0 1.367.975 1.717 2.432Z"></path></svg> Improvements</h3>
+<ul>
+<li>Added per-project <code>.commitrc</code> configuration files</li>
+<li>Improved performance when working with projects with large binary files</li>
+<li>Fixed a bug that could cause Commit to crash when autocommitting after deleting a recently active branch</li>
+</ul>
+</article>]]></content:encoded>
+            <author>crazy.joe@example.com (Joe Davola)</author>
+        </item>
+        <item>
+            <title><![CDATA[Dark mode support]]></title>
+            <link>undefined/#dark-mode-support</link>
+            <guid>undefined/#dark-mode-support</guid>
+            <pubDate>Mon, 06 Mar 2023 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[<article><script type="text/metadata">{"id":"dark-mode-support","title":"Dark mode support","date":"2023-03-06T00:00Z"}</script>
+<div class="relative mt-8 overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-900 [&amp;+*]:mt-8"><img alt="" loading="lazy" width="1728" height="936" decoding="async" data-nimg="1" style="color:transparent" src="/undefined//_next/static/media/dark-mode.93eb9a82.png"/><div class="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10 dark:ring-white/10"></div></div>
+
+<p>I released this thing last week hoping a couple of people would say &quot;awesome job&quot; and make me feel good about what I&#x27;d built but instead I just got a ton of people shaming me on Twitter for being such a horrible person for only shipping a light UI.</p>
+<h3 id="-improvements-2"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="#38BDF8" d="M5.338 9.805c.11.418.439.747.857.857C7.282 10.948 8 11.44 8 12s-.718 1.052-1.805 1.338c-.418.11-.747.439-.857.857C5.052 15.281 4.56 16 4 16s-1.052-.718-1.338-1.805a1.205 1.205 0 0 0-.856-.857C.718 13.052 0 12.56 0 12s.718-1.052 1.806-1.338c.417-.11.746-.439.856-.857C2.948 8.718 3.441 8 4 8c.56 0 1.052.718 1.338 1.805Z"></path><path fill="#7DD3FC" d="M12.717 2.432c.1.42.43.75.85.852C15.026 3.633 16 4.27 16 5s-.975 1.367-2.432 1.716c-.42.101-.75.432-.851.852C12.367 9.025 11.729 10 11 10c-.729 0-1.367-.975-1.716-2.432-.101-.42-.431-.75-.851-.852C6.975 6.367 6 5.73 6 5c0-.73.975-1.367 2.433-1.717.42-.1.75-.43.85-.85C9.634.974 10.272 0 11 0c.73 0 1.367.975 1.717 2.432Z"></path></svg> Improvements</h3>
+<ul>
+<li>Added dark mode support</li>
+<li>Improved input field responsiveness when writing a commit message in a project with a large number of changed files</li>
+<li>Made keyboard shortcut for opening the Commit window customizable</li>
+<li>Deleted my Twitter account</li>
+</ul>
+</article>]]></content:encoded>
+            <author>crazy.joe@example.com (Joe Davola)</author>
+        </item>
+        <item>
+            <title><![CDATA[Commit v0.1.0]]></title>
+            <link>undefined/#commit-v010</link>
+            <guid>undefined/#commit-v010</guid>
+            <pubDate>Fri, 03 Mar 2023 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[<article><script type="text/metadata">{"id":"commit-v010","title":"Commit v0.1.0","date":"2023-03-03T00:00Z"}</script>
+<div class="relative mt-8 overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-900 [&amp;+*]:mt-8"><img alt="" loading="lazy" width="1728" height="936" decoding="async" data-nimg="1" style="color:transparent" src="/undefined//_next/static/media/first-release.c5cb86d1.png"/><div class="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10 dark:ring-white/10"></div></div>
+
+<p>Commit is a command palette-style Git client you can pull up from anywhere with a keyboard shortcut that makes it really easy to commit your work. It uses the &quot;last modified&quot; timestamp of the files in all of your projects to automatically know which project you&#x27;re in the middle of working on, so any time you pull up the UI it&#x27;s already got the right project selected — you just have to type your commit message, hit <kbd>Cmd</kbd> + <kbd>Enter</kbd> and your changes are captured.</p>
+<p>I&#x27;d be lying if I really thought this was that useful but I was looking for an excuse to learn macOS development and here we are. It&#x27;s open source at least so maybe you can find something interesting in the code even if the app itself is a total waste of hard drive space.</p></article>]]></content:encoded>
+            <author>crazy.joe@example.com (Joe Davola)</author>
+        </item>
+    </channel>
+</rss>
