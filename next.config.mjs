@@ -22,7 +22,7 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
-  assetPrefix: isProd ? `/website/` : '',
+  assetPrefix: '',
   images: {
     unoptimized: true,
   },
