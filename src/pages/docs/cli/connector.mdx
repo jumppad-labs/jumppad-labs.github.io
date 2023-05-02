@@ -1,0 +1,83 @@
+# Connector
+
+<Intro>
+Runs the connector used by Jumppad to expose remote and local applications
+</Intro>
+
+## Usage
+
+```shell
+jumppad connector <command>
+```
+
+## generate-certs
+
+Generate TLS certificates for the server to the specified output location.
+
+```shell
+jumppad connector generate-certs [flags]
+```
+
+<Properties>
+  <Property name="ca" type="string" required="false" value="">
+    Generate a CA x509 certificate and private key.
+  </Property>
+  <Property name="dns-name" type="string" required="false" value="">
+    DNS name to add to leaf certificate.
+  </Property>
+  <Property name="ip-address" type="string" required="false" value="">
+    IP address to add to the leaf certificate.
+  </Property>
+  <Property name="leaf" type="string" required="false" value="">
+    Generate a leaf c509 certificate and private key.
+  </Property>
+  <Property name="root-ca" type="string" required="false" value="">
+    CA cert to use for generating the leaf certificate.
+  </Property>
+  <Property name="root-key" type="string" required="false" value="">
+    Root key to use for generating the leaf certificate.
+  </Property>
+</Properties>
+
+## run
+
+Run the connector.
+
+```shell
+jumppad connector run [flags]
+```
+
+<Properties>
+  <Property name="api-bind" type="string" required="false" value=":9092">
+    Bind address for the API Server.
+  </Property>
+  <Property name="grpc-bind" type="string" required="false" value=":9090">
+    Bind address for the gRPC API.
+  </Property>
+  <Property name="http-bind" type="string" required="false" value=":9091">
+    Bind address for the HTTP API.
+  </Property>
+  <Property name="log-file" type="string" required="false" value="./connector.log">
+    Log file for connector logs.
+  </Property>
+  <Property name="log-level" type="string" required="false" value="info">
+    Log output level [debug, trace, info].
+  </Property>
+  <Property name="root-cert-path" type="string" required="false" value="">
+    Path for the PEM encoded TLS root certificate.
+  </Property>
+  <Property name="server-cert-path" type="string" required="false" value="">
+    Path for the servers PEM encoded TLS certificate.
+  </Property>
+  <Property name="server-key-path" type="string" required="false" value="">
+    Path for the servers PEM encoded Private Key.
+  </Property>
+</Properties>
+
+## stop
+
+Stop the connector.
+
+```shell
+jumppad connector stop
+```

@@ -6,7 +6,6 @@ import { recmaPlugins } from './mdx/recma.mjs'
 const isProd = process.env.NODE_ENV === 'production'
 
 const withMDX = nextMDX({
-  extension: /\.mdx?$/,
   options: {
     remarkPlugins,
     rehypePlugins,

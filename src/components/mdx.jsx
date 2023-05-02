@@ -1,136 +1,120 @@
-import { useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
 
-import { useFeed } from '@/components/FeedProvider'
-import { FormattedDate } from '@/components/FormattedDate'
+import { Heading } from '@/components/Heading'
 
 export const a = Link
-
-export const wrapper = function Wrapper({ children }) {
-  return children
-}
+export { Button } from '@/components/Button'
+export { CodeGroup, Code as code, Pre as pre } from '@/components/Code'
+export { HeroPattern } from '@/components/HeroPattern'
+export { Intro } from '@/components/Intro'
 
 export const h2 = function H2(props) {
-  let { isFeed } = useFeed()
-
-  if (isFeed) {
-    return null
-  }
-
-  return <h2 {...props} />
+  return <Heading level={2} {...props} />
 }
 
-export const img = function Img(props) {
+function InfoIcon(props) {
   return (
-    <div className="relative mt-8 overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-900 [&+*]:mt-8">
-      <Image
-        alt=""
-        sizes="(min-width: 1280px) 36rem, (min-width: 1024px) 45vw, (min-width: 640px) 32rem, 95vw"
-        {...props}
+    <svg viewBox="0 0 16 16" aria-hidden="true" {...props}>
+      <circle cx="8" cy="8" r="8" strokeWidth="0" />
+      <path
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M6.75 7.75h1.5v3.5"
       />
-      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10 dark:ring-white/10" />
-    </div>
+      <circle cx="8" cy="4" r=".5" fill="none" />
+    </svg>
   )
 }
 
-function ContentWrapper({ className, children }) {
+export function Note({ children }) {
   return (
-    <div className="mx-auto max-w-7xl px-6 lg:flex lg:px-8">
-      <div className="lg:ml-96 lg:flex lg:w-full lg:justify-end lg:pl-32">
-        <div
-          className={clsx(
-            'mx-auto max-w-lg lg:mx-0 lg:w-0 lg:max-w-xl lg:flex-auto',
-            className
-          )}
-        >
-          {children}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ArticleHeader({ id, date }) {
-  return (
-    <header className="relative mb-10 xl:mb-0">
-      <div className="pointer-events-none absolute left-[max(-0.5rem,calc(50%-18.625rem))] top-0 z-50 flex h-4 items-center justify-end gap-x-2 lg:left-0 lg:right-[calc(max(2rem,50%-38rem)+40rem)] lg:min-w-[32rem] xl:h-8">
-        <Link href={`#${id}`} className="inline-flex">
-          <FormattedDate
-            date={date}
-            className="hidden xl:pointer-events-auto xl:block xl:text-2xs/4 xl:font-medium xl:text-white/50"
-          />
-        </Link>
-        <div className="h-[0.0625rem] w-3.5 bg-gray-400 lg:-mr-3.5 xl:mr-0 xl:bg-gray-300" />
-      </div>
-      <ContentWrapper>
-        <div className="flex">
-          <Link href={`#${id}`} className="inline-flex">
-            <FormattedDate
-              date={date}
-              className="text-2xs/4 font-medium text-gray-500 dark:text-white/50 xl:hidden"
-            />
-          </Link>
-        </div>
-      </ContentWrapper>
-    </header>
-  )
-}
-
-export const article = function Article({ id, title, date, children }) {
-  let { isFeed } = useFeed()
-  let heightRef = useRef()
-  let [heightAdjustment, setHeightAdjustment] = useState(0)
-
-  useEffect(() => {
-    let observer = new window.ResizeObserver(() => {
-      let { height } = heightRef.current.getBoundingClientRect()
-      let nextMultipleOf8 = 8 * Math.ceil(height / 8)
-      setHeightAdjustment(nextMultipleOf8 - height)
-    })
-
-    observer.observe(heightRef.current)
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [])
-
-  if (isFeed) {
-    return (
-      <article>
-        <script
-          type="text/metadata"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({ id, title, date }),
-          }}
-        />
+    <div className="my-6 flex gap-2.5 rounded-2xl border border-emerald-500/20 bg-emerald-50/50 p-4 leading-6 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/5 dark:text-emerald-200 dark:[--tw-prose-links-hover:theme(colors.emerald.300)] dark:[--tw-prose-links:theme(colors.white)]">
+      <InfoIcon className="mt-1 h-4 w-4 flex-none fill-emerald-500 stroke-white dark:fill-emerald-200/20 dark:stroke-emerald-200" />
+      <div className="[&>:first-child]:mt-0 [&>:last-child]:mb-0">
         {children}
-      </article>
-    )
-  }
-
-  return (
-    <article
-      id={id}
-      className="scroll-mt-16"
-      style={{ paddingBottom: `${heightAdjustment}px` }}
-    >
-      <div ref={heightRef}>
-        <ArticleHeader id={id} date={date} />
-        <ContentWrapper className="typography">{children}</ContentWrapper>
       </div>
-    </article>
+    </div>
   )
 }
 
-export const code = function Code({ highlightedCode, ...props }) {
-  if (highlightedCode) {
-    return (
-      <code {...props} dangerouslySetInnerHTML={{ __html: highlightedCode }} />
-    )
+export function Row({ children }) {
+  return (
+    <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 xl:max-w-none xl:grid-cols-2">
+      {children}
+    </div>
+  )
+}
+
+export function Col({ children, sticky = false }) {
+  return (
+    <div
+      className={clsx(
+        '[&>:first-child]:mt-0 [&>:last-child]:mb-0',
+        sticky && 'xl:sticky xl:top-24'
+      )}
+    >
+      {children}
+    </div>
+  )
+}
+
+export function Properties({ children }) {
+  return (
+    <div className="my-6">
+      <ul
+        role="list"
+        className="m-0 list-none divide-y divide-zinc-900/5 p-0 dark:divide-white/5"
+      >
+        {children}
+      </ul>
+    </div>
+  )
+}
+
+export function Property({ name, type, required, value, children }) {
+  if (!value) {
+    switch(type) {
+      case 'string': 
+        value = '""'
+        break
+      case 'number': 
+        value = "0"
+        break
+      case 'boolean': 
+        value = "false"
+        break
+    }
   }
 
-  return <code {...props} />
+  return (
+    <li className="m-0 flex px-0 py-4 first:pt-0 last:pb-0">
+      <dl className="m-0 w-full flex gap-x-3 gap-y-2">
+        <dt className="sr-only">Name</dt>
+        <dd>
+          <code className="text-emerald-500 dark:text-emerald-400 ring-emerald-300 dark:ring-emerald-400/10 bg-emerald-200/10 text-emerald-500 dark:text-emerald-400">{name}</code>
+        </dd>
+        {type && (
+          <>
+            <dt className="sr-only">Type</dt>
+            <dd className="font-mono pt-1 text-xs text-zinc-400 dark:text-zinc-500">
+              ({type}: {value})
+            </dd>
+            <dt className="sr-only">Required</dt>
+            <dd className="font-mono italic pt-1 text-xs text-zinc-400 dark:text-zinc-500">
+              {required === 'true' ? 'required' : ''}
+            </dd>
+          </>
+        )}
+      </dl>
+      <dl className="m-0 w-full">
+        <dt className="sr-only">Description</dt>
+        <dd className=" flex-none [&>:first-child]:mt-0 [&>:last-child]:mb-0">
+          {children}
+        </dd>
+      </dl>
+    </li>
+  )
 }

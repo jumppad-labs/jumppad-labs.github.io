@@ -1,0 +1,31 @@
+# Exec
+
+<Intro>
+Execute a command in a Resource or start a Tools resource and execute.
+</Intro>
+
+## Usage
+
+Depending on the resource type, `target` can consist of multiple elements.
+
+```shell
+jumppad exec <target> -- <command>
+```
+
+## Examples
+
+```shell {{ title: "Execute a command in the first container of a Kubernetes pod" }}
+jumppad exec k8s_cluster.k3s mypod -- ls -las
+```
+
+```shell {{ title: "Execute a command in the named container of a Kubernetes pod" }}
+jumppad exec k8s_cluster.k3s mypod web -- ls -las
+```
+
+```shell {{ title: "Create a bash shell in a container" }}
+jumppad exec container.consul -- bash
+```
+
+```shell {{ title: "Create a default shell in a container" }}
+jumppad exec container.consul
+```

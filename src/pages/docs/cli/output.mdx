@@ -1,0 +1,25 @@
+# Output
+
+<Intro>
+The output command shows the value of the `output` variables defined in a Blueprint. By default the output command returns a JSON formatted string containing all variables.
+</Intro>
+
+## Usage
+
+```shell
+jumppad output [variable]
+```
+
+## Examples
+
+```shell {{ title: "Show all variables defined in the system." }}
+jumppad output
+{
+  "KUBECONFIG": "/home/nicj/.jumppad/config/k3s/kubeconfig-docker.yaml"
+}
+```
+
+```shell {{ title: "Show a single variable." }}
+jumppad output KUBECONFIG
+/home/nicj/.jumppad/config/k3s/kubeconfig-docker.yaml
+```

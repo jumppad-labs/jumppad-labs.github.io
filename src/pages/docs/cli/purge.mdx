@@ -1,0 +1,21 @@
+# Purge
+
+<Intro>
+The purge command deletes cached Docker images, Helm charts or downloaded blueprints from Jumppad.
+</Intro>
+
+## Usage
+
+```shell
+jumppad purge
+```
+
+## Examples
+
+```shell
+jumppad purge
+2020-04-21T14:00:17.962+0100 [INFO]  Removing image: image=docker.io/nicholasjackson/fake-service:v0.9.0
+2020-04-21T14:00:17.972+0100 [INFO]  Removing image: image=docker.io/envoyproxy/envoy:v1.14.1
+2020-04-21T14:00:17.976+0100 [INFO]  Removing Helm charts: path=/home/nicj/.jumppad/helm_charts
+2020-04-21T14:00:17.976+0100 [INFO]  Removing Blueprints: path=/home/nicj/.jumppad/helm_charts
+```

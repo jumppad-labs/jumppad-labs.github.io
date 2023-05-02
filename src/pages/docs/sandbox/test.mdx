@@ -1,0 +1,96 @@
+export const description =
+  'Test.'
+
+# Test
+
+Yes, test.
+
+## Without a code group
+
+```go {{ language: 'go' }}
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, Javascript!")
+}
+```
+
+## With a code group but without title
+
+<CodeGroup>
+```go
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, Golang!")
+}
+```
+
+```js {{ language: 'js', tag: 'src/components/App.js', label: 'line 12' }}
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, Javascript!")
+}
+```
+
+```shell
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, CURL!")
+}
+```
+
+```go {{ title: 'curl', language: 'shell' }}
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, CURL!")
+}
+```
+</CodeGroup>
+
+## With a code group and title
+
+<CodeGroup title="testing 123">
+```go
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, CURL!")
+}
+```
+
+```shell
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, CURL!")
+}
+```
+
+```js
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, CURL!")
+}
+```
+</CodeGroup>

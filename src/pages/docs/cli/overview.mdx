@@ -1,0 +1,82 @@
+# Overview
+
+<Intro>
+Jumppad is controlled via a very easy to use command-line interface (CLI). Jumppad is only a single command-line application: `jumppad`, which takes a subcommand such as `up` or `status`. The complete list of subcommands is in the navigation to the left.
+</Intro>
+
+## Help
+
+The Jumppad CLI is a well-behaved command line application. In erroneous cases, a non-zero exit status will be returned. It also responds to `-h` and `--help` as you would most likely expect.
+
+To view a list of the available commands at any time, just run Jumppad with no arguments. To get help for any specific subcommand, run the subcommand with the `-h` argument.
+
+Each command has been conveniently documented on this website. Links to each command can be found on the left.
+
+## Autocomplete
+
+Jumppad's CLI supports command autocomplete. Autocomplete can be installed or uninstalled by running the following on bash, zsh or fish shells:
+
+```shell
+jumppad completion [bash|zsh|fish|powershell]
+```
+
+<CodeGroup title="Loading completions for your shell.">
+```bash {{ title: "bash" }}
+source <(yourprogram completion bash)
+
+# To load completions for each session, execute once:
+# Linux:
+jumppad completion bash > /etc/bash_completion.d/jumppad
+
+# macOS:
+jumppad completion bash > /usr/local/etc/bash_completion.d/jumppad
+```
+
+```zsh {{ title: "zsh" }}
+# If shell completion is not already enabled in your environment,
+# you will need to enable it.  You can execute the following once:
+
+echo "autoload -U compinit; compinit" >> ~/.zshrc
+
+# To load completions for each session, execute once:
+jumppad completion zsh > "${fpath[1]}/_shipyard"
+
+# You will need to start a new shell for this setup to take effect.
+# I also had to disable oh-my-zsh calls in ~/.zshrc
+```
+
+```zsh {{ title: "oh-my-zsh" }}
+# If shell completion is not already enabled in your environment,
+# you will need to enable it.  You can execute the following once:
+
+echo "autoload -U compinit; compinit" >> ~/.zshrc
+
+# Install the completion code for jumppad into the oh-my-zsh completion folder
+jumppad completion zsh > ~/.oh-my-zsh/completions/_shipyard
+```
+
+```shell {{ title: "fish" }}
+jumppad completion fish | source
+
+# To load completions for each session, execute once:
+jumppad completion fish > ~/.config/fish/completions/jumppad.fish
+```
+
+```powershell {{ title: "powershell" }}
+jumppad completion powershell | Out-String | Invoke-Expression
+
+# To load completions for every new session, run:
+jumppad completion powershell > jumppad.ps1
+# and source this file from your PowerShell profile.
+```
+</CodeGroup>
+
+## Environment variables
+
+Jumppad can use environment variables to configure command-line tool options. These environment variables can be overridden as needed using individual flags.
+
+<Properties>
+  <Property name="LOG_LEVEL" type="string" value="info">
+    Set the log level for the jumppad command to either `debug`, `info`, `warning` or `error`.
+  </Property>
+</Properties>

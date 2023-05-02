@@ -1,0 +1,22 @@
+# Down
+
+<Intro>
+The down command, removes the currently defined resources.
+</Intro>
+
+## Usage
+
+```shell
+jumppad down
+```
+
+## Examples
+
+```shell
+jumppad down
+
+2020-08-16T13:33:31.160+0100 [INFO]  Destroy Kubernetes configuration: ref=app config=[/home/nicj/go/src/github.com/jumppad-run/jumppad-website/examples/simple_kubernetes/k8s_app]
+2020-08-16T13:33:31.160+0100 [INFO]  Destroy Ingress: ref=app type=ingress
+2020-08-16T13:33:31.394+0100 [INFO]  Destroy Cluster: ref=k3s
+2020-08-16T13:33:31.832+0100 [INFO]  Destroy Network: ref=local
+```

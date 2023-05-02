@@ -1,0 +1,73 @@
+# Installation
+
+<Intro>
+Jumppad runs on macOS, Linux and Windows (natively and with WSL2).
+</Intro>
+
+## Prerequisites
+
+To use Jumppad you need a recent version of Docker and the Git CLI installed on your system.
+
+- [Docker](https://docs.docker.com/)
+- [Git](https://git-scm.com/)
+
+## Quick install (Linux, Mac and Windows WSL2)
+
+The quick install script allows you to easily install the latest version of Jumppad. Run the following command in your terminal, the install script will prompt you for administrator access if required.
+
+```shell
+curl https://jumppad.dev/install | bash
+
+################################
+Installing Jumppad to /usr/local/bin/jumppad
+
+Please note: You may be prompted for your password
+
+To remove Jumppad and all configuration use the command "jumppad uninstall"
+Downloading https://github.com/jumppad-labs/jumppad/releases/download/v0.1.0/jumppad_0.1.0_linux_x86_64.tar.gz
+/usr/bin/sudo
+[sudo] password for nicj: 
+
+Jumppad version: 0.0.10
+
+###### SYSTEM DIAGNOSTICS ######
+ [   OK    ] Docker
+ [   OK    ] Git
+ [   OK    ] xdg-open
+```
+
+## Using a package manager
+
+Jumppad is published as a package for Linux (apt, yum), macOS ([Homebrew](https://brew.sh/)) and Windows ([Chocolatey](https://chocolatey.org/)) and can be installed through their respective package managers.
+
+<CodeGroup>
+```shell {{ title: 'macOS' }}
+brew install jumppad/homebrew-repo/jumppad
+```
+
+```shell {{ title: 'Windows' }}
+choco install jumppad
+```
+
+```shell {{ title: 'Debian' }}
+echo "deb [trusted=yes] https://apt.fury.io/jumppad/ /" | \
+  sudo tee -a /etc/apt/sources.list.d/fury.list
+
+sudo apt-get update
+
+sudo apt-get install jumppad
+```
+
+```shell {{ title: 'Fedora' }}
+echo "[fury] name=Gemfury Private Repo baseurl=https://yum.fury.io/jumppad/ enabled=1 gpgcheck=0" | \
+  sudo tee -a /etc/yum/repos.d/fury.repo
+
+yum install jumppad
+```
+</CodeGroup>
+
+## Github Releases
+
+In addition to the above methods, we maintain Debian, RPM, and other packages in our GitHub releases. You can download the latest packages from the following location.
+
+[https://github.com/jumppad-labs/jumppad/releases](https://github.com/jumppad-run/jumppad/releases)
