@@ -3,12 +3,12 @@ import { Heading } from '@/components/Heading'
 
 export const subjects = [
   {
-    href: '/cli/overview',
+    href: '/docs/cli/overview',
     name: 'CLI',
     description: 'Learn how to use the Jumppad CLI.',
   },
   {
-    href: '/resources',
+    href: '/docs/resources/overview',
     name: 'Resources',
     description: 'Understand how to create Jumppad resources.',
   },
