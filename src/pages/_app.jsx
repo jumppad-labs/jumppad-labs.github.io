@@ -23,9 +23,9 @@ export default function App({ Component, pageProps }) {
     <>
       <Head>
         {router.pathname === '/' ? (
-          <title>Jumppad Documentation</title>
+          <title>Jumppad</title>
         ) : (
-          <title>{`${pageProps.title} - Jumppad Documentation`}</title>
+          <title>{`${pageProps.title} - Jumppad`}</title>
         )}
         <meta name="description" content={pageProps.description} />
       </Head>
