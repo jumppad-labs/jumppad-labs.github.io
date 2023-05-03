@@ -1,0 +1,62 @@
+#!/bin/bash -e
+
+echo "################################"
+echo "Installing Jumppad to /usr/local/bin/jumppad"
+echo ""
+echo "Please note: You may be prompted for your password"
+echo ""
+echo "To remove Jumppad and all configuration use the command \"jumppad uninstall\""
+
+# Determine the OS and architecure 
+OS=$(uname)
+ARCH=$(uname -m)
+JUMPPAD_OS="linux"
+JUMPPAD_ARCH="arm64"
+
+if [ "${ARCH}" == "x86_64" ]; then
+  JUMPPAD_ARCH="x86_64"
+fi
+
+if [ "${ARCH}" == "arm64" ]; then
+  JUMPPAD_ARCH="arm64"
+fi
+
+if [ "${OS}" == "Linux" ]; then
+  JUMPPAD_OS="linux"
+  JUMPPAD_EXT="tar.gz"
+  JUMPPAD_COMMAND="tar -xzf"
+fi
+
+if [ "${OS}" == "Darwin" ]; then
+  JUMPPAD_OS="darwin"
+  JUMPPAD_EXT="zip"
+  JUMPPAD_COMMAND="unzip"
+fi
+
+version="$(curl -s https://jumppad.dev/latest)"
+binary="jumppad_${version}_${JUMPPAD_OS}_${JUMPPAD_ARCH}.${JUMPPAD_EXT}"
+
+repo="https://github.com/jumppad-dev/jumppad/releases/download/v${version}"
+
+echo "Downloading $repo/$binary"
+rm -f /tmp/jumppad.${JUMPPAD_EXT}
+rm -f /tmp/jumppad
+
+curl -L -s -o /tmp/jumppad.${JUMPPAD_EXT} "$repo/$binary"
+cd /tmp
+
+eval ${JUMPPAD_COMMAND} jumppad.${JUMPPAD_EXT}
+rm jumppad.${JUMPPAD_EXT}
+
+if which sudo; then
+  sudo mv jumppad /usr/local/bin
+  sudo chmod +x /usr/local/bin/jumppad
+else
+  # try without sudo might be running in a container
+  mv jumppad /usr/local/bin
+  chmod +x /usr/local/bin/jumppad
+fi
+
+echo ""
+jumppad version
+jumppad check
