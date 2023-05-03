@@ -33,7 +33,7 @@ if [ "${OS}" == "Darwin" ]; then
   JUMPPAD_COMMAND="unzip"
 fi
 
-version="$(curl -s https://jumppad.dev/latest)"
+version="$(curl -s -L https://jumppad.dev/latest)"
 binary="jumppad_${version}_${JUMPPAD_OS}_${JUMPPAD_ARCH}.${JUMPPAD_EXT}"
 
 repo="https://github.com/jumppad-dev/jumppad/releases/download/v${version}"
