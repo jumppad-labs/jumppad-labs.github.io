@@ -65,5 +65,4 @@ else
 fi
 
 echo ""
-jumppad version
 jumppad check
