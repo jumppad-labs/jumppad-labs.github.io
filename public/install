@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash
+
+set -e
 
 echo "################################"
 echo "Installing Jumppad to /usr/local/bin/jumppad"
@@ -6,6 +8,7 @@ echo ""
 echo "Please note: You may be prompted for your password"
 echo ""
 echo "To remove Jumppad and all configuration use the command \"jumppad uninstall\""
+echo ""
 
 # Determine the OS and architecure 
 OS=$(uname)
@@ -36,7 +39,7 @@ fi
 version="$(curl -s -L https://jumppad.dev/latest)"
 binary="jumppad_${version}_${JUMPPAD_OS}_${JUMPPAD_ARCH}.${JUMPPAD_EXT}"
 
-repo="https://github.com/jumppad-dev/jumppad/releases/download/v${version}"
+repo="https://github.com/jumppad-labs/jumppad/releases/download/v${version}"
 
 echo "Downloading $repo/$binary"
 rm -f /tmp/jumppad.${JUMPPAD_EXT}
@@ -45,10 +48,14 @@ rm -f /tmp/jumppad
 curl -L -s -o /tmp/jumppad.${JUMPPAD_EXT} "$repo/$binary"
 cd /tmp
 
+echo "Unzipping download"
 eval ${JUMPPAD_COMMAND} jumppad.${JUMPPAD_EXT}
 rm jumppad.${JUMPPAD_EXT}
 
-if which sudo; then
+echo "Installing to /usr/local/bin"
+echo ""
+
+if which sudo > /dev/null; then
   sudo mv jumppad /usr/local/bin
   sudo chmod +x /usr/local/bin/jumppad
 else
