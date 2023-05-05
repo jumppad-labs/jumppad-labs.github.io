@@ -32,11 +32,5 @@ export const navigation = [
       { title: 'up', href: '/docs/cli/up' },
       { title: 'version', href: '/docs/cli/version' },
     ],
-  },
-  {
-    title: 'Sandbox',
-    links: [
-      { title: 'Sandbox', href: '/docs/sandbox/test' },
-    ],
-  },
+  }
 ]
