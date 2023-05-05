@@ -2,7 +2,7 @@ export const navigation = [
   {
     title: 'Index',
     links: [
-      { title: 'Index', href: '/docs/' },
+      { title: 'Index', href: '/' },
     ],
   },
   {
