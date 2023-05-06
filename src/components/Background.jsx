@@ -1,11 +1,11 @@
-import { GridPattern } from '@/components/GridPattern'
+import { useId } from 'react'
 
-export function HeroPattern() {
+export function Background() {
   return (
     <div className="absolute inset-0 -z-10 mx-0 max-w-none overflow-hidden">
       <div className="absolute left-1/2 top-0 ml-[-38rem] h-[25rem] w-[81.25rem] dark:[mask-image:linear-gradient(white,transparent)]">
         <div className="absolute inset-0 bg-gradient-to-r from-[#36b49f] to-[#DBFF75] opacity-40 [mask-image:radial-gradient(farthest-side_at_top,white,transparent)] dark:from-[#36b49f]/30 dark:to-[#DBFF75]/30 dark:opacity-100">
-          <GridPattern
+          <BackgroundPattern
             width={72}
             height={56}
             x="-12"
@@ -30,3 +30,45 @@ export function HeroPattern() {
     </div>
   )
 }
+
+export function BackgroundPattern({ width, height, x, y, squares, ...props }) {
+  let patternId = useId()
+
+  return (
+    <svg aria-hidden="true" {...props}>
+      <defs>
+        <pattern
+          id={patternId}
+          width={width}
+          height={height}
+          patternUnits="userSpaceOnUse"
+          x={x}
+          y={y}
+        >
+          <path d={`M.5 ${height}V.5H${width}`} fill="none" />
+        </pattern>
+      </defs>
+      <rect
+        width="100%"
+        height="100%"
+        strokeWidth={0}
+        fill={`url(#${patternId})`}
+      />
+      {squares && (
+        <svg x={x} y={y} className="overflow-visible">
+          {squares.map(([x, y]) => (
+            <rect
+              strokeWidth="0"
+              key={`${x}-${y}`}
+              width={width + 1}
+              height={height + 1}
+              x={x * width}
+              y={y * height}
+            />
+          ))}
+        </svg>
+      )}
+    </svg>
+  )
+}
+

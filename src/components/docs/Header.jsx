@@ -8,10 +8,10 @@ import { Logo } from '@/components/Logo'
 import {
   MobileNavigation,
   useIsInsideMobileNavigation,
-} from '@/components/MobileNavigation'
-import { useMobileNavigationStore } from '@/components/MobileNavigation'
+} from '@/components/docs/MobileNavigation'
+import { useMobileNavigationStore } from '@/components/docs/MobileNavigation'
 import { ModeToggle } from '@/components/ModeToggle'
-import { MobileSearch, Search } from '@/components/Search'
+import { MobileSearch, Search } from '@/components/docs/Search'
 
 function TopLevelNavItem({ href, children }) {
   return (

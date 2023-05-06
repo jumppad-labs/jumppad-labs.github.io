@@ -2,9 +2,14 @@ import Head from 'next/head'
 import { Router, useRouter } from 'next/router'
 import { MDXProvider } from '@mdx-js/react'
 
-import { Layout } from '@/components/Layout'
+// Website
+import { Index } from '@/components/Index'
+
+// Docs
 import * as mdxComponents from '@/components/mdx'
-import { useMobileNavigationStore } from '@/components/MobileNavigation'
+import { useMobileNavigationStore } from '@/components/docs/MobileNavigation'
+import { Layout as Docs } from '@/components/docs/Layout'
+
 
 import '@/styles/tailwind.css'
 import 'focus-visible'
@@ -18,7 +23,6 @@ Router.events.on('hashChangeStart', onRouteChange)
 
 export default function App({ Component, pageProps }) {
   let router = useRouter()
-
   return (
     <>
       <Head>
@@ -29,11 +33,15 @@ export default function App({ Component, pageProps }) {
         )}
         <meta name="description" content={pageProps.description} />
       </Head>
-      <MDXProvider components={mdxComponents}>
-        <Layout {...pageProps}>
-          <Component {...pageProps} />
-        </Layout>
-      </MDXProvider>
+      {router.pathname === '/' ? (
+          <Index></Index>
+        ) : (
+          <MDXProvider components={mdxComponents}>
+            <Docs {...pageProps}>
+              <Component {...pageProps} />
+            </Docs>
+          </MDXProvider>
+        )}
     </>
   )
 }

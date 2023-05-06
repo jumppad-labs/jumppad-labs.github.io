@@ -1,5 +1,5 @@
 import { Button } from '@/components/Button'
-import { Heading } from '@/components/Heading'
+import { Heading } from '@/components/docs/Heading'
 
 export const subjects = [
   {

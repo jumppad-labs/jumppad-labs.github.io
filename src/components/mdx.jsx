@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import clsx from 'clsx'
 
-import { Heading } from '@/components/Heading'
 
 export const a = Link
 export { Button } from '@/components/Button'
-export { CodeGroup, Code as code, Pre as pre } from '@/components/Code'
-export { HeroPattern } from '@/components/HeroPattern'
-export { Intro } from '@/components/Intro'
+
+import { Heading } from '@/components/docs/Heading'
+export { CodeGroup, Code as code, Pre as pre } from '@/components/docs/Code'
+export { Intro } from '@/components/docs/Intro'
 
 export const h2 = function H2(props) {
   return <Heading level={2} {...props} />

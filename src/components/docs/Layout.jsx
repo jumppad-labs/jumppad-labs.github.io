@@ -1,16 +1,20 @@
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 
 import { Footer } from '@/components/Footer'
-import { Header } from '@/components/Header'
+import { Background } from '@/components/Background'
 import { Logo } from '@/components/Logo'
-import { Navigation } from '@/components/Navigation'
 import { Prose } from '@/components/Prose'
 import { SectionProvider } from '@/components/SectionProvider'
 
-import { HeroPattern } from './HeroPattern'
+// Docs
+import { Feedback, PageNavigation } from '@/components/Footer'
+import { Header } from '@/components/docs/Header'
+import { Navigation } from '@/components/docs/Navigation'
 
 export function Layout({ children, sections = [] }) {
+  let router = useRouter()
   return (
     <SectionProvider sections={sections}>
       <div className="lg:ml-72 xl:ml-80">
@@ -30,10 +34,13 @@ export function Layout({ children, sections = [] }) {
         </motion.header>
         <div className="relative px-4 pt-14 sm:px-6 lg:px-8">
           <main className="py-16">
-            <HeroPattern />
+            <Background />
             <Prose as="article">{children}</Prose>
           </main>
-          <Footer />
+          <Footer>
+            <Feedback key={router.pathname} />
+            <PageNavigation />
+          </Footer>
         </div>
       </div>
     </SectionProvider>

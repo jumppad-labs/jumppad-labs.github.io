@@ -64,7 +64,7 @@ const FeedbackThanks = forwardRef(function FeedbackThanks(_props, ref) {
   )
 })
 
-function Feedback() {
+export function Feedback() {
   let [submitted, setSubmitted] = useState(false)
 
   function onSubmit(event) {
@@ -123,7 +123,7 @@ function PageLink({ label, page, previous = false }) {
   )
 }
 
-function PageNavigation() {
+export function PageNavigation() {
   let router = useRouter()
   let allPages = navigation.flatMap((group) => group.links)
   let currentPageIndex = allPages.findIndex(
@@ -188,7 +188,7 @@ function SocialLink({ href, icon: Icon, children }) {
 
 function SmallPrint() {
   return (
-    <div className="flex flex-col items-center justify-between gap-5 border-t border-zinc-900/5 pt-8 dark:border-white/5 sm:flex-row">
+    <div className="flex flex-col lg:px-4 items-center justify-between gap-5 border-t border-zinc-900/5 pt-8 dark:border-white/5 sm:flex-row">
       <p className="text-xs text-zinc-600 dark:text-zinc-400">
         &copy; Copyright {new Date().getFullYear()}. All rights reserved.
       </p>
@@ -204,13 +204,10 @@ function SmallPrint() {
   )
 }
 
-export function Footer() {
-  let router = useRouter()
-
+export function Footer({children}) {
   return (
-    <footer className="mx-auto max-w-2xl space-y-10 pb-16 lg:max-w-5xl">
-      <Feedback key={router.pathname} />
-      <PageNavigation />
+    <footer className="mx-auto max-w-2xl px-6 space-y-10 pb-16 lg:max-w-7xl">
+      {children}
       <SmallPrint />
     </footer>
   )
