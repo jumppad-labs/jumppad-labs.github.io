@@ -11,7 +11,7 @@ import { Background } from '@/components/Background'
 import { ModeToggle } from '@/components/ModeToggle'
 
 const navigation = [
-  { name: 'Docs', href: '/docs/' },
+  { name: 'Docs', href: '/docs' },
 ]
 
 export function Index() {
