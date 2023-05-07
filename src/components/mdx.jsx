@@ -1,16 +1,20 @@
 import Link from 'next/link'
 import clsx from 'clsx'
 
-
 export const a = Link
 export { Button } from '@/components/Button'
 
 import { Heading } from '@/components/docs/Heading'
-export { CodeGroup, Code as code, Pre as pre } from '@/components/docs/Code'
 export { Intro } from '@/components/docs/Intro'
+export { CodeGroup, Code as code, Pre as pre } from '@/components/docs/Code'
+export { Properties, Property } from '@/components/docs/Properties'
 
 export const h2 = function H2(props) {
   return <Heading level={2} {...props} />
+}
+
+export const h3 = function H3(props) {
+  return <Heading level={3} {...props} />
 }
 
 function InfoIcon(props) {
@@ -58,63 +62,5 @@ export function Col({ children, sticky = false }) {
     >
       {children}
     </div>
-  )
-}
-
-export function Properties({ children }) {
-  return (
-    <div className="my-6">
-      <ul
-        role="list"
-        className="m-0 list-none divide-y divide-zinc-900/5 p-0 dark:divide-white/5"
-      >
-        {children}
-      </ul>
-    </div>
-  )
-}
-
-export function Property({ name, type, required, value, children }) {
-  if (!value) {
-    switch(type) {
-      case 'string': 
-        value = '""'
-        break
-      case 'number': 
-        value = "0"
-        break
-      case 'boolean': 
-        value = "false"
-        break
-    }
-  }
-
-  return (
-    <li className="m-0 flex px-0 py-4 first:pt-0 last:pb-0">
-      <dl className="m-0 w-full flex gap-x-3 gap-y-2">
-        <dt className="sr-only">Name</dt>
-        <dd>
-          <code className="text-emerald-500 dark:text-emerald-400 ring-emerald-300 dark:ring-emerald-400/10 bg-emerald-200/10 text-emerald-500 dark:text-emerald-400">{name}</code>
-        </dd>
-        {type && (
-          <>
-            <dt className="sr-only">Type</dt>
-            <dd className="font-mono pt-1 text-xs text-zinc-400 dark:text-zinc-500">
-              ({type}: {value})
-            </dd>
-            <dt className="sr-only">Required</dt>
-            <dd className="font-mono italic pt-1 text-xs text-zinc-400 dark:text-zinc-500">
-              {required === 'true' ? 'required' : ''}
-            </dd>
-          </>
-        )}
-      </dl>
-      <dl className="m-0 w-full">
-        <dt className="sr-only">Description</dt>
-        <dd className=" flex-none [&>:first-child]:mt-0 [&>:last-child]:mb-0">
-          {children}
-        </dd>
-      </dl>
-    </li>
   )
 }

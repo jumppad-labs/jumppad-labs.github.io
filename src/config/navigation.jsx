@@ -32,5 +32,12 @@ export const navigation = [
       { title: 'up', href: '/docs/cli/up' },
       { title: 'version', href: '/docs/cli/version' },
     ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { title: 'Overview', href: '/docs/resources/overview' },
+      { title: 'Container', href: '/docs/resources/container' },
+    ]
   }
 ]

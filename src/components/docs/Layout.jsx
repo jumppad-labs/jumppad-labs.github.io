@@ -9,9 +9,9 @@ import { Prose } from '@/components/Prose'
 import { SectionProvider } from '@/components/SectionProvider'
 
 // Docs
-import { Feedback, PageNavigation } from '@/components/Footer'
 import { Header } from '@/components/docs/Header'
 import { Navigation } from '@/components/docs/Navigation'
+import { Feedback, PageNavigation } from '@/components/Footer'
 
 export function Layout({ children, sections = [] }) {
   let router = useRouter()

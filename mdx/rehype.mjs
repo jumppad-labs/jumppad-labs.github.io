@@ -58,7 +58,7 @@ function rehypeSlugify() {
     let slugify = slugifyWithCounter()
     visit(tree, 'element', (node) => {
       if (node.tagName === 'h2' && !node.properties.id) {
-        node.properties.id = slugify(toString(node))
+        node.properties.id = slugify(toString(node), {separator: '_'})
       }
     })
   }
