@@ -1,0 +1,41 @@
+
+---
+## network_attachment
+
+Network attachment defines a network to which the container is attached.
+
+<Properties>
+  <Property name="id" type="string" required="true" value="">
+    ID of the network to attach the container to, specified in reference format. e.g. to attach to a network called `cloud`
+
+    ```hcl
+    network {
+      id = "network.cloud"
+    }
+    ```
+  </Property>
+
+  <Property name="ip_address" type="string" required="false" value="">
+    Static IP address to assign container for the network, the ip address must be within range defined by the network subnet.
+    If this parameter is omitted an IP address will be automatically assigned.
+  </Property>
+
+  <Property name="aliases" type="[]string" required="false" value="">
+    Aliases allow alternate names to specified for the container. Aliases can be used to reference a container across the network, the container
+    will respond to ping and other network resolution using the primary assigned name `[name].container.shipyard.run` and the aliases.
+
+    ```hcl
+    network {
+      name    = "network.cloud"
+      aliases = [
+        "alt1.container.shipyard.run", 
+        "alt2.container.shipyard.run"
+      ]
+    }
+    ```
+  </Property>
+
+  <Property name="name" type="string" required="false" value="" readonly>
+    Name will equal the name of the network as created by jumppad.
+  </Property>
+</Properties>

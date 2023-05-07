@@ -8,6 +8,7 @@ import { Heading } from '@/components/docs/Heading'
 export { Intro } from '@/components/docs/Intro'
 export { CodeGroup, Code as code, Pre as pre } from '@/components/docs/Code'
 export { Properties, Property } from '@/components/docs/Properties'
+export { YouTube } from '@/components/docs/YouTube'
 
 export const h2 = function H2(props) {
   return <Heading level={2} {...props} />

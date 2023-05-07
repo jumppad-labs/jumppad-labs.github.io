@@ -1,0 +1,233 @@
+import NetworkAttachment from "./shared/network_attachment.mdx"
+import Image from "./shared/image.mdx"
+import Volume from "./shared/volume.mdx"
+import Port from "./shared/port.mdx"
+import PortRange from "./shared/port_range.mdx"
+
+# Nomad Cluster
+
+<Intro>
+The `nomad_cluster` resource allows you to create Nomad clusters as Docker containers. Clusters
+can either be a single node combined server and client, or comprised of a dedicated server 
+and client nodes.
+</Intro>
+
+<YouTube id="o3XD11gx6x4"/>
+
+## Properties
+
+<Properties>
+  <Property name="network" type="#network_attachment" required="true" value="">
+    Network attaches the container to an existing network defined in a separate stanza. 
+    This block can be specified multiple times to attach the container
+    to multiple networks.
+  </Property>
+
+  <Property name="client_nodes" type="int" required="false" value="0">
+    Number of client nodes to create, if `0` Jumpppad will create a combined
+    server and client. If greater than 0, Jumppad will creeat a dedicated server 
+    with `n` clients. `client_nodes` can be updated, if the value changes and the
+    user runs `jumppad up`, jumppad will attempt to nondestructively scale the cluster. 
+  </Property>
+
+  <Property name="image" type="#image" required="false" value="">
+    Image defines a Docker image to use when creating the container. By default the nomad
+    cluster resource will be created using the latest Jumppad container image.
+  </Property>
+  
+  <Property name="environment" type="map[string]string" required="false" value="">
+    An env stanza allows you to set environment variables in the container. This stanza can be specified multiple times.
+
+    ```hcl
+    env {
+      key   = "PATH"
+      value = "/usr/local/bin"
+    }
+    ```
+  </Property>
+
+  <Property name="server_config" type="string" required="false" value="">
+    Path to a file containing custom Nomad server config to use when creating 
+    the server.
+  </Property>
+  
+  <Property name="client_config" type="string" required="false" value="">
+    Path to a file containing custom Nomad client config to use when creating 
+    the server.
+  </Property>
+  
+  <Property name="consul_config" type="string" required="false" value="">
+    Path to a file containing custom Consul agent config  to use when creating
+    the client.
+  </Property>
+  
+  <Property name="volume" type="#volume" required="false" value="">
+    Additional volume to mount to the server and client nodes.
+
+    ```hcl
+    volume {
+      source = "./mydirectory"
+      destination = "/path_in_container"
+    }
+    ```
+  </Property>
+  
+  <Property name="copy_image" type="#image" required="false" value="">
+    Docker image in the local Docker image cache to copy to the cluster on creation.
+    This image is added to the Nomad clients docker cache enabling jobs to use
+    images that may not be in the local registry.
+
+    ```hcl
+    copy_image {
+      name = "mylocalimage:versoin"
+    }
+    ```
+  </Property>
+
+  <Property name="port" type="#port" required="false" value="">
+    A port stanza allows you to expose container ports on the local network or host. This stanza can be specified multiple times.
+
+    ```hcl
+    port {
+      local = 80
+      host  = 8080
+    }
+    ```
+  </Property>
+
+  <Property name="port_range" type="#port_range" required="false" value="">
+    A port_range stanza allows you to expose a range of container ports on the local network or host. This stanza can be specified multiple times.
+
+    The following example would create 11 ports from 80 to 90 (inclusive) and expose them to the host machine.
+
+    ```hcl
+    port {
+      range       = "80-90"
+      enable_host = true
+    }
+    ```
+  </Property>
+  
+  <Property name="api_port" type="int" required="false" value="4646">
+    Port to expose the Nomad API on the host. By default this uses the standard
+    nomad port `4646`; however, if you are running multiple nomad instances
+    you will need to override this value.
+  </Property>
+  
+  <Property name="connector_port" type="int" required="false" value="" readonly>
+    The port where the Jumppad connector is exposed to the host, this property 
+    is requied by the `ingress` resource and is not generally needed when 
+    building blueprints.
+  </Property>
+  
+  <Property name="config_dir" type="string" required="false" value="" readonly>
+    Local directory where the server and client configuration is stored.
+  </Property>
+  
+  <Property name="server_fqrn" type="string" required="false" value="" readonly>
+    The fully qualified resource name for the Nomad server, this value can be
+    used to address the server from the Docker network. It is also the name
+    of the Docker container.
+
+    ```
+      server.name.nomad-cluster.jumpad.dev
+    ```
+  </Property>
+  
+  <Property name="client_fqrn" type="[]string" required="false" value="" readonly>
+    The fully qualified resource names for the Nomad clients, this value can be
+    used to address the client from the Docker network. It is also the name
+    of the Docker container.
+
+    When `client_nodes` is set to `0` this property will have no value.
+
+    ```
+    [
+      abse42wsdff.client.name.nomad-cluster.jumpad.dev,
+      kjdf23123.client.name.nomad-cluster.jumpad.dev,
+      123dfkjs.client.name.nomad-cluster.jumpad.dev,
+    ]
+    ```
+  </Property>
+  
+  <Property name="external_ip" type="string" required="false" value="" readonly>
+    Local IP address of the Nomad server, this property can be used to set the 
+    `NOAMD_ADDR` on the Jumppad client.
+
+    ```hcl
+      output "NOMAD_ADDR" {
+        value = "http://${resource.nomad_cluster.dev.external_ip}:${resource.nomad_cluster.dev.api_port}"
+      }
+    ```
+  </Property>
+</Properties>
+
+<NetworkAttachment/>
+<Image/>
+<Volume/>
+<Port/>
+<PortRange/>
+
+## Examples
+
+### Minimal example
+
+The following example creates a combined client and server running in a 
+single container.
+
+```hcl
+network "cloud" {
+    subnet = "10.0.0.0/16"
+}
+
+resource "nomad_cluster" "dev" {
+  network {
+    id = resource.network.cloud.id
+  }
+}
+```
+
+### Full Example
+
+The following example creates a multi_node nomad cluster with a job and
+ingress.
+
+```hcl
+network "cloud" {
+    subnet = "10.0.0.0/16"
+}
+
+resource "nomad_cluster" "dev" {
+  client_nodes=3
+
+  network {
+    id = resource.network.cloud.id
+  }
+}
+
+resource "nomad_job" "example_1" {
+  cluster = resource.nomad_cluster.dev.id
+
+  paths = ["./app_config/example1.nomad"]
+
+  health_check {
+    timeout    = "60s"
+    nomad_jobs = ["example_1"]
+  }
+}
+
+resource "ingress" "fake_service_1" {
+  port = 19090
+
+  target {
+    id         = resource.nomad_cluster.dev.id
+    named_port = "http"
+
+    config = {
+      job   = "example_1"
+      group = "fake_service"
+      task  = "fake_service"
+    }
+  }
+}
+```

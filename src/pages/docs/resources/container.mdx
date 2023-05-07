@@ -1,3 +1,9 @@
+import NetworkAttachment from "./shared/network_attachment.mdx"
+import Image from "./shared/image.mdx"
+import Volume from "./shared/volume.mdx"
+import Port from "./shared/port.mdx"
+import PortRange from "./shared/port_range.mdx"
+
 # Container
 
 The `container` resource allows you to run Docker containers.
@@ -24,21 +30,13 @@ command is a separate string. For example, to start a container and follow logs 
     ]
     ```
   </Property>
-  <Property name="env" type="map[string]string" required="false" value="">
+  <Property name="environment" type="map[string]string" required="false" value="">
     An env stanza allows you to set environment variables in the container. This stanza can be specified multiple times.
 
 ```hcl
 env {
   key   = "PATH"
   value = "/usr/local/bin"
-}
-```
-
-Note the above format will be deprecated soon to use cleaner map based format.
-
-```hcl
-env {
-  "key": "value"
 }
 ```
   </Property>
@@ -53,28 +51,31 @@ volume {
 }
 ```
   </Property>
+
   <Property name="port" type="#port" required="false" value="">
     A port stanza allows you to expose container ports on the local network or host. This stanza can be specified multiple times.
 
-```hcl
-port {
-  local = 80
-  host  = 8080
-}
-```
+    ```hcl
+    port {
+      local = 80
+      host  = 8080
+    }
+    ```
   </Property>
+
   <Property name="port_range" type="#port_range" required="false" value="">
     A port_range stanza allows you to expose a range of container ports on the local network or host. This stanza can be specified multiple times.
 
-The following example would create 11 ports from 80 to 90 (inclusive) and expose them to the host machine.
+    The following example would create 11 ports from 80 to 90 (inclusive) and expose them to the host machine.
 
-```hcl
-port {
-  range       = "80-90"
-  enable_host = true
-}
-```
+    ```hcl
+    port {
+      range       = "80-90"
+      enable_host = true
+    }
+    ```
   </Property>
+
   <Property name="privileged" type="boolean" required="false" value="false">
     Should the container run in Docker privileged mode?
   </Property>
@@ -128,150 +129,11 @@ jumppad up --force-update ./build
   </Property>
 </Properties>
 
----
-## network_attachment
-
-Network attachment defines a network to which the container is attached.
-
-<Properties>
-  <Property name="id" type="string" required="true" value="">
-    ID of the network to attach the container to, specified in reference format. e.g. to attach to a network called `cloud`
-
-```hcl
-network {
-  id = "network.cloud"
-}
-```
-  </Property>
-  <Property name="ip_address" type="string" required="false" value="">
-    Static IP address to assign container for the network, the ip address must be within range defined by the network subnet.
-If this parameter is omitted an IP address will be automatically assigned.
-  </Property>
-  <Property name="aliases" type="[]string" required="false" value="">
-    Aliases allow alternate names to specified for the container. Aliases can be used to reference a container across the network, the container
-will respond to ping and other network resolution using the primary assigned name `[name].container.shipyard.run` and the aliases.
-
-```hcl
-network {
-  name    = "network.cloud"
-  aliases = [
-    "alt1.container.shipyard.run", 
-    "alt2.container.shipyard.run"
-  ]
-}
-```
-  </Property>
-
-  <Property name="name" type="string" required="false" value="" readonly>
-    Name will equal the name of the network as created by jumppad.
-  </Property>
-</Properties>
----
-
-## image
-
-Image defines a Docker image used when creating this container. An Image can be stored in a public or a private repository.
-
-<Properties>
-  <Property name="name" type="string" required="true" value="">
-    Name of the image to use when creating the container, can either be the full canonical name or short name for Docker official images.
-e.g. `consul:v1.6.1` or `docker.io/consul:v1.6.1`.
-  </Property>
-  <Property name="username" type="string" required="false" value="">
-    Username to use when connecting to a private image repository
-  </Property>
-  <Property name="password" type="string" required="false" value="">
-    Password to use when connecting to a private image repository, for both username and password interpolated environment variables can be used
-in place of static values.
-
-```hcl
-image {
-  name = "myregistry.io/myimage:latest"
-  username = env("REGISTRY_USERNAME")
-  password = env("REGISTRY_PASSWORD")
-}
-```
-  </Property>
-</Properties>
-
----
-
-## volume
-
-A volume type allows the specification of an attached volume.
-
-<Properties>
-  <Property name="source" type="string" required="true" value="">
-    The source volume to mount in the container, can be specified as a relative `./` or absolute path `/usr/local/bin`. Relative paths are relative to
-the file declaring the container.
-  </Property>
-  <Property name="destination" type="string" required="true" value="">
-    The destination in the container to mount the volume to, must be an absolute path.
-  </Property>
-  <Property name="type" type="string" required="false" value="bind">
-    The type of the mount, can be one of the following values:
-
-    - bind: bind the source path to the destination path in the container
-    - volume: source is a Docker volume
-    - tmpfs: create a temporary filesystem
-  </Property>
-  <Property name="bind_propagation" type="string" required="false" value="rprivate">
-    Configures bind propagation for Docker volume mounts, only applies to bind mounts, can be one of the following values:
-
-    - shared
-    - slave
-    - private
-    - rslave
-    - rprivate
-
-    For more information please see the Docker documentation [https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation)
-  </Property>
-  <Property name="bind_propagation_non_recursive" type="boolean" required="false" value="false">
-    We are going to be 100% honest, we have no idea what this option does, but it is a thing so we made it configuable. 
-    Would love a PR if you actually know how this is supposed to work.
-
-    For more information please see the Docker documentation [https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation)
-  </Property>
-</Properties>
-
----
-
-## port
-
-A port stanza defines host to container communications
-
-<Properties>
-  <Property name="local" type="string" required="true" value="">
-    The local port in the container.
-  </Property>
-  <Property name="host" type="string" required="true" value="">
-    The host port to map the local port to.
-  </Property>
-  <Property name="protocol" type="string" required="false" value="">
-    The protocol to use when exposing the port, can be "tcp", or "udp".
-  </Property>
-  <Property name="open_in_browser" type="string" required="false" value="/">
-    Should a browser window be automatically opened when this resource is created. Browser windows will open at the path specified by this property.
-  </Property>
-</Properties>
-
----
-
-## port_range
-
-A port_range stanza defines host to container communications by exposing a range of ports for the container.
-
-<Properties>
-  <Property name="range" type="string" required="true" value="">
-    The port range to expose, e.g, `8080-8082` would expose the ports `8080`, `8081`, `8082`.
-  </Property>
-  <Property name="enable_host" type="boolean" required="false" value="false">
-    The host port to map the local port to.
-  </Property>
-  <Property name="protocol" type="string" required="false" value="tcp">
-    The protocol to use when exposing the port, can be "tcp", or "udp".
-  </Property>
-</Properties>
+<NetworkAttachment />
+<Image/>
+<Volume/>
+<Port/>
+<PortRange/>
 
 ---
 

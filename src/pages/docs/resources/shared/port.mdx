@@ -1,0 +1,21 @@
+
+---
+
+## port
+
+A port stanza defines host to container communications
+
+<Properties>
+  <Property name="local" type="string" required="true" value="">
+    The local port in the container.
+  </Property>
+  <Property name="host" type="string" required="true" value="">
+    The host port to map the local port to.
+  </Property>
+  <Property name="protocol" type="string" required="false" value="">
+    The protocol to use when exposing the port, can be "tcp", or "udp".
+  </Property>
+  <Property name="open_in_browser" type="string" required="false" value="/">
+    Should a browser window be automatically opened when this resource is created. Browser windows will open at the path specified by this property.
+  </Property>
+</Properties>

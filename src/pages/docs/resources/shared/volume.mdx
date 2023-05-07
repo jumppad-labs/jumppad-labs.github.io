@@ -1,0 +1,40 @@
+
+---
+
+## volume
+
+A volume type allows the specification of an attached volume.
+
+<Properties>
+  <Property name="source" type="string" required="true" value="">
+    The source volume to mount in the container, can be specified as a relative `./` or absolute path `/usr/local/bin`. Relative paths are relative to
+the file declaring the container.
+  </Property>
+  <Property name="destination" type="string" required="true" value="">
+    The destination in the container to mount the volume to, must be an absolute path.
+  </Property>
+  <Property name="type" type="string" required="false" value="bind">
+    The type of the mount, can be one of the following values:
+
+    - bind: bind the source path to the destination path in the container
+    - volume: source is a Docker volume
+    - tmpfs: create a temporary filesystem
+  </Property>
+  <Property name="bind_propagation" type="string" required="false" value="rprivate">
+    Configures bind propagation for Docker volume mounts, only applies to bind mounts, can be one of the following values:
+
+    - shared
+    - slave
+    - private
+    - rslave
+    - rprivate
+
+    For more information please see the Docker documentation [https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation)
+  </Property>
+  <Property name="bind_propagation_non_recursive" type="boolean" required="false" value="false">
+    We are going to be 100% honest, we have no idea what this option does, but it is a thing so we made it configuable. 
+    Would love a PR if you actually know how this is supposed to work.
+
+    For more information please see the Docker documentation [https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation)
+  </Property>
+</Properties>

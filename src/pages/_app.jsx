@@ -10,7 +10,6 @@ import * as mdxComponents from '@/components/mdx'
 import { useMobileNavigationStore } from '@/components/docs/MobileNavigation'
 import { Layout as Docs } from '@/components/docs/Layout'
 
-
 import '@/styles/tailwind.css'
 import 'focus-visible'
 
