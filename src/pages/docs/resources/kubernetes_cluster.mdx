@@ -5,15 +5,11 @@ import Volume from "./shared/volume.mdx"
 import Port from "./shared/port.mdx"
 import PortRange from "./shared/port_range.mdx"
 
-# Nomad Cluster `nomad_cluster`
+# Kubernetes Cluster `k8s_cluster`
 
 <Intro>
-The `nomad_cluster` resource allows you to create Nomad clusters as Docker containers. Clusters
-can either be a single node combined server and client, or comprised of a dedicated server 
-and client nodes.
-</Intro>
 
-<YouTube id="o3XD11gx6x4"/>
+</Intro>
 
 ## Properties
 
@@ -22,13 +18,6 @@ and client nodes.
     Network attaches the container to an existing network defined in a separate stanza. 
     This block can be specified multiple times to attach the container
     to multiple networks.
-  </Property>
-
-  <Property name="client_nodes" type="int" required="false" value="0">
-    Number of client nodes to create, if `0` Jumpppad will create a combined
-    server and client. If greater than 0, Jumppad will creeat a dedicated server 
-    with `n` clients. `client_nodes` can be updated, if the value changes and the
-    user runs `jumppad up`, jumppad will attempt to nondestructively scale the cluster. 
   </Property>
 
   <Property name="image" type="#image" required="false" value="">
@@ -45,21 +34,6 @@ and client nodes.
       value = "/usr/local/bin"
     }
     ```
-  </Property>
-
-  <Property name="server_config" type="string" required="false" value="">
-    Path to a file containing custom Nomad server config to use when creating 
-    the server.
-  </Property>
-  
-  <Property name="client_config" type="string" required="false" value="">
-    Path to a file containing custom Nomad client config to use when creating 
-    the server.
-  </Property>
-  
-  <Property name="consul_config" type="string" required="false" value="">
-    Path to a file containing custom Consul agent config  to use when creating
-    the client.
   </Property>
   
   <Property name="volume" type="#volume" required="false" value="">
@@ -109,10 +83,15 @@ and client nodes.
     ```
   </Property>
   
-  <Property name="api_port" type="int" required="false" value="4646">
-    Port to expose the Nomad API on the host. By default this uses the standard
-    nomad port `4646`; however, if you are running multiple nomad instances
+  <Property name="api_port" type="int" required="false" value="443">
+    Port to expose the Kubernetes API on the host. By default this uses the standard
+    api port `443`; however, if you are running multiple kubernetes instances
     you will need to override this value.
+  </Property>
+
+  <Property name="kubeconfig" type="int" required="false" value="" readonly>
+    Path to the Kubenetes config file that can be used to interact with the 
+    cluster.
   </Property>
   
   <Property name="connector_port" type="int" required="false" value="" readonly>
@@ -121,33 +100,13 @@ and client nodes.
     building blueprints.
   </Property>
   
-  <Property name="config_dir" type="string" required="false" value="" readonly>
-    Local directory where the server and client configuration is stored.
-  </Property>
-  
-  <Property name="server_fqrn" type="string" required="false" value="" readonly>
+  <Property name="fqrn" type="string" required="false" value="" readonly>
     The fully qualified resource name for the Nomad server, this value can be
     used to address the server from the Docker network. It is also the name
     of the Docker container.
 
     ```
-      server.name.nomad-cluster.jumpad.dev
-    ```
-  </Property>
-  
-  <Property name="client_fqrn" type="[]string" required="false" value="" readonly>
-    The fully qualified resource names for the Nomad clients, this value can be
-    used to address the client from the Docker network. It is also the name
-    of the Docker container.
-
-    When `client_nodes` is set to `0` this property will have no value.
-
-    ```
-    [
-      abse42wsdff.client.name.nomad-cluster.jumpad.dev,
-      kjdf23123.client.name.nomad-cluster.jumpad.dev,
-      123dfkjs.client.name.nomad-cluster.jumpad.dev,
-    ]
+      server.name.k8s-cluster.jumpad.dev
     ```
   </Property>
   
@@ -173,65 +132,116 @@ and client nodes.
 
 ## Examples
 
-### Minimal example
+### Simple cluster
 
-The following example creates a combined client and server running in a 
-single container.
+The following example creates a single node Kubernetes cluster and sets an
+output to the config path.
 
 ```hcl
-network "cloud" {
-    subnet = "10.0.0.0/16"
+resource "network" "cloud" {
+  subnet = "10.5.0.0/16"
 }
 
-resource "nomad_cluster" "dev" {
+resource "k8s_cluster" "k3s" {
   network {
     id = resource.network.cloud.id
   }
+}
+
+output "KUBECONFIG" {
+  value = resource.k8s_cluster.k3s.kubeconfig
 }
 ```
 
 ### Full Example
 
-The following example creates a multi_node nomad cluster with a job and
-ingress.
+The following example creates a Kubernetes cluster and applies a Helm chart
+from a remote repository, a local Kubernetes deployment, and configures ingress
+resources for both the Helm chart and local deployment.
 
 ```hcl
-network "cloud" {
-    subnet = "10.0.0.0/16"
+resource "network" "cloud" {
+  subnet = "10.5.0.0/16"
 }
 
-resource "nomad_cluster" "dev" {
-  client_nodes=3
+resource "k8s_cluster" "k3s" {
+  driver = "k3s" // default
+
+  nodes = 1 // default
 
   network {
     id = resource.network.cloud.id
   }
-}
 
-resource "nomad_job" "example_1" {
-  cluster = resource.nomad_cluster.dev.id
-
-  paths = ["./app_config/example1.nomad"]
-
-  health_check {
-    timeout    = "60s"
-    nomad_jobs = ["example_1"]
+  copy_image {
+    name = "shipyardrun/connector:v0.1.0"
   }
 }
 
-resource "ingress" "fake_service_1" {
+resource "k8s_config" "fake_service" {
+  cluster = resource.k8s_cluster.k3s.id
+
+  paths = ["./fake_service.yaml"]
+
+  health_check {
+    timeout = "240s"
+    pods    = ["app.kubernetes.io/name=fake-service"]
+  }
+}
+
+resource "helm" "vault" {
+  cluster = resource.k8s_cluster.k3s.id
+
+  repository {
+    name = "hashicorp"
+    url  = "https://helm.releases.hashicorp.com"
+  }
+
+  chart   = "hashicorp/vault"
+  version = "v0.18.0"
+
+  values = "./helm/vault-values.yaml"
+
+  health_check {
+    timeout = "240s"
+    pods    = ["app.kubernetes.io/name=vault"]
+  }
+}
+
+resource "ingress" "vault_http" {
+  port = 18200
+
+  target {
+    id   = resource.k8s_cluster.k3s.id
+    port = 8200
+
+    config = {
+      service   = "vault"
+      namespace = "default"
+    }
+  }
+}
+
+resource "ingress" "fake_service" {
   port = 19090
 
   target {
-    id         = resource.nomad_cluster.dev.id
-    named_port = "http"
+    id   = resource.k8s_cluster.k3s.id
+    port = 9090
 
     config = {
-      job   = "example_1"
-      group = "fake_service"
-      task  = "fake_service"
+      service   = "fake-service"
+      namespace = "default"
     }
   }
+}
+
+output "VAULT_ADDR" {
+  value = resource.ingress.vault_http.address
+}
+
+output "KUBECONFIG" {
+  value = resource.k8s_cluster.k3s.kubeconfig
 }
 ```
 

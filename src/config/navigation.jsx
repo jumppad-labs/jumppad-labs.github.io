@@ -41,6 +41,7 @@ export const navigation = [
       { title: 'Nomad Cluster', href: '/docs/resources/nomad_cluster' },
       { title: 'Nomad Job', href: '/docs/resources/nomad_job' },
       { title: 'Ingress', href: '/docs/resources/ingress' },
+      { title: 'Kubernetes Cluster', href: '/docs/resources/kubernetes_cluster' },
     ]
   }
 ]
