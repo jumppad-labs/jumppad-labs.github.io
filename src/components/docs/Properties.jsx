@@ -27,10 +27,10 @@ export function Property({ name, type, required, value, readonly, children }) {
         value = "false"
         break
       default:
-        if (type.startsWith('[]')) {
+        if (type && type.startsWith('[]')) {
           value = "[]"
         }
-        if (type.startsWith('map[')) {
+        if (type && type.startsWith('map[')) {
           value = "map[]{}"
         }
     }
