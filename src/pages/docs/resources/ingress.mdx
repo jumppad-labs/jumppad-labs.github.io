@@ -1,0 +1,118 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Ingress `ingress`
+
+<Intro>
+The `ingress` resource allows you to expose services in Kubernetes and Nomad
+tasks to the local machine.
+</Intro >
+
+## Properties
+
+<Properties>
+  <Property name="port" type="int" required="true" value="">
+    The local port to expose the service on.
+  </Property>
+  
+  <Property name="target" type="#traffic_target" required="true" value="">
+    The target for the ingress.
+  </Property>
+  
+  <Property name="ingress_id" type="string" required="false" value="" readonly>
+    The unique identifier for the created ingress.
+  </Property>
+  
+  <Property name="address" type="string" required="false" value="" readonly>
+    The full address where the ingress can be reached from the local network.
+
+    Generally this is the local ip address of the machine running Jumppad and the
+    port where the service is exposed.
+  </Property>
+</Properties>
+
+---
+
+## traffic_target
+
+<Properties>
+  <Property name="id" type="string" required="true" value="">
+    The id of the `nomad_cluster` or `kubernetes_cluster` resource.
+  </Property>
+  
+  <Property name="port" type="int" required="true" value="">
+    The numerical reference for the target service port.
+
+    Either `port` or `named_port` must be specified.
+  </Property>
+  
+  <Property name="named_port" type="string" required="true" value="">
+    The streing reference for the target service port.
+
+    Either `port` or `named_port` must be specified.
+  </Property>
+  
+  <Property name="config" type="map[string]string" required="true" value="">
+    The configuration parameters for the ingress, configuration parameters
+    differ depending on the target type.
+
+    **Kubernetes target config**
+    ```hcl
+      service   = "Kubernetes service name" 
+      namespace = "Kubernetes namespace where the service is deployed"
+    ```
+    
+    **Nomad target config**
+    ```hcl
+      job   = "Name of the Nomad job" 
+      group = "Group in the job"
+      task  = "Name of the task in the group"
+    ```
+  </Property>
+</Properties>
+
+<MetaProperties/>
+
+## Examples
+
+### Nomad Ingress
+
+Exposes the the `http` port for the task `fake_service` in the group `fake_service` 
+in the job `example_1` locally on port `19090`
+
+```hcl
+resource "ingress" "fake_service_1" {
+  port = 19090
+
+  target {
+    id         = resource.nomad_cluster.dev.id
+    named_port = "http"
+
+    config = {
+      job   = "example_1"
+      group = "fake_service"
+      task  = "fake_service"
+    }
+  }
+}
+```
+
+### Kubernets Ingress
+
+Exposes the Kubernets port `9090` for the Kubernetes service `fake-service` 
+in the `default` namespace locally on port `19090`.
+
+```hcl
+resource "ingress" "fake_service_1" {
+  port = 19090
+
+  target {
+    id   = resource.k8s_cluster.k3s.id
+    port = 9090
+
+    config = {
+      service   = "fake-service"
+      namespace = "default"
+    }
+  }
+}
+```

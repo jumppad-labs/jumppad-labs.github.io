@@ -39,6 +39,8 @@ export const navigation = [
       { title: 'Overview', href: '/docs/resources/overview' },
       { title: 'Container', href: '/docs/resources/container' },
       { title: 'Nomad Cluster', href: '/docs/resources/nomad_cluster' },
+      { title: 'Nomad Job', href: '/docs/resources/nomad_job' },
+      { title: 'Ingress', href: '/docs/resources/ingress' },
     ]
   }
 ]

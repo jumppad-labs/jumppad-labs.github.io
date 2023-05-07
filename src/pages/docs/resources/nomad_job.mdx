@@ -1,0 +1,83 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Nomad Job `nomad_job`
+
+<Intro>
+The `nomad_job` resource allows you to apply one or more Nomad job files to
+a cluster.
+</Intro>
+
+## Properties
+
+<Properties>
+  <Property name="cluster" type="string" required="true" value="">
+    The id of the cluster to apply the jobs to. Commonly this is set using
+    the interpolated value `id` from the cluster. Setting the cluster id this
+    way ensures that the cluster is created and healthy before any jobs are 
+    applied.
+
+    ```hcl
+      resource "nomad_job" "example" {
+        cluster = resource.nomad_cluster.dev.id
+        ...
+      }
+    ```
+  </Property>
+  <Property name="pahts" type="[]string" required="true" value="">
+    Paths to the Nomad job files to apply to the cluster.
+  </Property>
+  <Property name="paths" type="#health_check" required="false" value="">
+    Optional health check to perform after the jobs have been applied, this resource
+    will not complete until the health checks are passing.
+  </Property>
+</Properties>
+
+---
+
+## health_check
+
+A health_check stanza allows the definition of a health check which must pass before the resource is marked as successfully created.
+
+```hcl
+health_check {
+  duration = "60s"
+  nomad_jobs = ["example"]
+}
+```
+
+<Properties>
+  <Property name="timeout" type="duration" required="true" value="">
+    The maximum duration to wait before marking the health check as failed. 
+    Expressed as a Go duration, e.g. `1s` = 1 second, `100ms` = 100 milliseconds.
+  </Property>
+
+  <Property name="nomad_jobs" type="[]string" required="true" value="">
+    An array of nomad jobs that must be marked as "Running" by the Nomad
+    server.
+  </Property>
+</Properties>
+
+
+<MetaProperties/>
+
+## Examples
+
+```hcl
+resource "nomad_cluster" "dev" {
+  network {
+    id = resource.network.cloud.id
+  }
+}
+
+resource "nomad_job" "example" {
+  cluster = resource.nomad_cluster.dev.id
+
+  paths = ["./app_config/example1.nomad"]
+
+  health_check {
+    timeout    = "60s"
+    nomad_jobs = ["example"]
+  }
+}
+
+```
