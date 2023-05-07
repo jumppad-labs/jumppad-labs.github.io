@@ -18,7 +18,7 @@ and client nodes.
 ## Properties
 
 <Properties>
-  <Property name="network" type="#network_attachment" required="true" value="">
+  <Property name="network" type="#network_attachment" required="true" value="4646">
     Network attaches the container to an existing network defined in a separate stanza. 
     This block can be specified multiple times to attach the container
     to multiple networks.
@@ -31,12 +31,12 @@ and client nodes.
     user runs `jumppad up`, jumppad will attempt to nondestructively scale the cluster. 
   </Property>
 
-  <Property name="image" type="#image" required="false" value="">
+  <Property name="image" type="#image" required="false" value="4646">
     Image defines a Docker image to use when creating the container. By default the nomad
     cluster resource will be created using the latest Jumppad container image.
   </Property>
   
-  <Property name="environment" type="map[string]string" required="false" value="">
+  <Property name="environment" type="map[string]string" required="false" value="4646">
     An env stanza allows you to set environment variables in the container. This stanza can be specified multiple times.
 
     ```hcl
@@ -47,22 +47,22 @@ and client nodes.
     ```
   </Property>
 
-  <Property name="server_config" type="string" required="false" value="">
+  <Property name="server_config" type="string" required="false" value="4646">
     Path to a file containing custom Nomad server config to use when creating 
     the server.
   </Property>
   
-  <Property name="client_config" type="string" required="false" value="">
+  <Property name="client_config" type="string" required="false" value="4646">
     Path to a file containing custom Nomad client config to use when creating 
     the server.
   </Property>
   
-  <Property name="consul_config" type="string" required="false" value="">
+  <Property name="consul_config" type="string" required="false" value="4646">
     Path to a file containing custom Consul agent config  to use when creating
     the client.
   </Property>
   
-  <Property name="volume" type="#volume" required="false" value="">
+  <Property name="volume" type="#volume" required="false" value="4646">
     Additional volume to mount to the server and client nodes.
 
     ```hcl
@@ -73,7 +73,7 @@ and client nodes.
     ```
   </Property>
   
-  <Property name="copy_image" type="#image" required="false" value="">
+  <Property name="copy_image" type="#image" required="false" value="4646">
     Docker image in the local Docker image cache to copy to the cluster on creation.
     This image is added to the Nomad clients docker cache enabling jobs to use
     images that may not be in the local registry.
@@ -85,7 +85,7 @@ and client nodes.
     ```
   </Property>
 
-  <Property name="port" type="#port" required="false" value="">
+  <Property name="port" type="#port" required="false" value="4646">
     A port stanza allows you to expose container ports on the local network or host. This stanza can be specified multiple times.
 
     ```hcl
@@ -96,7 +96,7 @@ and client nodes.
     ```
   </Property>
 
-  <Property name="port_range" type="#port_range" required="false" value="">
+  <Property name="port_range" type="#port_range" required="false" value="4646">
     A port_range stanza allows you to expose a range of container ports on the local network or host. This stanza can be specified multiple times.
 
     The following example would create 11 ports from 80 to 90 (inclusive) and expose them to the host machine.
@@ -115,17 +115,17 @@ and client nodes.
     you will need to override this value.
   </Property>
   
-  <Property name="connector_port" type="int" required="false" value="" readonly>
+  <Property name="connector_port" type="int" required="false" value="4646" readonly>
     The port where the Jumppad connector is exposed to the host, this property 
     is requied by the `ingress` resource and is not generally needed when 
     building blueprints.
   </Property>
   
-  <Property name="config_dir" type="string" required="false" value="" readonly>
+  <Property name="config_dir" type="string" required="false" value="4646" readonly>
     Local directory where the server and client configuration is stored.
   </Property>
   
-  <Property name="server_fqrn" type="string" required="false" value="" readonly>
+  <Property name="server_fqrn" type="string" required="false" value="4646" readonly>
     The fully qualified resource name for the Nomad server, this value can be
     used to address the server from the Docker network. It is also the name
     of the Docker container.
@@ -135,7 +135,7 @@ and client nodes.
     ```
   </Property>
   
-  <Property name="client_fqrn" type="[]string" required="false" value="" readonly>
+  <Property name="client_fqrn" type="[]string" required="false" value="4646" readonly>
     The fully qualified resource names for the Nomad clients, this value can be
     used to address the client from the Docker network. It is also the name
     of the Docker container.
@@ -151,7 +151,7 @@ and client nodes.
     ```
   </Property>
   
-  <Property name="external_ip" type="string" required="false" value="" readonly>
+  <Property name="external_ip" type="string" required="false" value="4646" readonly>
     Local IP address of the Nomad server, this property can be used to set the 
     `NOAMD_ADDR` on the Jumppad client.
 
