@@ -1,0 +1,104 @@
+## Meta Properties
+
+All jumppad resources have the following read only properties.
+
+<Properties>
+  <Property name="depends_on" type="[]string" required="false" value="">
+    An array of resources that this resource depends on. Jumppad will ensure that
+    all resources referenced in `depends_on` are created before the resource. 
+
+    For example, the resource "mine" would be created after the resource "myother".
+
+    ```hcl
+      resource "container" "mine" {
+        depends_on = ["resource.container.myother"]
+      }
+      
+      resource "container" "myother" {
+
+      }
+    ```
+
+    Where possible Jumppad attempts to automatically create a dependency graph
+    by using interpolated properties. For example, the previous scenario could 
+    have been written without using `depends_on` by using interpolated properties. 
+
+    ```hcl
+      resource "container" "mine" {
+        image {
+          name = resource.container.myother.image.name
+        }
+      }
+      
+      resource "container" "myother" {
+        image {
+          name = "myimage:version"
+        }
+      }
+    ```
+  </Property>
+
+  <Property name="disabled" type="bool" required="false" value="false">
+    If set to false the resource will not be created.
+  </Property>
+
+  <Property name="id" type="string" required="false" value="" readonly>
+    The unique `id` for the resource, this value can be used in interpolation
+    syntax to reference properties for a resource.
+
+    ```
+      resource.container.nic
+      ouput.myoutput
+      module.mine.submodule.resource.container.nic
+      module.mine.submodule.ouput.myoutput
+
+    ```
+  </Property>
+  
+  <Property name="name" type="string" required="false" value="" readonly>
+    The name of the resource, *note:* this value is not unique and does not
+    take into account if the resource is embedded in a module.
+
+    This value is the same as the `name` field of the resource. i.e "mine".
+
+    ```hcl
+      resource "container" "mine" {}
+    ```
+  </Property>
+  
+  <Property name="type" type="string" required="true" value="" readonly>
+    The string type of the resource.
+    
+    This value is the same as the `type` field of the resource. i.e. "container"
+
+    ```hcl
+      resource "container" "mine" {}
+    ```
+  </Property>
+  
+  <Property name="module" type="string" required="false" value="" readonly>
+    The full module path for the resource. Should the resource be included 
+    in a module, this value will be the name of the module and any parent 
+    modules that the resource is embedded in.
+
+    For example, given the following structure, the `module` value would be
+    "mymodule.mysubmodule".
+
+    ```hcl
+      resource "container" "mine" {}
+
+      ## included in
+
+      module "mysubmodule" {}
+      
+      ## included in
+
+      module "mymodule" {}
+    ```
+  </Property>
+  
+  <Property name="file" type="string" required="false" value="" readonly>
+    The absolute path of the file that contains this resource
+  </Property>
+  
+</Properties>

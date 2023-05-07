@@ -1,3 +1,4 @@
+import MetaProperties from "./shared/meta.mdx"
 import NetworkAttachment from "./shared/network_attachment.mdx"
 import Image from "./shared/image.mdx"
 import Volume from "./shared/volume.mdx"
@@ -6,23 +7,34 @@ import PortRange from "./shared/port_range.mdx"
 
 # Container
 
-The `container` resource allows you to run Docker containers.
+The `container` resource allows you to create Docker containers.
+
+<YouTube id="X8xWzZD3ptM"/>
 
 ## Properties
 
 <Properties>
   <Property name="network" type="#network_attachment" required="true" value="">
-    Network attaches the container to an existing network defined in a separate stanza. This block can be specified multiple times to attach the container
-to multiple networks.
+    Network attaches the container to an existing network defined in a separate stanza. 
+    This block can be specified multiple times to attach the container to multiple networks.
   </Property>
+
   <Property name="image" type="#image" required="true" value="">
     Image defines a Docker image to use when creating the container.
   </Property>
-  <Property name="command" type="[]string" required="false" value="">
-    Command allows you to specify a command to execute when starting a container. Command is specified as an array of strings, each part of the
-command is a separate string. For example, to start a container and follow logs at /dev/null the following command could be used.
+  
+  <Property name="entrypoint" type="[]string" required="false" value="">
+    Entrypoint for the container, if not set, Jumppad starts the container using the
+    entrypoint defined in the Docker image.        
+  </Property>
 
-```hcl
+  <Property name="command" type="[]string" required="false" value="">
+    Command allows you to specify a command to execute when starting a container. 
+    Command is specified as an array of strings, each part of the command is a separate string. 
+    
+    For example, to start a container and follow logs at /dev/null the following command could be used.
+
+    ```hcl
     command = [
         "tail",
         "-f",
@@ -30,36 +42,37 @@ command is a separate string. For example, to start a container and follow logs 
     ]
     ```
   </Property>
+
   <Property name="environment" type="map[string]string" required="false" value="">
-    An env stanza allows you to set environment variables in the container. This stanza can be specified multiple times.
+    Allows you to set environment variables in the container.
 
-```hcl
-env {
-  key   = "PATH"
-  value = "/usr/local/bin"
-}
-```
+    ```hcl
+    env {
+      PATH = "/user/local/bin"
+    }
+    ```
   </Property>
-  <Property name="volume" type="#volume" required="false" value="">
-    A volume allows you to specify a local volume which is mounted to the container when it is created. This stanza can be specified
-multiple times.
 
-```hcl
-volume {
-  source      = "./"
-  destination = "/files"
-}
-```
+  <Property name="volume" type="#volume" required="false" value="">
+    A volume allows you to specify a local volume which is mounted to the container when it is created. 
+    This stanza can be specified multiple times.
+
+  ```hcl
+    volume {
+      source      = "./"
+      destination = "/files"
+    }
+  ```
   </Property>
 
   <Property name="port" type="#port" required="false" value="">
     A port stanza allows you to expose container ports on the local network or host. This stanza can be specified multiple times.
 
     ```hcl
-    port {
-      local = 80
-      host  = 8080
-    }
+      port {
+        local = 80
+        host  = 8080
+      }
     ```
   </Property>
 
@@ -69,65 +82,81 @@ volume {
     The following example would create 11 ports from 80 to 90 (inclusive) and expose them to the host machine.
 
     ```hcl
-    port {
-      range       = "80-90"
-      enable_host = true
-    }
+      port {
+        range       = "80-90"
+        enable_host = true
+      }
     ```
   </Property>
 
   <Property name="privileged" type="boolean" required="false" value="false">
     Should the container run in Docker privileged mode?
   </Property>
-  <Property name="health_check" type="#health_check" required="false" value="">
-    Define a health check for the container, the resource will only be marked as successfully created when the health check passes.
-
-```hcl
-health_check {
-  timeout = "30s"
-  http    = "http://localhost:8500/v1/status/leader"
-}
-```
-  </Property>
-  <Property name="resources" type="#resources" required="false" value="">
-    Define resource constraints for the container
-  </Property>
+  
   <Property name="max_restart_count" type="number" required="false" value="0">
     The maximum number of times a container will be restarted when it exits with a status code other than 0
   </Property>
+  
+  <Property name="resources" type="#resources" required="false" value="">
+    Define resource constraints for the container
+  </Property>
+
+  <Property name="health_check" type="#health_check" required="false" value="">
+    Define a health check for the container, the resource will only be marked as successfully created when the health check passes.
+
+    ```hcl
+      health_check {
+        timeout = "30s"
+        http    = "http://localhost:8500/v1/status/leader"
+      }
+    ```
+  </Property>
+
   <Property name="run_as" type="#run_as" required="false" value="container defaults">
     Allows the container to be run as a specific user or group.
 
-```hcl
-run_as {
-  user = "1000"
-  group = "nicj"
-}
-```
+    ```hcl
+      run_as {
+        user = "1000"
+        group = "nicj"
+      }
+    ```
   </Property>
+
   <Property name="build" type="#build" required="false" value="">
     Build a container from the given file and context before running the container.
 
-```hcl
-build   {
-  file = "./Dockerfile"
-  context = "./src"
-}
-```
+    ```hcl
+      build   {
+        file = "./Dockerfile"
+        context = "./src"
+      }
+    ```
 
-Images are cached in the local Docker engine using the following convention.
+    Images are cached in the local Docker engine using the following convention.
 
-```shell
-jumppad.dev/localcache/<resource_name>:latest
-```
+    ```shell
+      jumppad.dev/localcache/<resource_name>:latest
+    ```
 
-Once cached images are not rebuild with every `run` to force the update of an image you can use the `--force-update` flag with `run`.
+    Once cached images are not rebuild with every `run` to force the update of an image you can use the `--force-update` flag with `run`.
 
-```shell
-jumppad up --force-update ./build
-```
+    ```shell
+      jumppad up --force-update ./build
+    ```
+  </Property>
+  
+  <Property name="fqrn" type="string" required="false" value="" readonly>
+    Fully qualified resource name for the container, this value can be used to
+    access the container from within the Docker network. `fqrn` is also the name
+    of the created Docker container.
+
+    ```
+      name.container.jumppad.dev
+    ```
   </Property>
 </Properties>
+
 
 <NetworkAttachment />
 <Image/>
@@ -215,6 +244,8 @@ The build stanza allows the building of a Docker image before running the contai
     Path to the context for the build.
   </Property>
 </Properties>
+
+<MetaProperties />
 
 ---
 
