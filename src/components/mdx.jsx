@@ -4,6 +4,7 @@ import clsx from 'clsx'
 export const a = Link
 export { Button } from '@/components/Button'
 
+
 import { Heading } from '@/components/docs/Heading'
 export { Intro } from '@/components/docs/Intro'
 export { CodeGroup, Code as code, Pre as pre } from '@/components/docs/Code'
