@@ -56,6 +56,7 @@ export const navigation = [
       { title: 'Template', href: '/docs/resources/template' },
       { title: 'Variables', href: '/docs/resources/variables' },
       { title: 'Resource Functions', href: '/docs/resources/functions' },
+      { title: 'Meta Properties', href: '/docs/resources/meta' },
     ]
   }
 ]
