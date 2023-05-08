@@ -1,0 +1,38 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Random Number `random_number`
+
+<Intro>
+The `random_number` resource allow the creation of random numbers.
+</Intro>
+
+## Properties
+
+<Properties>
+  <Property name="minimum" type="int" required="true" value=""> 
+    The minimum number to generate.
+  </Property>
+
+  <Property name="maximum" type="int" required="true" value=""> 
+    The maximum number to generate.
+  </Property>
+  
+  <Property name="value" type="int" value="" readonly> 
+    The generated random number.
+  </Property>
+</Properties>
+
+<MetaProperties/>
+
+## Examples
+
+```hcl
+resource "random_number" "port" {
+  minimum = 10000
+  maximum = 20000
+}
+
+output "random_number" {
+  value = resource.random_number.port.value
+}
+```

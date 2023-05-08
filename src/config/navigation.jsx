@@ -52,6 +52,7 @@ export const navigation = [
       { title: 'Network', href: '/docs/resources/network' },
       { title: 'Output', href: '/docs/resources/output' },
       { title: 'Remote Exec', href: '/docs/resources/local_exec' },
+      { title: 'Random', href: '/docs/resources/random' },
       { title: 'Sidecar', href: '/docs/resources/sidecar' },
       { title: 'Template', href: '/docs/resources/template' },
       { title: 'Variables', href: '/docs/resources/variables' },
