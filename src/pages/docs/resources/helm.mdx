@@ -1,0 +1,85 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Helm `helm`
+
+<Intro>
+The `helm` resource allows Helm charts to be provisioned to `k8s_cluster` resources.
+
+Documentation is work in progress, please see the old documentation at:
+
+https://shipyard.run/docs/resources/exec_remote
+</Intro>
+
+## Properties
+
+<Properties>
+  <Property name="cluster" type="string" required="true" value="" readonly> 
+    Text
+
+    ```hcl
+    code
+    ```
+  </Property>
+
+  <Property name="cluster" type="string" required="true" value="" readonly> 
+    Text
+  </Property>
+</Properties>
+
+<MetaProperties/>
+
+## Examples
+
+### Install Helm Chart from a Helm Repository
+
+```hcl
+resource "helm" "consul" {
+  cluster = resource.k8s_cluster.k3s.id
+
+  repository {
+    name = "hashicorp"
+    url  = "https://helm.releases.hashicorp.com"
+  }
+
+  chart   = "hashicorp/consul"
+  version = "v0.40.0"
+
+  values = "./helm/consul-values.yaml"
+
+  health_check {
+    timeout = "240s"
+    pods = [
+      "component=connect-injector",
+      "component=client",
+      "component=controller",
+      "component=server",
+    ]
+  }
+}
+```
+
+### Install Helm Chart from a GitHub Repository
+
+```hcl
+resource "helm" "vault" {
+  cluster = resource.k8s_cluster.k3s.id
+  chart = "github.com/hashicorp/vault-helm"
+
+  values_string = {
+    "server.dataStorage.size" = "128Mb"
+  }
+}
+```
+
+### Install Helm Chart from a Local Folder
+
+```hcl
+resource "helm" "vault" {
+  cluster = resource.k8s_cluster.k3s.id
+  chart   = "./files/helm/vault"
+
+  values_string = {
+    "server.dataStorage.size" = "128Mb"
+  }
+}
+```

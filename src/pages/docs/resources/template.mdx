@@ -1,0 +1,232 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Template `template`
+
+<Intro>
+The Remove Exec resource allows the execution of arbitrary commands and scripts. 
+Execution can either be in a stand alone container or can target an existing 
+and running container. 
+
+Documentation is work in progress, please see the old documentation at:
+
+https://shipyard.run/docs/resources/exec_remote
+</Intro>
+
+## Properties
+
+<Properties>
+  <Property name="source" type="string" required="true" value="">
+    Local path to the template source file 
+
+    **Local path**
+    ```hcl
+      source = "myfile.txt"
+    ```
+    
+    **HereDoc**
+    ```hcl
+      source = <<-EOF
+      My inline content
+      EOF
+    ```
+  </Property>
+
+  <Property name="destination" type="string" required="true" value=""> 
+    The destination to write the processed template to.
+  </Property>
+  
+  <Property name="variables" type="map[string]interface" required="false" value=""> 
+    Variables to use with the template, variables are available to be used
+    within the template using the go template syntax.
+
+    ```hcl
+      variables = {
+        data_dir = "/tmp"
+      }
+    ```
+
+    Given the above variables, these could be used within a template with the 
+    following convention.
+
+    ```go
+      data_dir = "#{{ .Vars.data_dir }}"
+    ```
+  </Property>
+</Properties>
+
+<MetaProperties/>
+
+## Examples
+
+### Template using HereDoc
+
+The following example shows how the template can be embedded into the resource 
+stanza using HereDoc syntax.
+
+```hcl
+resource "template" "consul_config" {
+
+  source = <<-EOF
+  data_dir = "#{{ .Vars.data_dir }}"
+  log_level = "DEBUG"
+
+  datacenter = "dc1"
+  primary_datacenter = "dc1"
+
+  server = true
+
+  bootstrap_expect = 1
+  ui = true
+
+  bind_addr = "0.0.0.0"
+  client_addr = "0.0.0.0"
+  advertise_addr = "10.6.0.200"
+
+  ports {
+    grpc = 8502
+  }
+
+  connect {
+    enabled = true
+  }
+  EOF
+
+  destination = "./consul_config/consul.hcl"
+
+  variables = {
+    data_dir = "/tmp"
+  }
+}
+```
+
+The file produced from this example would look like the following
+
+```shell
+data_dir = "/tmp"
+log_level = "DEBUG"
+
+datacenter = "dc1"
+primary_datacenter = "dc1"
+
+server = true
+
+bootstrap_expect = 1
+ui = true
+
+bind_addr = "0.0.0.0"
+client_addr = "0.0.0.0"
+advertise_addr = "10.6.0.200"
+
+ports {
+  grpc = 8502
+}
+
+connect {
+  enabled = true
+}
+```
+
+### External Files
+
+To leverage external files you can use the file function which loads a file 
+returning a string. This example also shows how interpolation
+can be used to ensure a template is processed before it is consumed.
+
+```hcl
+resource "template "consul_config" {
+
+  source = file("./mytemplate.hcl") 
+  destination = "./consul_config/consul.hcl"
+
+  variables = {
+    data_dir = "/tmp"
+  }
+}
+
+container "consul" {
+  depends_on = ["template.consul_config"]
+
+  image   {
+    name = "consul:${var.consul_version}"
+  }
+
+  command = ["consul", "agent", "-config-file=/config/consul.hcl"]
+
+  volume {
+    source      = resource.template.consul_config.destination
+    destination = "/config/consul.hcl"
+  }
+}
+```
+
+### Inline variables
+
+```hcl
+resource "template" "consul_config" {
+
+  source = <<-EOF
+  data_dir = "${data("test")}"
+  log_level = "DEBUG"
+
+  datacenter = "${variable.datacenter}"
+
+  server = ${variable.server}
+  EOF
+
+  destination = "./consul_config/consul.hcl"
+
+}
+```
+
+## Template Functions
+
+The template resource provides custom functions that can be used inside your 
+templates as shown in the example below.
+
+```hcl
+resource "template" "consul_config" {
+
+  source = <<-EOF
+
+  file_content = "#{{ file "./myfile.txt" }}"
+  quote = #{{ .Var.something | quote }} 
+  trim = #{{ .Var.with_whitespace | trim | quote }}
+
+  EOF
+
+  destination = "./consul_config/consul.hcl"
+}
+```
+
+### file [path]
+
+Reads the contents of a file from the given path
+
+
+```go
+# given a file ./myfile.txt with the contents "foo bar"
+
+file "./myfile.txt" // would return "foo bar"
+```
+
+### quote [string]
+
+Returns the original string wrapped in quotations, quote can be used with 
+the Go template pipe modifier.
+
+```go
+// given the string abc
+
+quote "abc" // would return the value "abc"
+```
+
+### trim [string]
+
+Removes whitespace such as carrige returns and spaces from the begining and 
+the end of the string, can be used with the Go template pipe modifier.
+
+```go
+// given the string abc
+
+trim " abc " // would return the value "abc"
+```

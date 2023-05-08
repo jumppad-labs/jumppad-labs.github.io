@@ -1,0 +1,31 @@
+# Kubernetes Configuration `k8s_config`
+
+<Intro>
+The k8s_config resource allows Kubernetes configuraton to be applied on a k8s_cluster. 
+You can specify a list of paths or individual files and health checks for the resources. 
+A k8s_config only completes once the configuration has bene successfully 
+applied and any health checks have passed. This allows you to create complex 
+dependencies for your applications.
+
+
+Documentation is work in progress, please see the old documentation at:
+
+https://shipyard.run/docs/resources/k8s_config
+</Intro>
+
+## Properties
+
+## Examples
+
+```hcl
+resource "k8s_config" "app" {
+  cluster = resource.k8s_cluster.k3s.id
+
+  paths = [
+    "./k8s_config/app",
+    "./k8s_config/dashboard",
+  ]
+
+  wait_until_ready = true
+}
+```

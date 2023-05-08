@@ -1,0 +1,89 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Module `module`
+
+<Intro>
+The `module` resource allows a blueprint to reference other files or blueprints. 
+Blueprints can be referenced from the local file system or from GitHub repositories.
+
+All resources contained within a module are scoped to the name of the containing
+module. For example, if a module `mine` contains a kubernetes cluster called `dev`
+then the FQRN and the name within docker would be:
+
+`server.dev.mine.k8s-cluster.jumppad.dev`
+
+Modules can also contain modules, to ensure that resouce references are unique
+resources always take on the name of their module including any parent modules.
+
+For example, if a module `mine` contains a kubernetes cluster called `dev` was
+contained in module `parent`. Then the FQRN and the name within docker would be:
+
+`server.dev.parent.mine.k8s-cluster.jumppad.dev`
+</Intro>
+
+## Properties
+
+<Properties>
+  <Property name="source" type="string" required="true" value=""> 
+    The source of the module, can either be a local file or GitHub repositories
+    or remote archive. 
+  </Property>
+
+  <Property name="variables" type="map[string]interface" required="false" value=""> 
+    Module can define `variables` making them dynamic, `variables` are scoped
+    to each module meaning that any variable that is set globally will not be
+    readable to modules or submodules. To set variables defined inside a module
+    use the `varaibles` block
+
+    ```hcl
+      variables = {
+        network_id  = resource.network.cloud.id
+        consul_port = 18501
+      }
+    ```
+  </Property>
+</Properties>
+
+<MetaProperties/>
+
+## Examples
+
+### Module Reuse
+
+The following example shows how a module can be used multiple times.
+
+```hcl
+resource "network" "cloud" {
+  subnet = "10.5.0.0/16"
+}
+
+module "consul_dc1" {
+  source = "./module_k3s"
+
+  variables = {
+    network_id  = resource.network.cloud.id
+    consul_port = 18500
+  }
+}
+
+module "consul_dc2" {
+  // CI has limited resources, add a manual dependency to ensure that only one module
+  // is created at once
+  depends_on = ["module.consul_dc1"]
+
+  source = "./module_k3s"
+
+  variables = {
+    network_id  = resource.network.cloud.id
+    consul_port = 18501
+  }
+}
+
+output "dc1_addr" {
+  value = module.consul_dc1.output.consul_http_addr
+}
+
+output "dc2_addr" {
+  value = module.consul_dc2.output.consul_http_addr
+}
+```

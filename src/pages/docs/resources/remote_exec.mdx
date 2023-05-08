@@ -1,0 +1,64 @@
+# Remote Exec `remote_exec`
+
+<Intro>
+The Remove Exec resource allows the execution of arbitrary commands and scripts. 
+Execution can either be in a stand alone container or can target an existing 
+and running container. 
+
+Documentation is work in progress, please see the old documentation at:
+
+https://shipyard.run/docs/resources/exec_remote
+</Intro>
+
+## Properties
+
+## Examples
+
+### Remote Exec in Standalone Container
+
+The following example executes a command to register a service in consul
+using a stanalone container.
+
+```hcl
+resource "remote" "exec_standalone" {
+  image {
+    name = "consul:1.7.2"
+  }
+  
+  network {
+    id = resource.network.local.id
+  }
+
+  commadn = [
+    "consul",
+    "services",
+    "register",
+    "/config/redis.hcl"
+  ]
+
+  # Mount a volume containing the config
+  volume {
+    source = "./config"
+    destination = "/config"
+  }
+
+  environment = {
+    CONSUL_HTTP_ADDR = "http://${resource.container.consul.fqrn}:8500"
+  }
+}
+```
+
+### Remote Exec in Existing Container
+
+```hcl
+exec_remote "exec_container" {
+  target = resource.container.consul.id
+
+  command = [
+    "consul"
+    "services",
+    "register",
+    "/config/redis.hcl"
+  ]
+}
+```

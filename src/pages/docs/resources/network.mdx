@@ -1,0 +1,29 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Example `example`
+
+<Intro>
+Network resources allow you to create isolated networks for your resources. 
+There is no limit to the number of Network resources you can create, 
+the only limitation is that they must not have overlapping subnets.
+</Intro>
+
+## Properties
+
+<Properties>
+  <Property name="subnet" type="string" required="true" value="">
+    Subnet to use for the network, must not overlap any other existing networks.
+  </Property>
+</Properties>
+
+<MetaProperties/>
+
+## Examples
+
+### Example 1
+
+```hcl
+resource "network" "local" {
+  subnet = "10.10.0.0/16"
+}
+```

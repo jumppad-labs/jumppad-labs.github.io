@@ -1,0 +1,313 @@
+import MetaProperties from "./shared/meta.mdx"
+import Image from "./shared/image.mdx"
+import Volume from "./shared/volume.mdx"
+
+# Sidecar `sidecar`
+
+<Intro>
+The Sidecar resource allows you to run associated processes for Containers.
+Sidecar does not have its own network, a Sidecar resource shares the network 
+with the target container. For example, localhost in the sidecar is localhost 
+in the `container`.
+
+Sidecar resources are not routable in the same way as container resources are. 
+You can not map an ingress to a sidecar and a sidecar can not expose ports. 
+Traffic which is destined for a process running in a sidecar must be sent 
+to the target container.
+</Intro>
+
+## Properties
+
+<Properties>
+  <Property name="target" type="string" required="true" value="">
+    The id of a container to attach the sidecar to.
+
+    ```hcl
+      resource.container.mine.id
+    ```
+  </Property>
+
+  <Property name="image" type="#image" required="true" value="">
+    Image defines a Docker image to use when creating the container.
+  </Property>
+  
+  <Property name="entrypoint" type="[]string" required="false" value="">
+    Entrypoint for the container, if not set, Jumppad starts the container using the
+    entrypoint defined in the Docker image.        
+  </Property>
+
+  <Property name="command" type="[]string" required="false" value="">
+    Command allows you to specify a command to execute when starting a container. 
+    Command is specified as an array of strings, each part of the command is a separate string. 
+    
+    For example, to start a container and follow logs at /dev/null the following command could be used.
+
+    ```hcl
+    command = [
+        "tail",
+        "-f",
+        "/dev/null"
+    ]
+    ```
+  </Property>
+
+  <Property name="environment" type="map[string]string" required="false" value="">
+    Allows you to set environment variables in the container.
+
+    ```hcl
+    env {
+      PATH = "/user/local/bin"
+    }
+    ```
+  </Property>
+
+  <Property name="volume" type="#volume" required="false" value="">
+    A volume allows you to specify a local volume which is mounted to the container when it is created. 
+    This stanza can be specified multiple times.
+
+  ```hcl
+    volume {
+      source      = "./"
+      destination = "/files"
+    }
+  ```
+  </Property>
+
+  <Property name="port" type="#port" required="false" value="">
+    A port stanza allows you to expose container ports on the local network or host. This stanza can be specified multiple times.
+
+    ```hcl
+      port {
+        local = 80
+        host  = 8080
+      }
+    ```
+  </Property>
+
+  <Property name="port_range" type="#port_range" required="false" value="">
+    A port_range stanza allows you to expose a range of container ports on the local network or host. This stanza can be specified multiple times.
+
+    The following example would create 11 ports from 80 to 90 (inclusive) and expose them to the host machine.
+
+    ```hcl
+      port {
+        range       = "80-90"
+        enable_host = true
+      }
+    ```
+  </Property>
+
+  <Property name="privileged" type="boolean" required="false" value="false">
+    Should the container run in Docker privileged mode?
+  </Property>
+  
+  <Property name="max_restart_count" type="number" required="false" value="0">
+    The maximum number of times a container will be restarted when it exits with a status code other than 0
+  </Property>
+  
+  <Property name="resources" type="#resources" required="false" value="">
+    Define resource constraints for the container
+  </Property>
+
+  <Property name="health_check" type="#health_check" required="false" value="">
+    Define a health check for the container, the resource will only be marked as successfully created when the health check passes.
+
+    ```hcl
+      health_check {
+        timeout = "30s"
+        http    = "http://localhost:8500/v1/status/leader"
+      }
+    ```
+  </Property>
+
+  <Property name="run_as" type="#run_as" required="false" value="container defaults">
+    Allows the container to be run as a specific user or group.
+
+    ```hcl
+      run_as {
+        user = "1000"
+        group = "nicj"
+      }
+    ```
+  </Property>
+
+  <Property name="build" type="#build" required="false" value="">
+    Build a container from the given file and context before running the container.
+
+    ```hcl
+      build   {
+        file = "./Dockerfile"
+        context = "./src"
+      }
+    ```
+
+    Images are cached in the local Docker engine using the following convention.
+
+    ```shell
+      jumppad.dev/localcache/<resource_name>:latest
+    ```
+
+    Once cached images are not rebuild with every `run` to force the update of an image you can use the `--force-update` flag with `run`.
+
+    ```shell
+      jumppad up --force-update ./build
+    ```
+  </Property>
+  
+  <Property name="fqrn" type="string" required="false" value="" readonly>
+    Fully qualified resource name for the container, this value can be used to
+    access the container from within the Docker network. `fqrn` is also the name
+    of the created Docker container.
+
+    ```
+      name.container.jumppad.dev
+    ```
+  </Property>
+</Properties>
+
+
+<Image/>
+<Volume/>
+
+---
+
+## health_check
+
+A health_check stanza allows the definition of a health check which must pass before the container is marked as successfully created.
+
+```hcl
+health_check {
+  duration = "60s"
+  http = "http://myendpoint:9090/health"
+  http_status_codes = [200,429] // optional
+}
+```
+
+<Properties>
+  <Property name="timeout" type="duration" required="true" value="">
+    The maximum duration to wait before marking the health check as failed. Expressed as a Go duration, e.g. `1s` = 1 second, `100ms` = 100 milliseconds.
+  </Property>
+  <Property name="http" type="string" required="true" value="">
+    The URL to check, health check expects a HTTP status code to be returned by the URL in order to pass the health check. HTTP status codes can be specified
+by setting the `http_status_code` parameter. A default code of `200` is configured when `http_status_codes` is not set.
+  </Property>
+  <Property name="http_status_codes" type="[]number" required="false" value="[200]">
+    HTTP status codes returned from the endpoint when called. If the returned status code matches any in the array then the health check will pass.
+  </Property>
+</Properties>
+
+---
+
+## resources
+
+A resources type allows you to configure the maximum resources which can be consumed.
+
+<Properties>
+  <Property name="cpu" type="number" required="false" value="">
+    Set the maximum CPU which can be consumed by the container in MHz, 1 CPU == 1000MHz.
+  </Property>
+  <Property name="cpu_pin" type="[]number" required="false" value="">
+    Pin the container CPU consumption to one or more logical CPUs. For example to pin the container to the core 1 and 4.
+
+    ```
+    resources {
+      cpi_pin = [1,4]
+    }
+    ```
+  </Property>
+  <Property name="memory" type="string" required="false" value="">
+    Maximum  memory which a container can consume, specified in Megabytes.
+  </Property>
+</Properties>
+
+---
+
+## run_as
+
+User and Group configuration to be used when running a container, by default Docker runs commands in the container as root id 0.
+
+<Properties>
+  <Property name="user" type="string" required="false" value="">
+    Linux user ID or user name to run the container as, this overrides the default user configured in the container image. 
+  </Property>
+  <Property name="group" type="string" required="false" value="">
+    Linux group ID or group name to run the container as, this overrides the default group configured in the container image.
+  </Property>
+</Properties>
+
+---
+<Properties>
+  <Property name="cluster" type="string" required="true" value="" readonly> 
+    Text
+
+    ```hcl
+    code
+    ```
+  </Property>
+
+  <Property name="cluster" type="string" required="true" value="" readonly> 
+    Text
+  </Property>
+</Properties>
+
+<MetaProperties/>
+
+## Examples
+
+### Container with Sidecar
+
+```hcl
+resource "container" "consul" {
+  image {
+    name = "consul:${variable.consul_version}"
+  }
+
+  command = ["consul", "agent", "-config-file", "/config/config.hcl"]
+
+  volume {
+    source      = "./"
+    destination = "/files"
+  }
+
+  volume {
+    source      = resource.template.consul_config.destination
+    destination = "/config/config.hcl"
+  }
+
+  network {
+    id         = resource.network.onprem.id
+    ip_address = "10.6.0.200" // optional
+    aliases    = ["myalias"]
+  }
+
+  environment = {
+    something       = variable.something
+    foo             = env("BAH")
+    file            = file("./conf.txt")
+    abc             = "123"
+    SHIPYARD_FOLDER = shipyard()
+    HOME_FOLDER     = home()
+  }
+  
+  port_range {
+    range       = "8500-8502"
+    enable_host = true
+  }
+
+}
+
+resource "sidecar" "envoy" {
+  target = resource.container.consul.id
+
+  image {
+    name = "envoyproxy/envoy:v${variable.envoy_version}"
+  }
+
+  command = ["tail", "-f", "/dev/null"]
+
+  volume {
+    source      = data("config")
+    destination = "/config"
+  }
+}
+```

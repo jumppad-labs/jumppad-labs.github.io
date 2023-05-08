@@ -37,11 +37,24 @@ export const navigation = [
     title: 'Resources',
     links: [
       { title: 'Overview', href: '/docs/resources/overview' },
+      { title: 'Certificate', href: '/docs/resources/certificate' },
+      { title: 'Copy', href: '/docs/resources/copy' },
+      { title: 'Docs', href: '/docs/resources/docs' },
       { title: 'Container', href: '/docs/resources/container' },
       { title: 'Nomad Cluster', href: '/docs/resources/nomad_cluster' },
       { title: 'Nomad Job', href: '/docs/resources/nomad_job' },
+      { title: 'Helm', href: '/docs/resources/helm' },
       { title: 'Ingress', href: '/docs/resources/ingress' },
       { title: 'Kubernetes Cluster', href: '/docs/resources/kubernetes_cluster' },
+      { title: 'Kubernetes Config', href: '/docs/resources/kubernetes_config' },
+      { title: 'Local Exec', href: '/docs/resources/local_exec' },
+      { title: 'Module', href: '/docs/resources/module' },
+      { title: 'Network', href: '/docs/resources/network' },
+      { title: 'Output', href: '/docs/resources/output' },
+      { title: 'Remote Exec', href: '/docs/resources/local_exec' },
+      { title: 'Sidecar', href: '/docs/resources/sidecar' },
+      { title: 'Template', href: '/docs/resources/template' },
+      { title: 'Variables', href: '/docs/resources/variables' },
     ]
   }
 ]
