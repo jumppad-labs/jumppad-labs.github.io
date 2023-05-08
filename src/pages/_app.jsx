@@ -57,6 +57,10 @@ export default function App({ Component, pageProps }) {
         <>
           <Index></Index>
           <div onClick={() => {
+            Fathom.load('UIDSVFCJ', {
+              includedDomains: ['jumppad.dev'],
+            });
+
             Fathom.trackGoal('WQM0QGYV', 1)
             console.log('clicked')
           }}>hi</div>
