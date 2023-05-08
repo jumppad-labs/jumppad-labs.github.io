@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import { Router, useRouter } from 'next/router'
 import { MDXProvider } from '@mdx-js/react'
+import * as Fathom from 'fathom-client';
 
 // Website
 import { Index } from '@/components/Index'
