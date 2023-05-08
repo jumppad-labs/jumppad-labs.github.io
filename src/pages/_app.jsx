@@ -54,7 +54,13 @@ export default function App({ Component, pageProps }) {
         <meta name="description" content={pageProps.description} />
       </Head>
       {router.pathname === '/' ? (
+        <>
           <Index></Index>
+          <div onClick={() => {
+            Fathom.trackGoal('WQM0QGYV', 1)
+            console.log('clicked')
+          }}>hi</div>
+        </>
         ) : (
           <MDXProvider components={mdxComponents}>
             <Docs {...pageProps}>
