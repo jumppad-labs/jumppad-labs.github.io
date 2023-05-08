@@ -55,6 +55,7 @@ export const navigation = [
       { title: 'Sidecar', href: '/docs/resources/sidecar' },
       { title: 'Template', href: '/docs/resources/template' },
       { title: 'Variables', href: '/docs/resources/variables' },
+      { title: 'Resource Functions', href: '/docs/resources/functions' },
     ]
   }
 ]

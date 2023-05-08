@@ -1,0 +1,280 @@
+# Resource Functions
+
+Shipyard configuration files can use built in functions which are interpolated at runtime. 
+For example the `env([environment variable name])` function could be used to return 
+the value of an environment variable.
+
+## env
+
+The env function can be used to interpolate a system set environment variable inside your configuration.
+
+### Parameters
+
+<Properties>
+  <Property name="name" type="string" required="true" value="">
+    The name of the environment variable to return.
+  </Property>
+</Properties>
+
+```hcl
+resource "template" "mine" {
+  source = "./mysource.txt"
+  destination = "./mydestionation.txt"
+
+  variables = {
+    path = env("PATH")
+  }
+}
+```
+
+## len
+
+The `len` function returns the lenght of a string or an array.
+
+### Parameters
+
+<Properties>
+  <Property name="value" type="interface" required="true" value="">
+    The string or array to return the length of
+  </Property>
+</Properties>
+
+```hcl
+variable "myarray" {
+  value = [1,2,3]
+}
+
+variable "mystring" {
+  value = "string"
+}
+
+resource "template" "mine" {
+  source = "./mysource.txt"
+  destination = "./mydestionation.txt"
+
+  variables = {
+    array_length = len(variable.myarray) // 3
+    string_length = len(variable.mystring) // 6
+  }
+}
+```
+
+## home
+
+The `home` function returns the location of the current users HOME folder.
+
+```hcl
+resource "template" "mine" {
+  source = "./mysource.txt"
+  destination = "./mydestionation.txt"
+
+  variables = {
+    home = home()
+  }
+}
+```
+
+## file
+
+The `file` function returns the contents of a file at the given path.
+
+### Parameters
+
+<Properties>
+  <Property name="path" type="interface" required="true" value="">
+    The path of the file to read.
+  </Property>
+</Properties>
+
+```hcl
+resource "template" "mine" {
+  source = "./mysource.txt"
+  destination = "./mydestionation.txt"
+
+  variables = {
+    contents = file("myfile.txt")
+  }
+}
+```
+
+## dir
+
+The `dir` function returns the directory of the file containing the current
+resource. 
+
+```hcl
+resource "template" "mine" {
+  source = "${dir()}/mysource.txt"
+  destination = "./mydestination.txt"
+}
+```
+
+## trim
+
+The `trim` function removes whitespace from the given string.
+
+### Parameters
+
+<Properties>
+  <Property name="value" type="string" required="true" value="">
+    The string to trim whitespace from.
+  </Property>
+</Properties>
+
+```hcl
+resource "template" "mine" {
+  source = "./mysource.txt"
+  destination = "./mydestionation.txt"
+
+  variables = {
+    contents = trim(file("myfile.txt"))
+  }
+}
+```
+
+## jumppad
+
+The `jumppad` function returns the location of the `.jumppad` folder.
+
+```hcl
+resource "template" "mine" {
+  source = "./mysource.txt"
+  destination = "./mydestination.txt"
+
+  variables = {
+    location = jumppad()
+  }
+}
+```
+
+## docker_ip
+
+The `docker_ip` function returns the ip address of the configured docker
+host.
+
+```hcl
+resource "template" "mine" {
+  source = "./mysource.txt"
+  destination = "./mydestination.txt"
+
+  variables = {
+    url = "${docker_ip()}:8080"
+  }
+}
+```
+
+## docker_host
+
+The `docker_host` function returns the socket or TCP address for the current
+Docker host.
+
+```hcl
+resource "template" "mine" {
+  source = "./mysource.txt"
+  destination = "./mydestination.txt"
+
+  variables = {
+    DOCKER_HOST = docker_host
+  }
+}
+```
+
+## data
+
+The `data` function creates a temporary folder that exists until `jumppad down` 
+is executed. Data folders are created with the permissions `755`.
+
+First use of `data` creates the folder inside of `.jumppad/data`, subsequent
+uses return the path.
+
+### Parameters
+
+<Properties>
+  <Property name="name" type="string" required="true" value="">
+    Name of the data folder to create, or path to return.
+  </Property>
+</Properties>
+
+```hcl
+resource "template" "mine" {
+  source = "./mysource.txt"
+  destination = "${data("temp")}/file.txt"
+
+  variables = {
+    DOCKER_HOST = docker_host
+  }
+}
+```
+
+## data_with_permissions
+
+The `data_with_permissions` function creates a temporary folder that exists until `jumppad down` 
+is executed. Unlike `data`, `data_with_permissions` allows you to specify the directory
+permissions as a parameter.
+
+First use of `data_with_permissions` creates the folder inside of `.jumppad/data`, subsequent
+uses return the path.
+
+### Parameters
+
+<Properties>
+  <Property name="name" type="string" required="true" value="">
+    Name of the data folder to create, or path to return.
+  </Property>
+  <Property name="permissions" type="int" required="true" value="">
+    Name of the data folder to create, or path to return.
+  </Property>
+</Properties>
+
+```hcl
+resource "template" "mine" {
+  source = "./mysource.txt"
+  destination = "${data_with_permissions("temp", 644)}/file.txt"
+
+  variables = {
+    DOCKER_HOST = docker_host
+  }
+}
+```
+
+## random_number
+
+Generates a random number within the given range.
+
+### Parameters
+
+<Properties>
+  <Property name="min" type="int" required="true" value="">
+    Minimum value for the random number.
+  </Property>
+  
+  <Property name="max" type="int" required="true" value="">
+    Maximum value for the random number.
+  </Property>
+</Properties>
+
+```hcl
+resource "template" "mine" {
+  source = "./mysource.txt"
+  destination = "./file.txt"
+
+  variables = {
+    port = random_number(20000,30000)
+  }
+}
+```
+
+## random_creature
+
+Generates a random string in the form of a mythical creature.
+
+```hcl
+resource "template" "mine" {
+  source = "./mysource.txt"
+  destination = "./file.txt"
+
+  variables = {
+    name = random_creature() // Lively-Imp, Mellifluous-Unicorn
+  }
+}
+```
