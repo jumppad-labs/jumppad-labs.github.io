@@ -14,7 +14,6 @@ import { Navigation, TopLevelNavItem } from '@/components/Navigation'
 
 const navigation = [
   { name: 'Docs', href: '/docs' },
-  { name: 'Contact', href: '/contact' },
 ]
 
 export const Header = forwardRef(function Header({ className }, ref) {

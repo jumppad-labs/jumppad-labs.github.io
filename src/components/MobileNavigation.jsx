@@ -5,7 +5,6 @@ import { create } from 'zustand'
 import Link from 'next/link'
 
 import { Header } from '@/components/Header'
-import { Navigation } from '@/components/Navigation'
 
 function MenuIcon(props) {
   return (

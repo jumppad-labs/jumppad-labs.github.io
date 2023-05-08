@@ -1,13 +1,6 @@
-import { useState } from 'react'
-import clsx from 'clsx'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-
-import { Tag } from '@/components/Tag'
 
 export function Navigation({navigation}) {
-  let router = useRouter()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   return (
     <nav className="hidden md:block">
       <ul role="list" className="flex items-center gap-8">
@@ -29,28 +22,5 @@ export function TopLevelNavItem({ href, children }) {
         {children}
       </Link>
     </li>
-  )
-}
-
-function NavLink({ href, tag, active, isAnchorLink = false, children }) {
-  return (
-    <Link
-      href={href}
-      aria-current={active ? 'page' : undefined}
-      className={clsx(
-        'flex justify-between gap-2 py-1 pr-3 text-sm transition',
-        isAnchorLink ? 'pl-7' : 'pl-4',
-        active
-          ? 'text-zinc-900 dark:text-white'
-          : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
-      )}
-    >
-      <span className="truncate">{children}</span>
-      {tag && (
-        <Tag variant="small" color="zinc">
-          {tag}
-        </Tag>
-      )}
-    </Link>
   )
 }
