@@ -3,7 +3,6 @@ import Link from 'next/link'
 import clsx from 'clsx'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
-import { Button } from '@/components/Button'
 import { Logo } from '@/components/Logo'
 import {
   MobileNavigation,
@@ -68,9 +67,8 @@ export const Header = forwardRef(function Header({ className }, ref) {
       <div className="flex items-center gap-5">
         <nav className="hidden md:block">
           <ul role="list" className="flex items-center gap-8">
-            <TopLevelNavItem href="/cli">CLI</TopLevelNavItem>
-            <TopLevelNavItem href="/resources">Resources</TopLevelNavItem>
-            <TopLevelNavItem href="/tutorials">Tutorials</TopLevelNavItem>
+            <TopLevelNavItem href="/docs/cli/overview">CLI</TopLevelNavItem>
+            <TopLevelNavItem href="/docs/resources/overview">Resources</TopLevelNavItem>
           </ul>
         </nav>
         <div className="hidden md:block md:h-5 md:w-px md:bg-zinc-900/10 md:dark:bg-white/15" />

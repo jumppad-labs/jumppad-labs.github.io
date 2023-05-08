@@ -22,6 +22,25 @@ Router.events.on('hashChangeStart', onRouteChange)
 
 export default function App({ Component, pageProps }) {
   let router = useRouter()
+
+  useEffect(() => {
+    // Initialize Fathom when the app loads
+    Fathom.load('UIDSVFCJ', {
+      includedDomains: ['jumppad.dev'],
+    });
+
+    function onRouteChangeComplete() {
+      Fathom.trackPageview();
+    }
+
+    // Record a pageview when route changes
+    router.events.on('routeChangeComplete', onRouteChangeComplete);
+    return () => {
+      router.events.off('routeChangeComplete', onRouteChangeComplete);
+    };
+
+  }, [router.events]);
+
   return (
     <>
       <Head>
