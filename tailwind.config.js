@@ -21,6 +21,15 @@ module.exports = {
     },
     typography: require('./typography'),
     extend: {
+      keyframes: {
+        content: {
+          '0%,100%': { color: "black" },
+          '50%': { color: "white" },
+        },
+      },
+      animation: {
+        'content-switch': 'content 3s linear infinite',
+      },
       boxShadow: {
         glow: '0 0 4px rgb(0 0 0 / 0.1)',
       },

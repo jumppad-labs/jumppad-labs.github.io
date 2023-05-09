@@ -53,7 +53,7 @@ export const navigation = [
       { title: 'Module', href: '/docs/resources/module' },
       { title: 'Network', href: '/docs/resources/network' },
       { title: 'Output', href: '/docs/resources/output' },
-      { title: 'Remote Exec', href: '/docs/resources/local_exec' },
+      { title: 'Remote Exec', href: '/docs/resources/remote_exec' },
       { title: 'Random', href: '/docs/resources/random' },
       { title: 'Sidecar', href: '/docs/resources/sidecar' },
       { title: 'Template', href: '/docs/resources/template' },

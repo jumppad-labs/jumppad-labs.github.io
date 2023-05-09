@@ -1,10 +1,13 @@
+import { WordSwitcher } from "@/components/WordSwitcher"
+
 export function Hero() {
   return (
     <>
       <div className="mx-auto max-w-3xl text-left">
         <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-white sm:text-6xl">
-          Development environments simplified.
+          Your <WordSwitcher words={["development", "testing", "training", "demo"]} /><br/>environments simplified.
         </h1>
+        
         <p className="mt-6 text-lg leading-8 text-zinc-600 dark:text-zinc-400">
           Jumppad enables the creation and configuration of lightweight, reproducible, and portable environments as code.
         </p>
