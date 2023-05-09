@@ -37,6 +37,8 @@ export const navigation = [
     title: 'Resources',
     links: [
       { title: 'Overview', href: '/docs/resources/overview' },
+      { title: 'Meta Properties', href: '/docs/resources/meta' },
+      { title: 'Resource Functions', href: '/docs/resources/functions' },
       { title: 'Certificate', href: '/docs/resources/certificate' },
       { title: 'Copy', href: '/docs/resources/copy' },
       { title: 'Docs', href: '/docs/resources/docs' },
@@ -56,8 +58,6 @@ export const navigation = [
       { title: 'Sidecar', href: '/docs/resources/sidecar' },
       { title: 'Template', href: '/docs/resources/template' },
       { title: 'Variables', href: '/docs/resources/variables' },
-      { title: 'Resource Functions', href: '/docs/resources/functions' },
-      { title: 'Meta Properties', href: '/docs/resources/meta' },
     ]
   }
 ]
