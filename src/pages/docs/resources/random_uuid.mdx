@@ -1,0 +1,27 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Random UUID `random_uuid`
+
+<Intro>
+The `random_uuid` resource allows the creation of random UUIDs.
+</Intro>
+
+## Properties
+
+<Properties>
+  <Property name="value" type="string" value="" readonly> 
+    The generated random UUID.
+  </Property>
+</Properties>
+
+<MetaProperties/>
+
+## Examples
+
+```hcl
+resource "random_uuid" "uuid" {}
+
+output "uuid" {
+    value = resource.random_uuid.uuid.value
+}
+```

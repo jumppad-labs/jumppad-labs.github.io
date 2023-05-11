@@ -1,0 +1,37 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Random ID `random_id`
+
+<Intro>
+The `random_id` resource allows the creation of random IDs.
+</Intro>
+
+## Properties
+
+<Properties>
+  <Property name="byte_length" type="int" required="true" value="0"> 
+    The number of bytes to use when generating the random ID.
+  </Property>
+
+  <Property name="value" type="int" value="" readonly> 
+    The generated random ID.
+  </Property>
+</Properties>
+
+<MetaProperties/>
+
+## Examples
+
+```hcl
+resource "random_id" "id" {
+    byte_length = 4
+}
+
+output "id_hex" {
+    value = resource.random_id.id.hex
+}
+
+output "id_dec" {
+    value = resource.random_id.id.dec
+}
+```

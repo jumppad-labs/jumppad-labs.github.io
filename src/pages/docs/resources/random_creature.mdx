@@ -1,0 +1,27 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Random creature `random_creature`
+
+<Intro>
+The `random_creature` resource allow the creation of random creatures.
+</Intro>
+
+## Properties
+
+<Properties>
+  <Property name="value" type="string" value="" readonly> 
+    The generated random creature.
+  </Property>
+</Properties>
+
+<MetaProperties/>
+
+## Examples
+
+```hcl
+resource "random_creature" "creature" {}
+
+output "creature" {
+  value = resource.random_creature.creature.value
+}
+```
