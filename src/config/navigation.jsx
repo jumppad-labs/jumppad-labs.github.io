@@ -39,7 +39,11 @@ export const navigation = [
       { title: 'Overview', href: '/docs/resources/overview' },
       { title: 'Meta Properties', href: '/docs/resources/meta' },
       { title: 'Resource Functions', href: '/docs/resources/functions' },
-      { title: 'Certificate', href: '/docs/resources/certificate' },
+      { title: 'Variables', href: '/docs/resources/variables' },
+      { title: 'Output', href: '/docs/resources/output' },
+      { title: 'Module', href: '/docs/resources/module' },
+      { title: 'Root Certificate', href: '/docs/resources/certificate_ca' },
+      { title: 'Leaf Certificate', href: '/docs/resources/certificate_leaf' },
       { title: 'Copy', href: '/docs/resources/copy' },
       { title: 'Docs', href: '/docs/resources/docs' },
       { title: 'Container', href: '/docs/resources/container' },
@@ -50,9 +54,7 @@ export const navigation = [
       { title: 'Kubernetes Cluster', href: '/docs/resources/kubernetes_cluster' },
       { title: 'Kubernetes Config', href: '/docs/resources/kubernetes_config' },
       { title: 'Local Exec', href: '/docs/resources/local_exec' },
-      { title: 'Module', href: '/docs/resources/module' },
       { title: 'Network', href: '/docs/resources/network' },
-      { title: 'Output', href: '/docs/resources/output' },
       { title: 'Remote Exec', href: '/docs/resources/remote_exec' },
       { title: 'Random Number', href: '/docs/resources/random_number' },
       { title: 'Random ID', href: '/docs/resources/random_id' },
@@ -61,7 +63,6 @@ export const navigation = [
       { title: 'Random Creature', href: '/docs/resources/random_creature' },
       { title: 'Sidecar', href: '/docs/resources/sidecar' },
       { title: 'Template', href: '/docs/resources/template' },
-      { title: 'Variables', href: '/docs/resources/variables' },
     ]
   }
 ]
