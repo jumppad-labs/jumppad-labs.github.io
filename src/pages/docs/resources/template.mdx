@@ -3,13 +3,12 @@ import MetaProperties from "./shared/meta.mdx"
 # Template `template`
 
 <Intro>
-The Remove Exec resource allows the execution of arbitrary commands and scripts. 
-Execution can either be in a stand alone container or can target an existing 
-and running container. 
+The Template resource allows the processing of templates, outputing
+the result as a file.
 
-Documentation is work in progress, please see the old documentation at:
-
-https://shipyard.run/docs/resources/exec_remote
+Templating uses the Handlebars language which is Mustache template language can be found at the following
+location:
+[Mustache templating language details](https://mustache.github.io/mustache.5.html)
 </Intro>
 
 ## Properties
@@ -49,7 +48,7 @@ https://shipyard.run/docs/resources/exec_remote
     following convention.
 
     ```go
-      data_dir = "#{{ .Vars.data_dir }}"
+      data_dir = "{{data_dir}}"
     ```
   </Property>
 </Properties>
@@ -67,7 +66,7 @@ stanza using HereDoc syntax.
 resource "template" "consul_config" {
 
   source = <<-EOF
-  data_dir = "#{{ .Vars.data_dir }}"
+  data_dir = "{{data_dir}}"
   log_level = "DEBUG"
 
   datacenter = "dc1"
@@ -147,7 +146,7 @@ container "consul" {
   depends_on = ["template.consul_config"]
 
   image   {
-    name = "consul:${var.consul_version}"
+    name = "consul:${variable.consul_version}"
   }
 
   command = ["consul", "agent", "-config-file=/config/consul.hcl"]
@@ -188,25 +187,14 @@ resource "template" "consul_config" {
 
   source = <<-EOF
 
-  file_content = "#{{ file "./myfile.txt" }}"
-  quote = #{{ .Var.something | quote }} 
-  trim = #{{ .Var.with_whitespace | trim | quote }}
+  file_content = "{{ file "./myfile.txt" }}"
+  quote = {{quote something}} 
+  trim = {{quote (trim with_whitespace)}}
 
   EOF
 
   destination = "./consul_config/consul.hcl"
 }
-```
-
-### file [path]
-
-Reads the contents of a file from the given path
-
-
-```go
-# given a file ./myfile.txt with the contents "foo bar"
-
-file "./myfile.txt" // would return "foo bar"
 ```
 
 ### quote [string]
