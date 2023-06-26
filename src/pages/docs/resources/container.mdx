@@ -47,7 +47,7 @@ The `container` resource allows you to create Docker containers.
     Allows you to set environment variables in the container.
 
     ```hcl
-    env {
+    environment = {
       PATH = "/user/local/bin"
     }
     ```
@@ -256,9 +256,11 @@ The build stanza allows the building of a Docker image before running the contai
 The following example creates a container from an existing registry image.
 
 ```hcl
-container "unique_name" {
+resource "container" "unique_name" {
     network {
-        name = "network.cloud"
+        id         = resource.network.cloud.id
+        ip_address = "10.16.0.203"
+        aliases    = ["my_unique_name_ip_address"]
     }
 
     image {
@@ -266,25 +268,21 @@ container "unique_name" {
     }
 }
 
-network "cloud" {
-    subnet = "10.0.0.0/16"
+resource "network" "cloud" {
+  subnet = "10.16.0.0/24"
 }
-```
-Run the example:
-
-```shell
-shipyard run github.com/shipyard-run/shipyard-website/examples/container//minimal
 ```
 
 ### Full Example
 
 ```hcl
-container "unique_name" {
-    depends_on = ["container.another"]
+resource "container" "unique_name" {
+    depends_on = ["resource.container.another"]
 
     network {
-        name       = "network.cloud"
-        ip_address = "10.0.0.200"
+        id         = resource.network.cloud.id
+        ip_address = "10.16.0.200"
+        aliases    = ["my_unique_name_ip_address"]
     }
 
     image {
@@ -298,9 +296,8 @@ container "unique_name" {
         "agent"
     ]
 
-    env {
-        key   = "CONSUL_HTTP_ADDR"
-        value = "http://localhost:8500"
+    environment = {
+        CONSUL_HTTP_ADDR = "http://localhost:8500"
     }
 
     volume {
@@ -309,7 +306,7 @@ container "unique_name" {
     }
 
     port {
-        source = 8500
+        local  = 8500
         remote = 8500
         host   = 18500
     }
@@ -322,8 +319,8 @@ container "unique_name" {
     privileged = false
 }
 
-network "cloud" {
-  subnet = "10.0.0.0/16"
+resource "network" "cloud" {
+  subnet = "10.16.0.0/24"
 }
 ```
 
@@ -333,7 +330,7 @@ The following example builds a temporary image from the given Dockerfile and con
 the container.
 
 ```hcl
-container "build" {
+resource "container" "build" {
   build   {
     file = "./Dockerfile"
     context = "./src"
@@ -348,7 +345,9 @@ container "build" {
   }
 
   network {
-    name = "network.onprem"
+    id         = resource.network.cloud.id
+    ip_address = "10.16.0.190"
+    aliases    = ["my_build_name_ip_address"]
   }
 }
 ```
