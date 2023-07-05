@@ -40,8 +40,8 @@ A health_check stanza allows the definition of a health check which must pass be
 
 ```hcl
 health_check {
-  duration = "60s"
-  nomad_jobs = ["example"]
+  timeout = "60s"
+  jobs = ["example"]
 }
 ```
 
@@ -51,7 +51,7 @@ health_check {
     Expressed as a Go duration, e.g. `1s` = 1 second, `100ms` = 100 milliseconds.
   </Property>
 
-  <Property name="nomad_jobs" type="[]string" required="true" value="">
+  <Property name="jobs" type="[]string" required="true" value="">
     An array of nomad jobs that must be marked as "Running" by the Nomad
     server.
   </Property>
