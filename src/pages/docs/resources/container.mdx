@@ -200,6 +200,11 @@ checks are not executed. The execution order is `http`, `tcp`, `exec.
       success_codes = [200]
     }
     
+    http {
+      address = "http://localhost:8500/v1"
+      success_codes = [200]
+    }
+    
     tcp {
       address = "localhost:8500"
     }
@@ -220,13 +225,19 @@ checks are not executed. The execution order is `http`, `tcp`, `exec.
   </Property>
   <Property name="http" type="#http_health_check" required="false" value="">
     HTTP Health Check block defining the address to check and expected status codes.
+
+    Can be specified more than once.
   </Property>
   <Property name="tcp" type="#tpc_health_check" required="false" value="">
     TCP Health Check block defining the address to test.
+
+    Can be specified more than once.
   </Property>
   <Property name="exec" type="#exec_health_check" required="false" value="">
     Exec Health Check block defining either a command to run in the current container,
     or a script to execute.
+
+    Can be specified more than once.
   </Property>
 </Properties>
 
@@ -241,6 +252,13 @@ the given codes the check passes.
 ```hcl
 http {
   address = "http://localhost:8500/v1/status/leader"
+  method  = "GET"
+  body    = <<-EOF
+    {"test": "123"}
+  EOF
+  headers = {
+    "X-Auth-Token": ["abc123"]
+  }
   success_codes = [200]
 }
 ```
@@ -249,7 +267,19 @@ http {
   <Property name="address" type="string" required="true" value="">
     The URL to check, health check expects a HTTP status code to be returned by the URL in order to pass the health check. 
   </Property>
-  <Property name="http_status_codes" type="[]number" required="true" value="">
+  <Property name="method" type="string" required="false" value="GET">
+    HTTP method to use when executing the check 
+  </Property>
+  <Property name="body" type="string" required="false" value="">
+    HTTP body to send with the request
+  </Property>
+  <Property name="body" type="string" required="false" value="">
+    HTTP body to send with the request
+  </Property>
+  <Property name="headers" type="map[string][string]" required="false" value="">
+    HTTP headers to send with the check
+  </Property>
+  <Property name="success_codes" type="[]number" required="false" value="200">
     HTTP status codes returned from the endpoint when called. If the returned status code matches any in the array then the health check will pass.
   </Property>
 </Properties>
