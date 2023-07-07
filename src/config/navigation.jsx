@@ -18,6 +18,7 @@ export const navigation = [
       { title: 'Overview', href: '/docs/cli/overview' },
       { title: 'check', href: '/docs/cli/check' },
       { title: 'connector', href: '/docs/cli/connector' },
+      { title: 'dev', href: '/docs/cli/dev' },
       { title: 'delete', href: '/docs/cli/delete' },
       { title: 'down', href: '/docs/cli/down' },
       { title: 'env', href: '/docs/cli/env' },
