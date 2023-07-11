@@ -51,7 +51,7 @@ resource "remote_exec" "exec_standalone" {
 ### Remote Exec in Existing Container
 
 ```hcl
-exec_remote "exec_container" {
+resource "remote_exec" "exec_standalone" {
   target = resource.container.consul.id
 
   command = [
