@@ -4,7 +4,7 @@ import MetaProperties from "./shared/meta.mdx"
 
 <Intro>
 The following parameters are available for creating certificate_leaf resources, 
-when a new resource is created Shipyard will create the certificate and associated 
+when a new resource is created jumppad will create the certificate and associated 
 private key and write them to the output folder. Certificates do not perisist the 
 lifecycle of a blueprint, when a blueprint is destroyed the created certs and 
 keys are removed from the output folder.
@@ -46,9 +46,9 @@ Leaf Certificates have a pre-set Common Name corresponding to the name of the re
       dns_names = [
         "localhost",
         "server.${variable.cd_consul_dc}.consul",
-        "1.consul.server.container.shipyard.run",
-        "2.consul.server.container.shipyard.run",
-        "3.consul.server.container.shipyard.run"
+        "1.consul.server.container.jumppad.dev",
+        "2.consul.server.container.jumppad.dev",
+        "3.consul.server.container.jumppad.dev"
       ]
     ```
   </Property>
@@ -109,9 +109,9 @@ resource "certificate_leaf" "cd_consul_server" {
   dns_names = [
     "localhost",
     "server.${var.cd_consul_dc}.consul",
-    "1.consul.server.container.shipyard.run",
-    "2.consul.server.container.shipyard.run",
-    "3.consul.server.container.shipyard.run"
+    "1.consul.server.container.jumppad.dev",
+    "2.consul.server.container.jumppad.dev",
+    "3.consul.server.container.jumppad.dev"
   ]
 
   output = data("certs")

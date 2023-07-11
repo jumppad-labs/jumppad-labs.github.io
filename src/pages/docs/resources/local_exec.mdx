@@ -5,7 +5,7 @@ import MetaProperties from "./shared/meta.mdx"
 <Intro>
 The `local_exec` resource allows the execution of arbitrary commands and scripts 
 on the local machine. The command runs in the local user space, and has access 
-to all the environment variables that the user executing shipyard run has access 
+to all the environment variables that the user executing jumppad run has access 
 too. Additional environment variables, and the working directory for the command 
 can be specified as part of the resource.
 
@@ -42,7 +42,7 @@ resource "local_exec" "exec_standalone" {
   ]
 
   environment = {
-    CONSUL_HTTP_ADDR = "http://consul.container.shipyard.run:8500"
+    CONSUL_HTTP_ADDR = "http://consul.container.jumppad.dev:8500"
   }
 
   timeout = "30s"
@@ -51,10 +51,10 @@ resource "local_exec" "exec_standalone" {
 
 ### Daemon Mode
 The following example runs the command consul agent -dev and immediately returns 
-leaving the command to run as a daemon which is not terminated when the shipyard 
-run command completes.
+leaving the command to run as a daemon which is not terminated when the jumppad 
+up command completes.
 
-Daemons either exit on their own or are killed when running shipyard destroy.
+Daemons either exit on their own or are killed when running jumppad down.
 
 ```hcl
 resource remote_exec "exec_standalone" {
