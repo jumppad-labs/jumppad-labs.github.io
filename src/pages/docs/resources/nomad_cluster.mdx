@@ -222,10 +222,9 @@ The following example creates a combined client and server running in a
 single container.
 
 ```hcl
-network "cloud" {
-    subnet = "10.0.0.0/16"
+resource "network" "cloud" {
+  subnet = "10.10.0.0/16"
 }
-
 resource "nomad_cluster" "dev" {
   network {
     id = resource.network.cloud.id
@@ -239,8 +238,8 @@ The following example creates a multi_node nomad cluster with a job and
 ingress.
 
 ```hcl
-network "cloud" {
-    subnet = "10.0.0.0/16"
+resource "network" "cloud" {
+  subnet = "10.10.0.0/16"
 }
 
 resource "nomad_cluster" "dev" {

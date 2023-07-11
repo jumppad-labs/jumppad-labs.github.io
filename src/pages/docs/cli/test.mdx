@@ -1,7 +1,7 @@
 # Test
 
 <Intro>
-Run functional tests for the blueprint, this command will start the Shipyard blueprint specified by the location `blueprint` and run any functional tests specified in the `test` subdirectory. 
+Run functional tests for the blueprint, this command will start the jumppad blueprint specified by the location `blueprint` and run any functional tests specified in the `test` subdirectory. 
 
 For more information, take a look at the [Testing Tutorial](/docs/tutorials/testing).
 </Intro>
@@ -9,21 +9,31 @@ For more information, take a look at the [Testing Tutorial](/docs/tutorials/test
 ## Usage
 
 ```shell
-shipyard test <blueprint>
+jumppad test <blueprint>
 ```
 
 ## Flags
 
 <Properties>
   <Property name="force-update">
-    When set to true Shipyard will ignore cached images or files and will download all resources.
+    When set to true jumppad will ignore cached images or files and will download all resources.
   </Property>
   <Property name="purge">
-    When set to true Shipyard will remove any cached images or blueprints.
+    When set to true jumppad will remove any cached images or blueprints.
   </Property>
   <Property name="test-folder" type="string" required="false" value="">
     Specify the folder containing the functional tests.
   </Property>
+  <Property name="tags" type="string" required="false" value="">
+    Test tags to run e.g. @wip, @wip,@new, when not set all tests are run.
+  </Property>
+  <Property name="var" type="string" required="false" value="">
+    Allows setting variables from the command line, variables are specified as a key and value, e.g --var key=value. Can be specified multiple times.
+  </Property>
+    <Property name="vars-file" type="string" required="false" value="">
+    Load variables from a location other than *.vars files in the blueprint folder. E.g --vars-file=./file.vars.
+  </Property>
+
 </Properties>
 
 ## Examples
@@ -32,7 +42,7 @@ The following example shows a test which would start a blueprint, and assert tha
 
 ```javascript {3}
 Feature: Docker Container
-  In order to test Shipyard creates containers correctly
+  In order to test jumppad creates containers correctly
   I should apply a blueprint which defines a simple container setup
   and test the resources are created correctly
 Scenario: Single Container from Local Blueprint
@@ -47,8 +57,8 @@ Scenario: Single Container from Local Blueprint
     | consul                    | container |
     | envoy                     | sidecar   |
     | consul-container-http     | ingress   |
-  And a HTTP call to "http://consul.container.shipyard.run:8500/v1/status/leader" should result in status 200
-  And a HTTP call to "http://consul-http.ingress.shipyard.run:28500/v1/status/leader" should result in status 200
+  And a HTTP call to "http://consul.container.jumppad.dev:8500/v1/status/leader" should result in status 200
+  And a HTTP call to "http://consul-http.ingress.jumppad.dev:28500/v1/status/leader" should result in status 200
 ```
 
 ### Running Tests
@@ -58,9 +68,9 @@ The following example would test the blueprint in the folder `./examples/contain
 The `--purge` flag will remove all downloaded images, Helm charts, or external blueprints after running the tests. This is to ensure that each scenario has no cached dependencies from a previous test.
 
 ```shell
-shipyard test --purge ./examples/container 
+jumppad test --purge ./examples/container 
 Feature: Docker Container
-  In order to test Shipyard creates containers correctly
+  In order to test jumppad creates containers correctly
   I should apply a blueprint which defines a simple container setup
   and test the resources are created correctly
   Scenario: Single Container from Local Blueprint                                                                   # examples/container/test/container.feature:6
@@ -75,8 +85,8 @@ Feature: Docker Container
       | consul                | container |
       | envoy                 | sidecar   |
       | consul-container-http | ingress   |
-    And a HTTP call to "http://consul.container.shipyard.run:8500/v1/status/leader" should result in status 200     # test.go:277 -> *CucumberRunner
-    And a HTTP call to "http://consul-http.ingress.shipyard.run:28500/v1/status/leader" should result in status 200 # test.go:277 -> *CucumberRunner
+    And a HTTP call to "http://consul.container.jumppad.dev:8500/v1/status/leader" should result in status 200     # test.go:277 -> *CucumberRunner
+    And a HTTP call to "http://consul-http.ingress.jumppad.dev:28500/v1/status/leader" should result in status 200 # test.go:277 -> *CucumberRunner
 ```
 
 ## Testing Statements
@@ -96,7 +106,7 @@ Scenario: Single Container from Local Blueprint
 
 #### I have a running blueprint using version `"<version>"`
 
-This statement starts a blueprint using a specific version of Shipyard.
+This statement starts a blueprint using a specific version of jumppad.
 
 ```javascript
 Scenario: Single Container from Local Blueprint
@@ -116,8 +126,8 @@ Scenario: Single Container from Local Blueprint
 
 #### I have a running blueprint at path `"<path>"` using version `"<version>"`
 
-Starts a blueprint at the given path using a specific Shipyard version. You can use [Matrix testing](#matrix-testing) with these statements
-to test your blueprints with different Shipyard versions.
+Starts a blueprint at the given path using a specific jumppad version. You can use [Matrix testing](#matrix-testing) with these statements
+to test your blueprints with different jumppad versions.
 
 ```javascript
 Scenario: Single Container from Local Blueprint
@@ -163,13 +173,13 @@ Scenario: Single Container from Local Blueprint
   And I have a running blueprint
 ```
 
-#### the following shipyard variables are set
+#### the following jumppad variables are set
 
-This statement allows you to set the value for any Shipyard variables which may be used by the blueprint
+This statement allows you to set the value for any jumppad variables which may be used by the blueprint
 
 ```
 Scenario: Single Container from Local Blueprint
-  Given the following shipyard variables are set
+  Given the following jumppad variables are set
     | key            | value                 |
     | consul_version | 1.8.0                 |
     | envoy_version  | 1.14.3                |
@@ -209,7 +219,7 @@ This statement allows you to make an HTTP request to a URI and to check the HTTP
 ```javascript
 Scenario: Single Container from Local Blueprint
   Given I have a running blueprint
-  Then a HTTP call to "http://consul-http.ingress.shipyard.run:8500/v1/status/leader" should result in status 200
+  Then a HTTP call to "http://consul-http.ingress.jumppad.dev:8500/v1/status/leader" should result in status 200
   And the response body should contain "10.6.0.200"
 ```
 
@@ -220,7 +230,7 @@ In addition to check the HTTP status code you can also check that a paricular te
 ```javascript
 Scenario: Single Container from Local Blueprint
   Given I have a running blueprint
-  Then a HTTP call to "http://consul-http.ingress.shipyard.run:8500/v1/status/leader" should result in status 200
+  Then a HTTP call to "http://consul-http.ingress.jumppad.dev:8500/v1/status/leader" should result in status 200
   And the response body should contain "10.6.0.200"
 ```
 
@@ -337,7 +347,7 @@ Scenario: Single Container from Local Blueprint with multiple runs
     | consul                    | container |
     | envoy                     | sidecar   |
     | consul-container-http     | ingress   |
-  And a HTTP call to "http://consul-http.ingress.shipyard.run:8500/v1/status/leader" should result in status 200
+  And a HTTP call to "http://consul-http.ingress.jumppad.dev:8500/v1/status/leader" should result in status 200
   And the response body should contain "10.6.0.200"
   Examples:
     | consul            | envoy    |
