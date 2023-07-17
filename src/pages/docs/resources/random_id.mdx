@@ -3,12 +3,13 @@ import MetaProperties from "./shared/meta.mdx"
 # Random ID `random_id`
 
 <Intro>
-The `random_id` resource allow the creation of random IDs.
+The `random_id` resource allows the creation of random IDs.
 </Intro>
 
 ## Properties
 
 <Properties>
+
   <Property name="byte_length" type="int" required="true" value=""> 
     The number of random bytes to produce. 
     The minimum value is 1, which produces eight bits of randomness.
@@ -34,7 +35,7 @@ The `random_id` resource allow the creation of random IDs.
 
 ```hcl
 resource "random_id" "id" {
-  byte_length = 4
+    byte_length = 4
 }
 
 output "id_base64" {

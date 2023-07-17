@@ -108,7 +108,22 @@ The `container` resource allows you to create Docker containers.
     ```hcl
       health_check {
         timeout = "30s"
-        http    = "http://localhost:8500/v1/status/leader"
+        http {
+          address = "http://localhost:8500/v1/status/leader"
+          success_codes = [200]
+        }
+        
+        tcp {
+          address = "localhost:8500"
+        }
+        
+       exec {
+          script = <<-EOF
+            #!/bin/bash
+
+            curl "http://localhost:9090"
+          EOF
+        }
       }
     ```
   </Property>
@@ -145,30 +160,157 @@ The `container` resource allows you to create Docker containers.
 
 ## health_check
 
-A health_check stanza allows the definition of a health check which must pass before the container is marked as successfully created.
+A health_check stanza allows the definition of a health check which must pass before 
+the container is marked as successfully created. There are three different types 
+of healthcheck `http`, `tcp`, and `exec`, these are not mutually exclusive, it is
+possible to define more than one health check.
+
+Health checks are executed sequentially, if one health check fails, the following 
+checks are not executed. The execution order is `http`, `tcp`, `exec.
+
 
 ```hcl
-health_check {
-  duration = "60s"
-  http = "http://myendpoint:9090/health"
-  http_status_codes = [200,429] // optional
-}
+  health_check {
+    timeout = "30s"
+    http {
+      address = "http://localhost:8500/v1/status/leader"
+      success_codes = [200]
+    }
+    
+    http {
+      address = "http://localhost:8500/v1"
+      success_codes = [200]
+    }
+    
+    tcp {
+      address = "localhost:8500"
+    }
+    
+   exec {
+      script = <<-EOF
+        #!/bin/bash
+
+        curl "http://localhost:9090"
+      EOF
+    }
+  }
 ```
 
 <Properties>
   <Property name="timeout" type="duration" required="true" value="">
     The maximum duration to wait before marking the health check as failed. Expressed as a Go duration, e.g. `1s` = 1 second, `100ms` = 100 milliseconds.
   </Property>
-  <Property name="http" type="string" required="true" value="">
-    The URL to check, health check expects a HTTP status code to be returned by the URL in order to pass the health check. HTTP status codes can be specified
-by setting the `http_status_code` parameter. A default code of `200` is configured when `http_status_codes` is not set.
+  <Property name="http" type="#http_health_check" required="false" value="">
+    HTTP Health Check block defining the address to check and expected status codes.
+
+    Can be specified more than once.
   </Property>
-  <Property name="http_status_codes" type="[]number" required="false" value="[200]">
-    HTTP status codes returned from the endpoint when called. If the returned status code matches any in the array then the health check will pass.
+  <Property name="tcp" type="#tpc_health_check" required="false" value="">
+    TCP Health Check block defining the address to test.
+
+    Can be specified more than once.
+  </Property>
+  <Property name="exec" type="#exec_health_check" required="false" value="">
+    Exec Health Check block defining either a command to run in the current container,
+    or a script to execute.
+
+    Can be specified more than once.
   </Property>
 </Properties>
 
 ---
+
+## http_health_check
+
+A HTTP health check executes a HTTP GET request for the given address and evaluates
+the response against the expected `success_codes`. If the reponse matches any of
+the given codes the check passes.
+
+```hcl
+http {
+  address = "http://localhost:8500/v1/status/leader"
+  method  = "GET"
+  body    = <<-EOF
+    {"test": "123"}
+  EOF
+  headers = {
+    "X-Auth-Token": ["abc123"]
+  }
+  success_codes = [200]
+}
+```
+
+<Properties>
+  <Property name="address" type="string" required="true" value="">
+    The URL to check, health check expects a HTTP status code to be returned by the URL in order to pass the health check. 
+  </Property>
+  <Property name="method" type="string" required="false" value="GET">
+    HTTP method to use when executing the check 
+  </Property>
+  <Property name="body" type="string" required="false" value="">
+    HTTP body to send with the request
+  </Property>
+  <Property name="body" type="string" required="false" value="">
+    HTTP body to send with the request
+  </Property>
+  <Property name="headers" type="map[string][string]" required="false" value="">
+    HTTP headers to send with the check
+  </Property>
+  <Property name="success_codes" type="[]number" required="false" value="200">
+    HTTP status codes returned from the endpoint when called. If the returned status code matches any in the array then the health check will pass.
+  </Property>
+</Properties>
+
+## tcp_health_check
+
+A TCP health check attempts to open a connection to the given address. If a
+connection can be opened then the check passes.
+
+```hcl
+tcp {
+  address = "localhost:8500"
+}
+```
+
+<Properties>
+  <Property name="address" type="string" required="true" value="">
+    The adress to check.
+  </Property>
+</Properties>
+
+## exec_health_check
+
+Exec health checks allow you to execute a command or script in the current container.
+If the command or script receives an exit code `0` the check passes.
+
+<Properties>
+  <Property name="command" type="[]string" required="false" value="">
+    A command to execute.
+
+    ```hcl
+    exec {
+      command = ["pg_isready"]
+    }
+    ```
+  </Property>
+  <Property name="script" type="string" required="false" value="">
+    A script to execute in the target container, the script is coppied to the
+    container into the `/tmp` directory and is then executed. 
+
+    ```hcl
+    exec {
+      script = <<-EOF
+        #!/bin/bash
+        
+        FILE=/etc/resolv.conf
+        if [ -f "$FILE" ]; then
+            echo "$FILE exists."
+        fi
+      EOF
+    }
+    ```
+  </Property>
+</Properties>
 
 ## resources
 
@@ -216,60 +358,62 @@ User and Group configuration to be used when running a container, by default Doc
 The following example creates a container from an existing registry image.
 
 ```hcl
-container "unique_name" {
-  network {
-    id = resource.network.onprem.id
-  }
+resource "container" "unique_name" {
+    network {
+        id         = resource.network.cloud.id
+        ip_address = "10.16.0.203"
+        aliases    = ["my_unique_name_ip_address"]
+    }
 
-  image {
-    name = "consul:1.6.1"
-  }
+    image {
+        name = "consul:1.6.1"
+    }
 }
 ```
 
 ### Full Example
 
 ```hcl
-container "unique_name" {
-  depends_on = ["container.another"]
+resource "container" "unique_name" {
+    depends_on = ["resource.container.another"]
 
-  network {
-    id = resource.network.onprem.id
-    ip_address = "10.0.0.200"
-  }
+    network {
+        id         = resource.network.cloud.id
+        ip_address = "10.16.0.200"
+        aliases    = ["my_unique_name_ip_address"]
+    }
 
-  image {
-    name     = "consul:1.6.1"
-    username = "repo_username"
-    password = "repo_password"
-  }
+    image {
+        name     = "consul:1.6.1"
+        username = "repo_username"
+        password = "repo_password"
+    }
 
-  command = [
-    "consul",
-    "agent"
-  ]
+    command = [
+        "consul",
+        "agent"
+    ]
 
-  env {
-    key   = "CONSUL_HTTP_ADDR"
-    value = "http://localhost:8500"
-  }
+    environment = {
+        CONSUL_HTTP_ADDR = "http://localhost:8500"
+    }
 
-  volume {
-    source      = "./config"
-    destination = "/config"
-  }
+    volume {
+        source      = "./config"
+        destination = "/config"
+    }
 
-  port {
-    source = 8500
-    remote = 8500
-    host   = 18500
-  }
+    port {
+        local  = 8500
+        remote = 8500
+        host   = 18500
+    }
     
-  port_range {
-    range       = "9000-9002"
-    enable_host = true
-  }
+    port_range {
+        range       = "9000-9002"
+        enable_host = true
+    }
 
-  privileged = false
+    privileged = false
 }
 ```

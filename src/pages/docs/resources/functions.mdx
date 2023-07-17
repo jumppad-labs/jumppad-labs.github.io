@@ -1,6 +1,6 @@
 # Resource Functions
 
-Shipyard configuration files can use built in functions which are interpolated at runtime. 
+Jumppad configuration files can use built in functions which are interpolated at runtime. 
 For example the `env([environment variable name])` function could be used to return 
 the value of an environment variable.
 
@@ -237,44 +237,75 @@ resource "template" "mine" {
 }
 ```
 
-## random_number
+## template_file
 
-Generates a random number within the given range.
+Returns the rendered contents of a template file at the given path with the given input variables.
+
+Templates can leverage the Handlebars templating language, more details on Handlebars
+can be found at the following link:
+
+[https://handlebarsjs.com/](https://handlebarsjs.com/)
 
 ### Parameters
 
 <Properties>
-  <Property name="min" type="int" required="true" value="">
-    Minimum value for the random number.
+  <Property name="path" type="string" required="true" value="">
+    Name of the data folder to create, or path to return.
   </Property>
-  
-  <Property name="max" type="int" required="true" value="">
-    Maximum value for the random number.
+  <Property name="variables" type="map[string]interface" required="true" value="">
+    Name of the data folder to create, or path to return.
   </Property>
 </Properties>
 
 ```hcl
-resource "template" "mine" {
-  source = "./mysource.txt"
-  destination = "./file.txt"
+#given a file "./mytemplate.tmpl" with the contents "hello {{name}}"
 
-  variables = {
-    port = random_number(20000,30000)
-  }
+mytype "test" {
+  // my_file = "foobar"
+  my_file = template_file("./mytemplate.tmpl", {
+    name = "world"
+  })
 }
 ```
 
-## random_creature
+### Template Helpers
 
-Generates a random string in the form of a mythical creature.
+The template_file function provides helpers that can be used inside your 
+templates as shown in the example below.
 
-```hcl
-resource "template" "mine" {
-  source = "./mysource.txt"
-  destination = "./file.txt"
+```javascript
+resource "template" "consul_config" {
 
-  variables = {
-    name = random_creature() // Lively-Imp, Mellifluous-Unicorn
-  }
+  source = <<-EOF
+
+  file_content = "{{ file "./myfile.txt" }}"
+  quote = {{quote something}} 
+  trim = {{quote (trim with_whitespace)}}
+
+  EOF
+
+  destination = "./consul_config/consul.hcl"
 }
+```
+
+#### quote [string]
+
+Returns the original string wrapped in quotations, quote can be used with 
+the Go template pipe modifier.
+
+```go
+// given the string abc
+
+quote "abc" // would return the value "abc"
+```
+
+#### trim [string]
+
+Removes whitespace such as carrige returns and spaces from the begining and 
+the end of the string, can be used with the Go template pipe modifier.
+
+```go
+// given the string abc
+
+trim " abc " // would return the value "abc"
 ```

@@ -4,7 +4,7 @@ import MetaProperties from "./shared/meta.mdx"
 
 <Intro>
 The `output` resource allows you to define output variables which can be used 
-with the jumppad `output` and `env` commands.
+to return values from modules or with the jumppad `output` and `env` commands.
 
 <b>Note:</b> `output` resources are module scoped, `jumppad output` will only show
 the value of `output` resources scoped at the top level.
@@ -13,7 +13,7 @@ the value of `output` resources scoped at the top level.
 ## Properties
 
 <Properties>
-  <Property name="value" type="string" required="true" value="">
+  <Property name="value" type="interface" required="true" value="">
     Value to set to the output, if this value contains an interpolated 
     property from another resource, the output will be created after the 
     referenced resource.
@@ -24,11 +24,65 @@ the value of `output` resources scoped at the top level.
 
 ## Examples
 
+### Simple Example
+
 The following example shows how to use an `output` resource to configure the
 environment variable `KUBECONFIG`.
 
 ```hcl
 output "KUBECONFIG" {
   value = resource.k8s_cluster.k3s.kubeconfig
+}
+```
+
+### Lists of Values
+
+The following output sets a list of numbers
+
+```hcl
+output "list" {
+  value = [1,2,3] 
+}
+```
+
+This can be consumed using the following interpolation.
+
+Note: Indexes for lists are `0` based.
+
+```hcl
+output "list_value" {
+  value = output.list.2 // 3
+}
+```
+
+### Maps of Values
+
+The following output sets a map of values
+
+```hcl
+output "map" {
+  value = {
+    list = [1,2,3]
+    string = "hello world"
+    submap = {
+      foo = "bar"
+    }
+  }
+}
+```
+
+This can be consumed using the following interpolation.
+
+```hcl
+output "map_value_1" {
+  value = output.map.list.2 // 3
+}
+
+output "map_value_2" {
+  value = output.map.string // hello world
+}
+
+output "map_value_3" {
+  value = output.map.submap.foo // bar
 }
 ```

@@ -49,12 +49,55 @@ and client nodes.
 
   <Property name="server_config" type="string" required="false" value="">
     Path to a file containing custom Nomad server config to use when creating 
-    the server.
+    the server. Note: Only added to server nodes
+
+    This file extends the default server configuration and is mounted
+    at the path `/etc/nomad.d/server_user_config.hcl` on server nodes.
+
+    ```hcl
+    server {
+      enabled = true
+      bootstrap_expect = 1
+    }
+
+    client {
+    	enabled = true
+    	meta {
+    		node_type = "server"
+    	}
+    	%s
+    }
+
+    plugin "raw_exec" {
+      config {
+    		enabled = true
+      }
+    }
+    ```
   </Property>
   
   <Property name="client_config" type="string" required="false" value="">
     Path to a file containing custom Nomad client config to use when creating 
-    the server.
+    the server. Note: This file is added to both server and clients nodes.
+
+    This file extends the default client config and is mounted at the path
+    /etc/nomad.d/client_user_config.hcl
+
+    ```hcl
+    client {
+    	enabled = true
+    
+    	server_join {
+    		retry_join = ["%s"]
+    	}
+    }
+    
+    plugin "raw_exec" {
+      config {
+    		enabled = true
+      }
+    }
+    ```
   </Property>
   
   <Property name="consul_config" type="string" required="false" value="">
@@ -179,10 +222,9 @@ The following example creates a combined client and server running in a
 single container.
 
 ```hcl
-network "cloud" {
-    subnet = "10.0.0.0/16"
+resource "network" "cloud" {
+  subnet = "10.10.0.0/16"
 }
-
 resource "nomad_cluster" "dev" {
   network {
     id = resource.network.cloud.id
@@ -196,8 +238,8 @@ The following example creates a multi_node nomad cluster with a job and
 ingress.
 
 ```hcl
-network "cloud" {
-    subnet = "10.0.0.0/16"
+resource "network" "cloud" {
+  subnet = "10.10.0.0/16"
 }
 
 resource "nomad_cluster" "dev" {
