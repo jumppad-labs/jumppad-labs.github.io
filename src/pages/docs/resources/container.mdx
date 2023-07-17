@@ -47,7 +47,7 @@ The `container` resource allows you to create Docker containers.
     Allows you to set environment variables in the container.
 
     ```hcl
-    env {
+    environment = {
       PATH = "/user/local/bin"
     }
     ```
@@ -71,6 +71,7 @@ The `container` resource allows you to create Docker containers.
     ```hcl
       port {
         local = 80
+        remote = 80
         host  = 8080
       }
     ```
@@ -122,29 +123,6 @@ The `container` resource allows you to create Docker containers.
       }
     ```
   </Property>
-
-  <Property name="build" type="#build" required="false" value="">
-    Build a container from the given file and context before running the container.
-
-    ```hcl
-      build   {
-        file = "./Dockerfile"
-        context = "./src"
-      }
-    ```
-
-    Images are cached in the local Docker engine using the following convention.
-
-    ```shell
-      jumppad.dev/localcache/<resource_name>:latest
-    ```
-
-    Once cached images are not rebuild with every `run` to force the update of an image you can use the `--force-update` flag with `run`.
-
-    ```shell
-      jumppad up --force-update ./build
-    ```
-  </Property>
   
   <Property name="fqrn" type="string" required="false" value="" readonly>
     Fully qualified resource name for the container, this value can be used to
@@ -156,7 +134,6 @@ The `container` resource allows you to create Docker containers.
     ```
   </Property>
 </Properties>
-
 
 <NetworkAttachment />
 <Image/>
@@ -232,23 +209,6 @@ User and Group configuration to be used when running a container, by default Doc
 
 ---
 
-## build
-
-The build stanza allows the building of a Docker image before running the container resource.
-
-<Properties>
-  <Property name="file" type="string" required="true" value="">
-    Docker file to use for the build.
-  </Property>
-  <Property name="context" type="string" required="true" value="">
-    Path to the context for the build.
-  </Property>
-</Properties>
-
-<MetaProperties />
-
----
-
 ## Examples
 
 ### Minimal Example
@@ -257,98 +217,59 @@ The following example creates a container from an existing registry image.
 
 ```hcl
 container "unique_name" {
-    network {
-        name = "network.cloud"
-    }
+  network {
+    id = resource.network.onprem.id
+  }
 
-    image {
-        name = "consul:1.6.1"
-    }
+  image {
+    name = "consul:1.6.1"
+  }
 }
-
-network "cloud" {
-    subnet = "10.0.0.0/16"
-}
-```
-Run the example:
-
-```shell
-shipyard run github.com/shipyard-run/shipyard-website/examples/container//minimal
 ```
 
 ### Full Example
 
 ```hcl
 container "unique_name" {
-    depends_on = ["container.another"]
-
-    network {
-        name       = "network.cloud"
-        ip_address = "10.0.0.200"
-    }
-
-    image {
-        name     = "consul:1.6.1"
-        username = "repo_username"
-        password = "repo_password"
-    }
-
-    command = [
-        "consul",
-        "agent"
-    ]
-
-    env {
-        key   = "CONSUL_HTTP_ADDR"
-        value = "http://localhost:8500"
-    }
-
-    volume {
-        source      = "./config"
-        destination = "/config"
-    }
-
-    port {
-        source = 8500
-        remote = 8500
-        host   = 18500
-    }
-    
-    port_range {
-        range       = "9000-9002"
-        enable_host = true
-    }
-
-    privileged = false
-}
-
-network "cloud" {
-  subnet = "10.0.0.0/16"
-}
-```
-
-### Build Example
-
-The following example builds a temporary image from the given Dockerfile and context before starting
-the container.
-
-```hcl
-container "build" {
-  build   {
-    file = "./Dockerfile"
-    context = "./src"
-  }
-
-  command = ["/bin/app"]
-
-  port {
-    local = 9090
-    remote = 9090
-    host = 9090
-  }
+  depends_on = ["container.another"]
 
   network {
-    name = "network.onprem"
+    id = resource.network.onprem.id
+    ip_address = "10.0.0.200"
   }
+
+  image {
+    name     = "consul:1.6.1"
+    username = "repo_username"
+    password = "repo_password"
+  }
+
+  command = [
+    "consul",
+    "agent"
+  ]
+
+  env {
+    key   = "CONSUL_HTTP_ADDR"
+    value = "http://localhost:8500"
+  }
+
+  volume {
+    source      = "./config"
+    destination = "/config"
+  }
+
+  port {
+    source = 8500
+    remote = 8500
+    host   = 18500
+  }
+    
+  port_range {
+    range       = "9000-9002"
+    enable_host = true
+  }
+
+  privileged = false
 }
 ```

@@ -1,0 +1,19 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Book `book`
+
+Bundles `chapter` resources together so it can be displayed in the `docs` resource.
+
+<Properties>
+  <Property name="title" type="string" required="true" value="">
+    The title of the book.
+  </Property>
+
+  <Property name="chapters" type="[]string" required="true" value="">
+    A list containing the IDs of `chapter` resources included in the book.
+  </Property>
+
+  <Property name="index" type="string" value="" readonly>
+    A JSON index generated from the chapters of the book.
+  </Property>
+</Properties>

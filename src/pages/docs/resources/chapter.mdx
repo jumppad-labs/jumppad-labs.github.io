@@ -1,0 +1,50 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Chapter `chapter`
+
+Bundles `chapter` resources together so it can be displayed in the `docs` resource.
+
+<Properties>
+  <Property name="title" type="string" value="">
+    The title of the chapter.
+  </Property>
+
+  <Property name="page" type="#page" required="true" value="">
+    A page to include in the chapter.
+
+    This stanza can be specified multiple times.
+  </Property>
+
+  <Property name="prerequisites" type="[]string" value="">
+    A list containing the IDs of `chapter` resources that need to be completed before the tasks in this chapter unlock.
+  </Property>
+
+  <Property name="tasks" type="[]#task" value="" readonly>
+    An index generated from the chapters of the book.
+  </Property>
+</Properties>
+
+## Page `page`
+
+A page containing content and tasks.
+
+<Properties>
+  <Property name="id" type="string" value="">
+    The ID of the page.
+  </Property>
+
+  <Property name="title" type="string" value="">
+    The title of the page.
+  </Property>
+
+  <Property name="content" type="string" value="">
+    The content of the page.
+  </Property>
+
+  <Property name="tasks" type="map[string]string" value="">
+    Allows you to include tasks in the page.
+    
+    The key will be the ID that you can reference in the `Task` component within the content.
+    The value is a reference to the ID of a `task` resource.
+  </Property>
+</Properties>
