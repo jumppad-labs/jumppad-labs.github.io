@@ -71,6 +71,7 @@ The `container` resource allows you to create Docker containers.
     ```hcl
       port {
         local = 80
+        remote = 80
         host  = 8080
       }
     ```
@@ -137,29 +138,6 @@ The `container` resource allows you to create Docker containers.
       }
     ```
   </Property>
-
-  <Property name="build" type="#build" required="false" value="">
-    Build a container from the given file and context before running the container.
-
-    ```hcl
-      build   {
-        file = "./Dockerfile"
-        context = "./src"
-      }
-    ```
-
-    Images are cached in the local Docker engine using the following convention.
-
-    ```shell
-      jumppad.dev/localcache/<resource_name>:latest
-    ```
-
-    Once cached images are not rebuild with every `run` to force the update of an image you can use the `--force-update` flag with `run`.
-
-    ```shell
-      jumppad up --force-update ./build
-    ```
-  </Property>
   
   <Property name="fqrn" type="string" required="false" value="" readonly>
     Fully qualified resource name for the container, this value can be used to
@@ -171,7 +149,6 @@ The `container` resource allows you to create Docker containers.
     ```
   </Property>
 </Properties>
-
 
 <NetworkAttachment />
 <Image/>
@@ -374,23 +351,6 @@ User and Group configuration to be used when running a container, by default Doc
 
 ---
 
-## build
-
-The build stanza allows the building of a Docker image before running the container resource.
-
-<Properties>
-  <Property name="file" type="string" required="true" value="">
-    Docker file to use for the build.
-  </Property>
-  <Property name="context" type="string" required="true" value="">
-    Path to the context for the build.
-  </Property>
-</Properties>
-
-<MetaProperties />
-
----
-
 ## Examples
 
 ### Minimal Example
@@ -408,10 +368,6 @@ resource "container" "unique_name" {
     image {
         name = "consul:1.6.1"
     }
-}
-
-resource "network" "cloud" {
-  subnet = "10.16.0.0/24"
 }
 ```
 
@@ -459,37 +415,5 @@ resource "container" "unique_name" {
     }
 
     privileged = false
-}
-
-resource "network" "cloud" {
-  subnet = "10.16.0.0/24"
-}
-```
-
-### Build Example
-
-The following example builds a temporary image from the given Dockerfile and context before starting
-the container.
-
-```hcl
-resource "container" "build" {
-  build   {
-    file = "./Dockerfile"
-    context = "./src"
-  }
-
-  command = ["/bin/app"]
-
-  port {
-    local = 9090
-    remote = 9090
-    host = 9090
-  }
-
-  network {
-    id         = resource.network.cloud.id
-    ip_address = "10.16.0.190"
-    aliases    = ["my_build_name_ip_address"]
-  }
 }
 ```

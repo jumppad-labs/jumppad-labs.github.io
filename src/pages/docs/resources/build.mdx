@@ -1,0 +1,71 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Build `build`
+
+Builds containers and other resources that can be used in blueprints.
+
+## Properties
+
+<Properties>
+  <Property name="container" type="#container" value="">
+    Build a container from the given file and context.
+    Images are cached in the local Docker engine using the following convention.
+  </Property>
+</Properties>
+
+---
+
+## container
+
+```hcl
+container {
+  dockerfile = "Dockerfile"
+  context    = "./src"
+}
+```
+
+<Properties>
+  <Property name="dockerfile" type="string" value="Dockerfile">
+    Docker file to use for the build.
+  </Property>
+  <Property name="context" type="string" required="true" value="">
+    Path to the context for the build.
+  </Property>
+  <Property name="tag" type="string" value="">
+    Tag to tag the resulting image with.
+  </Property>
+  <Property name="args" type="map[string]string" value="">
+    Build args to pass to the build.
+  </Property>
+</Properties>
+
+---
+
+## Examples
+
+```hcl
+resource "build" "app" {
+  container {
+    dockerfile = "Dockerfile"
+    context    = "./src"
+  }
+}
+
+resource "container" "app" {
+  image {
+    name = resource.build.app.image
+  }
+
+  command = ["/bin/app"]
+
+  port {
+    local  = 9090
+    remote = 9090
+    host   = 9090
+  }
+
+  network {
+    id = resource.network.onprem.id
+  }
+}
+```

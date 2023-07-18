@@ -9,12 +9,23 @@ The `random_id` resource allows the creation of random IDs.
 ## Properties
 
 <Properties>
-  <Property name="byte_length" type="int" required="true" value="0"> 
-    The number of bytes to use when generating the random ID.
+
+  <Property name="byte_length" type="int" required="true" value=""> 
+    The number of random bytes to produce. 
+    The minimum value is 1, which produces eight bits of randomness.
+  </Property>
+  
+  <Property name="base64" type="string" value="" readonly> 
+    The generated ID presented in base64.
   </Property>
 
-  <Property name="value" type="int" value="" readonly> 
-    The generated random ID.
+  <Property name="hex" type="string" value="" readonly> 
+    The generated ID presented in padded hexadecimal digits. 
+    This result will always be twice as long as the requested byte length.
+  </Property>
+
+  <Property name="dec" type="string" value="" readonly> 
+    The generated ID presented in non-padded decimal digits.
   </Property>
 </Properties>
 
@@ -25,6 +36,10 @@ The `random_id` resource allows the creation of random IDs.
 ```hcl
 resource "random_id" "id" {
     byte_length = 4
+}
+
+output "id_base64" {
+    value = resource.random_id.id.base64
 }
 
 output "id_hex" {

@@ -1,0 +1,66 @@
+import MetaProperties from "./shared/meta.mdx"
+
+# Task `task`
+
+Describes a task the user needs to perform and can then be validated, which can be included into `docs`.
+
+<Properties>
+  <Property name="condition" type="#condition" value="">
+    Allows you to specify conditions that need to be met in order to complete the task.
+  </Property>
+
+  <Property name="prerequisites" type="[]string" value="">
+    A list containing the IDs of `task` resources that need to be completed before the task unlocks.
+  </Property>
+
+  <Property name="progress" type="string" value="" readonly>
+    A JSON object containing the progress of the task.
+  </Property>
+
+  <Property name="validation" type="string" value="">
+    A JSON object containing the validation of the task.
+  </Property>
+</Properties>
+
+## Condition `condition`
+
+Allows you to validate if a user has completed the task.
+
+<Properties>
+  <Property name="name" type="string" required="true" value="">
+    The name of the condition.
+  </Property>
+
+  <Property name="description" type="string" required="true" value="">
+    The description of the condition. 
+    This is displayed to the user to describe what condition needs to be met.
+  </Property>
+
+  <Property name="check" type="string" required="true" value="">
+    The commands that need to be executed when validating the condition.
+  </Property>
+
+  <Property name="solve" type="string" value="">
+    The commands that need to be executed in order to complete the task.
+  </Property>
+
+  <Property name="failure_message" type="string" required="true" value="">
+    The message that is returned when the validation of the condition fails.
+  </Property>
+
+  <Property name="success_message" type="string" value="">
+    The message that is returned when the validation of the condition succeeds.
+  </Property>
+
+  <Property name="target" type="string" value="">
+    The target where the validation should be executed.
+  </Property>
+
+  <Property name="user" type="string" value="">
+    The user the validation should be executed as.
+  </Property>
+
+  <Property name="working_directory" type="string" value="">
+    The directory the validation should be executed in.
+  </Property>
+</Properties>
