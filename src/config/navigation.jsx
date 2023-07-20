@@ -46,7 +46,6 @@ export const navigation = [
       { title: 'Blueprint', href: '/docs/resources/blueprint' },
       { title: 'Book', href: '/docs/resources/book' },
       { title: 'Build', href: '/docs/resources/build' },
-      { title: 'Certificate', href: '/docs/resources/certificate' },
       { title: 'Chapter', href: '/docs/resources/chapter' },
       { title: 'Container', href: '/docs/resources/container' },
       { title: 'Copy', href: '/docs/resources/copy' },
