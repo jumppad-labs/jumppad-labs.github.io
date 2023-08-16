@@ -3,7 +3,13 @@ import MetaProperties from "./shared/meta.mdx"
 # Build `build`
 
 <Intro>
-Builds containers and other resources that can be used in blueprints.
+Builds containers or applications that can be used in blueprints. The build stanza runs a `docker build`
+using the `dockerfile` or `context` defined in the `container` stanza. You can use
+this feature to build container images that can be started directly using the `container` resource,
+or copied to `nomad` or `kubernetes`.
+
+In addition to building containers, `build` blocks can be used to build application code in a docker
+container the product of which can be copied to the local file system using the optional `output` stanza.
 </Intro>
 
 ## Properties
@@ -12,6 +18,9 @@ Builds containers and other resources that can be used in blueprints.
   <Property name="container" type="#container" value="">
     Build a container from the given file and context.
     Images are cached in the local Docker engine using the following convention.
+  </Property>
+  <Property name="output" type="#output" value="">
+    Copy artifacts from the built container image to the local filesystem.
   </Property>
 </Properties>
 
@@ -43,7 +52,27 @@ container {
 
 ---
 
+## output
+
+```hcl
+output {
+  source = "/bin/myapp"
+  destination = "${data("local_app")}/bin"
+}
+```
+
+<Properties>
+  <Property name="source" type="string" value="">
+    The source directory or file to be copied from the built container
+  </Property>
+  <Property name="destination" type="string" value="">
+    The location to copy the files or directory to
+  </Property>
+</Properties>
+
 ## Examples
+
+Container build
 
 ```hcl
 resource "build" "app" {
@@ -69,5 +98,25 @@ resource "container" "app" {
   network {
     id = resource.network.onprem.id
   }
+}
+```
+
+Application build
+
+```hcl
+resource "build" "app" {
+  container {
+    dockerfile = "Dockerfile"
+    context    = "./src"
+  }
+
+  output {
+    source = "/go/src/github.com/jumppad-labs/jumppad/bin"
+    destination = "${data("local_app")}/bin"
+  }
+}
+
+resource "local_exec" "app" {
+  command = ["jumppad", "up", "./config"]
 }
 ```
