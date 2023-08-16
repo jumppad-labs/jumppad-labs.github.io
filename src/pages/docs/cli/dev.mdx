@@ -1,8 +1,12 @@
 # Dev
 
 <Intro>
-Watches current configuration and auotmatically runs `jumppad up`
+Watches current configuration and auotmatically runs `jumppad up` when changes are detected. 
+Dev mode can be used when building your Jumppad configuration, or for continuously building
+applications as part of your development workflow.
 </Intro>
+
+[![asciicast](https://asciinema.org/a/DXRZSQ97YE6tQfFVs4AGWBnbr.svg?autoplay=1&loop=1)](https://asciinema.org/a/DXRZSQ97YE6tQfFVs4AGWBnbr?autoplay=1&loop=1)
 
 ## Usage
 
@@ -22,52 +26,10 @@ jumppad dev ./config_folder
   <Property name="vars-file" type="string" required="false" value="">
     Load variables from a location other than *.vars files in the blueprint folder. E.g --vars-file=./file.vars
   </Property>
+  <Property name="disable-tty" type="boolean" required="false" value="">
+    Disables the tty mode for dev creating a linea log output
+  </Property>
 </Properties>
 
 ```shell
-➜ jp down
-2023-07-07T07:07:02.791+0100 [INFO]  Destroying resources
-2023-07-07T07:07:02.791+0100 [DEBUG] State file does not exist
-2023-07-07T07:07:02.791+0100 [ERROR] Unable to destroy stack: error="remove /home/nicj/.jumppad/state/state.json: no such file or directory"
-
-jumppad on  f-library-resource [$] via 🐹 v1.19.2 on 🐳 v20.10.23 using ☁️  default/kubecon-sysdig 
-➜ export LOG_LEVEL=info 
-
-jumppad on  f-library-resource [$] via 🐹 v1.19.2 on 🐳 v20.10.23 using ☁️  default/kubecon-sysdig 
-➜ jp dev ./examples/container
-Checking for changes...
-2023-07-07T07:07:19.001+0100 [INFO]  Parsing configuration: path=/home/nicj/go/src/github.com/jumppad-labs/jumppad/examples/container
-Changes detected, resources to add 10, resources changed 0, resources to delete 0, running up
-2023-07-07T07:07:19.007+0100 [INFO]  Creating resources from configuration: path=/home/nicj/go/src/github.com/jumppad-labs/jumppad/examples/container
-2023-07-07T07:07:19.007+0100 [INFO]  Parsing configuration: path=/home/nicj/go/src/github.com/jumppad-labs/jumppad/examples/container
-2023-07-07T07:07:19.012+0100 [INFO]  Creating ImageCache: ref=default
-2023-07-07T07:07:22.905+0100 [INFO]  Creating Network: ref=resource.network.onprem
-2023-07-07T07:07:23.019+0100 [INFO]  Creating ImageCache: ref=default
-2023-07-07T07:07:23.712+0100 [INFO]  Generating template: ref=resource.template.consul_config output=/home/nicj/.jumppad/data/config/consul.hcl
-2023-07-07T07:07:23.713+0100 [INFO]  Creating Blueprint: ref=container
-2023-07-07T07:07:23.713+0100 [INFO]  Creating Container: ref=resource.container.consul
-2023-07-07T07:07:26.671+0100 [INFO]  Creating Container: ref=resource.sidecar.envoy
-2023-07-07T07:07:26.971+0100 [INFO]  Creating Output: ref=consul_http_addr
-
-Checking for changes...
-2023-07-07T07:07:31.977+0100 [INFO]  Parsing configuration: path=/home/nicj/go/src/github.com/jumppad-labs/jumppad/examples/container
-
-Checking for changes...
-2023-07-07T07:07:36.985+0100 [INFO]  Parsing configuration: path=/home/nicj/go/src/github.com/jumppad-labs/jumppad/examples/container
-
-Checking for changes...
-2023-07-07T07:07:41.994+0100 [INFO]  Parsing configuration: path=/home/nicj/go/src/github.com/jumppad-labs/jumppad/examples/container
-
-Checking for changes...
-2023-07-07T07:07:47.005+0100 [INFO]  Parsing configuration: path=/home/nicj/go/src/github.com/jumppad-labs/jumppad/examples/container
-Changes detected, resources to add 1, resources changed 0, resources to delete 0, running up
-2023-07-07T07:07:47.013+0100 [INFO]  Creating resources from configuration: path=/home/nicj/go/src/github.com/jumppad-labs/jumppad/examples/container
-2023-07-07T07:07:47.014+0100 [INFO]  Parsing configuration: path=/home/nicj/go/src/github.com/jumppad-labs/jumppad/examples/container
-2023-07-07T07:07:47.026+0100 [INFO]  Refresh Network: ref=onprem
-2023-07-07T07:07:47.026+0100 [INFO]  Creating ImageCache: ref=default
-2023-07-07T07:07:47.039+0100 [INFO]  Refresh Template: ref=resource.template.consul_config
-2023-07-07T07:07:47.039+0100 [INFO]  Generating template: ref=resource.template.consul_config output=/home/nicj/.jumppad/data/config/consul.hcl
-2023-07-07T07:07:47.041+0100 [INFO]  Refresh Container: ref=consul
-2023-07-07T07:07:47.042+0100 [INFO]  Refresh Container: ref=envoy
-2023-07-07T07:07:47.044+0100 [INFO]  Creating Container: ref=resource.sidecar.envoy2
 ```
