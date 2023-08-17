@@ -1,0 +1,13 @@
+# Certificates
+
+Jumppad uses the certificates hosted at https://jumppad.dev/certificates to provide valid certificates for local resources.
+These certificates are all localhost certificates and valid for the following domains: 
+
+- `local.jumppad.dev`
+- `*.local.jumppad.dev`
+- `local.jmpd.in`
+- `*.local.jmpd.in`
+
+This allows you to access services in a jumppad blueprint over https e.g. `https://nginx-80.local.jumppad.dev`.
+
+The Jumppad CLI will automatically renew the local certificates when they expire.
