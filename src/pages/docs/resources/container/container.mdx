@@ -1,30 +1,24 @@
-import MetaProperties from "./shared/meta.mdx"
-import Image from "./shared/image.mdx"
-import Volume from "./shared/volume.mdx"
+import MetaProperties from "../shared/meta.mdx"
+import NetworkAttachment from "../shared/network_attachment.mdx"
+import Image from "../shared/image.mdx"
+import Volume from "../shared/volume.mdx"
+import Port from "../shared/port.mdx"
+import PortRange from "../shared/port_range.mdx"
 
-# Sidecar `sidecar`
+# Container `container`
 
 <Intro>
-The Sidecar resource allows you to run associated processes for Containers.
-Sidecar does not have its own network, a Sidecar resource shares the network 
-with the target container. For example, localhost in the sidecar is localhost 
-in the `container`.
-
-Sidecar resources are not routable in the same way as container resources are. 
-You can not map an ingress to a sidecar and a sidecar can not expose ports. 
-Traffic which is destined for a process running in a sidecar must be sent 
-to the target container.
+The `container` resource allows you to create Docker containers.
 </Intro>
+
+<YouTube id="X8xWzZD3ptM"/>
 
 ## Properties
 
 <Properties>
-  <Property name="target" type="string" required="true" value="">
-    The id of a container to attach the sidecar to.
-
-    ```hcl
-      resource.container.mine.id
-    ```
+  <Property name="network" type="#network_attachment" required="true" value="">
+    Network attaches the container to an existing network defined in a separate stanza. 
+    This block can be specified multiple times to attach the container to multiple networks.
   </Property>
 
   <Property name="image" type="#image" required="true" value="">
@@ -55,7 +49,7 @@ to the target container.
     Allows you to set environment variables in the container.
 
     ```hcl
-    env {
+    environment = {
       PATH = "/user/local/bin"
     }
     ```
@@ -79,6 +73,7 @@ to the target container.
     ```hcl
       port {
         local = 80
+        remote = 80
         host  = 8080
       }
     ```
@@ -121,7 +116,7 @@ to the target container.
         }
         
         tcp {
-          address = "http://localhost:8500/v1/status/leader"
+          address = "localhost:8500"
         }
         
        exec {
@@ -145,29 +140,6 @@ to the target container.
       }
     ```
   </Property>
-
-  <Property name="build" type="#build" required="false" value="">
-    Build a container from the given file and context before running the container.
-
-    ```hcl
-      build   {
-        file = "./Dockerfile"
-        context = "./src"
-      }
-    ```
-
-    Images are cached in the local Docker engine using the following convention.
-
-    ```shell
-      jumppad.dev/localcache/<resource_name>:latest
-    ```
-
-    Once cached images are not rebuild with every `run` to force the update of an image you can use the `--force-update` flag with `run`.
-
-    ```shell
-      jumppad up --force-update ./build
-    ```
-  </Property>
   
   <Property name="fqrn" type="string" required="false" value="" readonly>
     Fully qualified resource name for the container, this value can be used to
@@ -180,13 +152,15 @@ to the target container.
   </Property>
 </Properties>
 
-
+<NetworkAttachment />
 <Image/>
 <Volume/>
+<Port/>
+<PortRange/>
 
 ---
 
-## health_check
+### health_check
 
 A health_check stanza allows the definition of a health check which must pass before 
 the container is marked as successfully created. There are three different types 
@@ -248,7 +222,7 @@ checks are not executed. The execution order is `http`, `tcp`, `exec.
 
 ---
 
-## http_health_check
+### http_health_check
 
 A HTTP health check executes a HTTP GET request for the given address and evaluates
 the response against the expected `success_codes`. If the reponse matches any of
@@ -289,7 +263,7 @@ http {
   </Property>
 </Properties>
 
-## tcp_health_check
+### tcp_health_check
 
 A TCP health check attempts to open a connection to the given address. If a
 connection can be opened then the check passes.
@@ -306,7 +280,7 @@ tcp {
   </Property>
 </Properties>
 
-## exec_health_check
+### exec_health_check
 
 Exec health checks allow you to execute a command or script in the current container.
 If the command or script receives an exit code `0` the check passes.
@@ -340,9 +314,7 @@ If the command or script receives an exit code `0` the check passes.
   </Property>
 </Properties>
 
----
-
-## resources
+### resources
 
 A resources type allows you to configure the maximum resources which can be consumed.
 
@@ -366,7 +338,7 @@ A resources type allows you to configure the maximum resources which can be cons
 
 ---
 
-## run_as
+### run_as
 
 User and Group configuration to be used when running a container, by default Docker runs commands in the container as root id 0.
 
@@ -380,78 +352,70 @@ User and Group configuration to be used when running a container, by default Doc
 </Properties>
 
 ---
-<Properties>
-  <Property name="cluster" type="string" required="true" value="" readonly> 
-    Text
-
-    ```hcl
-    code
-    ```
-  </Property>
-
-  <Property name="cluster" type="string" required="true" value="" readonly> 
-    Text
-  </Property>
-</Properties>
-
-<MetaProperties/>
 
 ## Examples
 
-### Container with Sidecar
+### Minimal Example
+
+The following example creates a container from an existing registry image.
 
 ```hcl
-resource "container" "consul" {
-  image {
-    name = "consul:${variable.consul_version}"
-  }
+resource "container" "unique_name" {
+    network {
+        id         = resource.network.cloud.id
+        ip_address = "10.16.0.203"
+        aliases    = ["my_unique_name_ip_address"]
+    }
 
-  command = ["consul", "agent", "-config-file", "/config/config.hcl"]
-
-  volume {
-    source      = "./"
-    destination = "/files"
-  }
-
-  volume {
-    source      = resource.template.consul_config.destination
-    destination = "/config/config.hcl"
-  }
-
-  network {
-    id         = resource.network.onprem.id
-    ip_address = "10.6.0.200" // optional
-    aliases    = ["myalias"]
-  }
-
-  environment = {
-    something       = variable.something
-    foo             = env("BAH")
-    file            = file("./conf.txt")
-    abc             = "123"
-    SHIPYARD_FOLDER = shipyard()
-    HOME_FOLDER     = home()
-  }
-  
-  port_range {
-    range       = "8500-8502"
-    enable_host = true
-  }
-
+    image {
+        name = "consul:1.6.1"
+    }
 }
+```
 
-resource "sidecar" "envoy" {
-  target = resource.container.consul.id
+### Full Example
 
-  image {
-    name = "envoyproxy/envoy:v${variable.envoy_version}"
-  }
+```hcl
+resource "container" "unique_name" {
+    depends_on = ["resource.container.another"]
 
-  command = ["tail", "-f", "/dev/null"]
+    network {
+        id         = resource.network.cloud.id
+        ip_address = "10.16.0.200"
+        aliases    = ["my_unique_name_ip_address"]
+    }
 
-  volume {
-    source      = data("config")
-    destination = "/config"
-  }
+    image {
+        name     = "consul:1.6.1"
+        username = "repo_username"
+        password = "repo_password"
+    }
+
+    command = [
+        "consul",
+        "agent"
+    ]
+
+    environment = {
+        CONSUL_HTTP_ADDR = "http://localhost:8500"
+    }
+
+    volume {
+        source      = "./config"
+        destination = "/config"
+    }
+
+    port {
+        local  = 8500
+        remote = 8500
+        host   = 18500
+    }
+    
+    port_range {
+        range       = "9000-9002"
+        enable_host = true
+    }
+
+    privileged = false
 }
 ```
