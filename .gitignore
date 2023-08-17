@@ -18,7 +18,7 @@
 # misc
 .DS_Store
 .envrc
-*.pem
+# *.pem <- removed, since we don't manage our own certs for the actual website.
 .vscode
 
 # debug
