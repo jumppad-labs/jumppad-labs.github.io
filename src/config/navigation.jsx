@@ -64,7 +64,7 @@ export const navigation = [
       { title: 'Random Number', href: '/docs/resources/random/random_number' },
       { title: 'Random Password', href: '/docs/resources/random/random_password' },
       { title: 'Random UUID', href: '/docs/resources/random/random_uuid' },
-      { title: 'Remote Exec', href: '/docs/resources/random/remote_exec' },
+      { title: 'Remote Exec', href: '/docs/resources/exec/remote_exec' },
       { title: 'Root Certificate', href: '/docs/resources/cert/certificate_ca' },
       { title: 'Sidecar', href: '/docs/resources/container/sidecar' },
       { title: 'Task', href: '/docs/resources/docs/task' },
