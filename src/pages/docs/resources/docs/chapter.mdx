@@ -6,6 +6,8 @@ import MetaProperties from "../shared/meta.mdx"
 Bundles `chapter` resources together so it can be displayed in the `docs` resource.
 </Intro>
 
+## Properties
+
 <Properties>
   <Property name="title" type="string" value="">
     The title of the chapter.
@@ -21,32 +23,59 @@ Bundles `chapter` resources together so it can be displayed in the `docs` resour
     A list containing the IDs of `chapter` resources that need to be completed before the tasks in this chapter unlock.
   </Property>
 
-  <Property name="tasks" type="[]#task" value="" readonly>
-    An index generated from the chapters of the book.
+  <Property name="tasks" type="map[string]#task" value="">
+    Allows you to include tasks in the pages of the chapter.
+    
+    The key will be the ID that you can reference in the `Task` component within the content.
+    The value is a reference to the ID of a `task` resource.
+  </Property>
+
+  <Property name="index" type="string" value="" readonly>
+    A JSON index generated from the pages of the chapter.
   </Property>
 </Properties>
 
-## Page `page`
+---
+
+### Page `page`
 
 A page containing content and tasks.
+The first h1 (`# Title`) header in the content will be used as the title of the page.
 
 <Properties>
   <Property name="id" type="string" value="">
     The ID of the page.
   </Property>
 
-  <Property name="title" type="string" value="">
-    The title of the page.
-  </Property>
-
   <Property name="content" type="string" value="">
     The content of the page.
   </Property>
-
-  <Property name="tasks" type="map[string]string" value="">
-    Allows you to include tasks in the page.
-    
-    The key will be the ID that you can reference in the `Task` component within the content.
-    The value is a reference to the ID of a `task` resource.
-  </Property>
 </Properties>
+
+---
+
+## Examples
+
+```hcl
+resource "chapter" "installation" {
+  title = "Install terraform"
+
+  tasks = {
+    manual_installation = resource.task.manual_installation
+    verify_installation = resource.task.verify_installation
+    terraform_version = resource.task.terraform_version
+  }
+
+  page "manual_installation" {
+    content = file("docs/installation/manual_installation.mdx")
+  }
+
+  page "verify_installation" {
+    content = file("docs/installation/verify_installation.mdx")
+  }
+  
+  page "terraform_version" {
+    content = file("docs/installation/terraform_version.mdx")
+  }
+}
+```

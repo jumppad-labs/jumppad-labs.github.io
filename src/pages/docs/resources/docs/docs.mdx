@@ -1,7 +1,104 @@
+import MetaProperties from "../shared/meta.mdx"
+import NetworkAttachment from "../shared/network_attachment.mdx"
+import Image from "../shared/image.mdx"
+import Port from "../shared/port.mdx"
+
 # Docs `docs`
 
 <Intro>
-Documentation is work in progress, please see the old documentation at:
+The docs resource allows you to embed documentation and guides into your blueprints.
+The docs are authored in markdown and can be enriched using React components and html.
 
-https://shipyard.run/docs/resources/documentation
+Once the docs resource is created, the content will be available at `http://<resource-name>.docs.jumppad.dev:3000`.
 </Intro>
+
+## Properties
+
+<Properties>
+  <Property name="network" type="#network" required="true" value="">
+    The network to attach the docs to.
+  </Property>
+
+  <Property name="port" type="#port" value="3000">
+    The port to expose the docs on.
+  </Property>
+
+  <Property name="image" type="#image" value="ghcr.io/jumppad-labs/docs:v0.4.0">
+    The Docker image to use for the docs container.
+  </Property>
+
+  <Property name="content" type="[]book" required="true" value="">
+    A list of books to include in the docs.
+
+    ```hcl
+    content = [
+      resource.book.introduction,
+      module.course.output.book
+    ]
+    ```
+  </Property>
+
+  <Property name="logo" type="#logo" value="">
+    Override the default logo with a custom one.
+  </Property>
+
+  <Property name="assets" type="string" value="">
+    The path on the host to an assets folder that will be available at the `/assets' path of the docs.
+  </Property>
+
+  <Property name="fqdn" type="string" value="" readonly>
+    The name of the resulting docs container.
+  </Property>
+</Properties>
+
+<NetworkAttachment />
+<Image/>
+<Port/>
+
+---
+
+### Logo
+
+Logo defines a logo image to use in the docs.
+
+<Properties>
+  <Property name="url" type="string" required="true" value="">
+    The url to the logo image.
+  </Property>
+
+  <Property name="width" type="int" required="true" value="">
+    The width of the logo image in pixels.
+  </Property>
+
+  <Property name="height" type="int" required="true" value="">
+    The height of the logo image in pixels.
+  </Property>
+</Properties>
+
+---
+
+## Examples
+
+```hcl
+resource "docs" "docs" {
+  network {
+    id = resource.network.main.id
+  }
+
+  image {
+    name = "ghcr.io/jumppad-labs/docs:v0.4.0"
+  }
+
+  logo {
+    url = "https://mycompany.com/logo.png"
+    width = 32
+    height = 32
+  }
+
+  content = [
+    module.course.output.book
+  ]
+
+ assets = "${dir()}/assets"
+}
+```

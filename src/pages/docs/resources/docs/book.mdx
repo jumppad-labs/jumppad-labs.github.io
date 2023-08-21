@@ -6,16 +6,37 @@ import MetaProperties from "../shared/meta.mdx"
 Bundles `chapter` resources together so it can be displayed in the `docs` resource.
 </Intro>
 
+## Properties
+
 <Properties>
   <Property name="title" type="string" required="true" value="">
     The title of the book.
   </Property>
 
-  <Property name="chapters" type="[]string" required="true" value="">
-    A list containing the IDs of `chapter` resources included in the book.
+  <Property name="chapters" type="[]chapter" required="true" value="">
+    A list containing the `chapter` resources included in the book.
   </Property>
 
   <Property name="index" type="string" value="" readonly>
     A JSON index generated from the chapters of the book.
   </Property>
 </Properties>
+
+---
+
+## Examples
+
+```hcl
+resource "book" "terraform_basics" {
+  title = "Understanding Terraform basics"
+
+  chapters = [
+    resource.chapter.introduction,
+    resource.chapter.installation,
+    resource.chapter.workflow,
+    resource.chapter.providers,
+    resource.chapter.state,
+    resource.chapter.summary
+  ]
+}
+```

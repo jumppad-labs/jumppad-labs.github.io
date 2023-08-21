@@ -3,28 +3,63 @@ import MetaProperties from "../shared/meta.mdx"
 # Task `task`
 
 <Intro>
-Describes a task the user needs to perform and can then be validated, which can be included into `docs`.
+Describes a task the user needs to perform, which can be included into `docs`.
+Tasks can be validated using the `check` defined in the conditions. 
+The task can also be skipped, which will instead run the `solve` to complete the task.
 </Intro>
 
+## Properties
+
 <Properties>
+  <Property name="config" type="#config" value="">
+    Allows you to specify configuration for the conditions of this task.
+
+    These values can be overridden within the validation of individual conditions.
+  </Property>
+
   <Property name="condition" type="#condition" value="">
     Allows you to specify conditions that need to be met in order to complete the task.
+
+    This stanza can be specified multiple times.
   </Property>
 
   <Property name="prerequisites" type="[]string" value="">
     A list containing the IDs of `task` resources that need to be completed before the task unlocks.
   </Property>
+</Properties>
 
-  <Property name="progress" type="string" value="" readonly>
-    A JSON object containing the progress of the task.
+---
+
+### Config
+
+Configuration that will be used for conditions when no values are specified for the validation of individual conditions.
+
+<Properties>
+  <Property name="timeout" type="int" value="10">
+    The number of seconds to wait before timing out the validation.
   </Property>
 
-  <Property name="validation" type="string" value="">
-    A JSON object containing the validation of the task.
+  <Property name="target" type="string" value="">
+    The target where the validation should be executed.
+  </Property>
+
+  <Property name="user" type="string" value="">
+    The user the validation should be executed as.
+  </Property>
+
+  <Property name="group" type="string" value="">
+    The group the validation should be executed as.
+  </Property>
+
+  <Property name="working_directory" type="string" value="">
+    The directory the validation should be executed in.
   </Property>
 </Properties>
 
-## Condition `condition`
+
+---
+
+### Condition
 
 Allows you to validate if a user has completed the task.
 
@@ -38,12 +73,30 @@ Allows you to validate if a user has completed the task.
     This is displayed to the user to describe what condition needs to be met.
   </Property>
 
-  <Property name="check" type="string" required="true" value="">
-    The commands that need to be executed when validating the condition.
+  <Property name="setup" type="#validation" value="">
+    The setup will be executed when the task gets unlocked.
   </Property>
 
-  <Property name="solve" type="string" value="">
-    The commands that need to be executed in order to complete the task.
+  <Property name="cleanup" type="#validation" value="">
+    The cleanup will be executed when the task gets completed or skipped.
+  </Property>
+
+  <Property name="check" type="#validation" value="">
+    A check that will be executed when validating the condition.
+  </Property>
+
+  <Property name="solve" type="#validation" value="">
+    A solution that will be applied when skipping the condition.
+  </Property>
+</Properties>
+
+---
+
+### Validation
+
+<Properties>
+  <Property name="script" type="string" required="true" value="">
+    The script that is executed when running the validation.
   </Property>
 
   <Property name="failure_message" type="string" required="true" value="">
@@ -62,7 +115,49 @@ Allows you to validate if a user has completed the task.
     The user the validation should be executed as.
   </Property>
 
+  <Property name="group" type="string" value="">
+    The group the validation should be executed as.
+  </Property>
+
   <Property name="working_directory" type="string" value="">
     The directory the validation should be executed in.
   </Property>
 </Properties>
+
+---
+
+## Examples
+
+```hcl
+resource "task" "manual_installation" {
+  prerequisites = []
+  
+  config {
+    user = "root"
+    target = variable.terraform_target
+  }
+
+  condition "binary_exists" {
+    description = "Terraform installed on path"
+
+    check {
+      script = file("checks/installation/manual_installation/binary_exists")
+      failure_message = "terraform binary not found on the PATH"
+    }
+
+    solve {
+      script = file("checks/installation/manual_installation/solve")
+      timeout = 60
+    }
+  }
+
+  condition "latest_version" {
+    description = "Terraform binary is the latest version"
+
+    check {
+      script = template_file("checks/installation/manual_installation/version_latest", { name = "terraform"})
+      failure_message = "terraform binary is not the latest version"
+    }
+  }
+}
+```
