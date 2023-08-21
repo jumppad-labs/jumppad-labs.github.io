@@ -59,7 +59,6 @@ export const navigation = [
       { title: 'Network', href: '/docs/resources/network' },
       { title: 'Nomad Cluster', href: '/docs/resources/nomad/nomad_cluster' },
       { title: 'Nomad Job', href: '/docs/resources/nomad/nomad_job' },
-      { title: 'Output', href: '/docs/resources/internal/output' },
       { title: 'Random ID', href: '/docs/resources/random/random_id' },
       { title: 'Random Number', href: '/docs/resources/random/random_number' },
       { title: 'Random Password', href: '/docs/resources/random/random_password' },
