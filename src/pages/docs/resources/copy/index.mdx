@@ -1,7 +1,36 @@
 # Copy `copy`
 
 <Intro>
-Documentation is work in progress, please see the old documentation at:
-
-https://shipyard.run/docs/resources/copy
+The `copy` resource allows files and directories to be copied
+from one location to another.
 </Intro>
+
+## Properties
+
+<Properties>
+  <Property name="source" type="string" required="true" value=""> 
+    Source file or directory.
+  </Property>
+  <Property name="destination" type="string" required="true" value=""> 
+    Destination file or directory.
+  </Property>
+  <Property name="permissions" type="string" required="false" value="0777"> 
+    Unix file permissions to apply to coppied files and direcories.
+  </Property>
+  <Property name="copied_files" type="[]string" required="optional" value="" readonly> 
+    List of the full paths of copied files.
+  </Property>
+</Properties>
+
+<MetaProperties/>
+
+## Examples
+
+### Copies files from ./myfiles and sets read / write permissions
+
+```hcl
+resource "copy" "myfiles" {
+  source = "./myfolder"
+  destination = "./mydestination"
+  permissions = "0666"
+```

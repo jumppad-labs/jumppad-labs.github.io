@@ -3,27 +3,132 @@ import MetaProperties from "../shared/meta.mdx"
 # Helm `helm`
 
 <Intro>
-The `helm` resource allows Helm charts to be provisioned to `k8s_cluster` resources.
-
-Documentation is work in progress, please see the old documentation at:
-
-https://shipyard.run/docs/resources/helm
+The `helm` resource allows Helm charts to be provisioned to `k8s_cluster` 
+resources.
 </Intro>
 
 ## Properties
 
 <Properties>
-  <Property name="cluster" type="string" required="true" value="" readonly> 
-    Text
+  <Property name="cluster" type="k8s_cluster" required="true" value=""> 
+    A reference to a kubernetes clusters to apply the chart to. Jumppad
+    waits until the referenced cluster is healthy before attempting t
+    apply any charts.
 
     ```hcl
-    code
+    resource "helm" "consul" {
+      cluster = resource.k8s_cluster.k3s
+    }
     ```
   </Property>
 
-  <Property name="cluster" type="string" required="true" value="" readonly> 
-    Text
+  <Property name="repository" type="#helm_repository" required="optional" value=""> 
+    The details for the Helm chart repository where the chart exists. If this
+    property is not specifed, the chart location is assumed to be either a local
+    directory or Git reference. 
   </Property>
+
+  <Property name="chart" type="string" required="true" value=""> 
+    The name of the chart within the repository, or a souce
+    such as a git repository, URL, or file path where the chart
+    file exist.
+  </Property>
+  
+  <Property name="version" type="string" required="optional" value=""> 
+    Semver of the chart to install, only used when `repository` is
+    specified.
+  </Property>
+  
+  <Property name="values" type="string" required="optional" value=""> 
+    File path to a valid Helm values file to be used when applying the config.
+
+    ```hcl
+    resource "helm" "mychart" {
+      values = "./values.yaml"
+    }
+    ```
+  </Property>
+  
+  <Property name="values_string" type="map[string]string" required="optional" value=""> 
+    Map containing helm values to apply with the chart.
+
+    ```hcl
+    resource "helm" "mychart" {
+      values_string = {
+        "global.storage" = "128Mb"
+      }
+    }
+    ```
+  </Property>
+  
+  <Property name="namespace" type="string" required="optional" value="default"> 
+    Kubernetes namespace to apply the chart to.
+  </Property>
+  
+  <Property name="create_namespace" type="boolean" required="optional" value="false"> 
+    If the namespace does not exist, should the helm resource attempt to create it.
+  </Property>
+  
+  <Property name="skip_crds" type="boolean" required="optional" value="false"> 
+    If the chart defines custom resource definitions, should these be ignored.
+  </Property>
+  
+  <Property name="retry" type="int" required="optional" value="1"> 
+    Enables the ability to retry the installation of a chart.
+  </Property>
+  
+  <Property name="timeout" type="string" required="optional" value="300s"> 
+    Maximum time the application phase of a chart can run before failing.
+    This duration is different to the `health_check` that runs after 
+    a chart has been applied.
+  </Property>
+  
+  <Property name="health_check" type="#health_check" required="optional" value=""> 
+    Health check to run after installing the chart.
+  </Property>
+</Properties>
+
+
+## helm_repository
+
+A `helm_repository` stanza defines the details for a remote helm 
+repository.
+
+<Properties>
+  <Property name="name" type="string" required="true" value=""> 
+    The name of the repository.
+  </Property>
+  <Property name="url" type="string" required="true" value=""> 
+    The repository URL.
+  </Property>
+</Properties>
+
+## health_check
+
+A health_check stanza allows the definition of a health check which must 
+pass before the resource is marked as successfully created.
+
+```hcl
+health_check {
+  timeout = "60s"
+  pods = [
+    "component=server,app=consul", 
+    "component=client,app=consul"
+  ]
+}
+```
+
+<Properties>
+  <Property name="timeout" type="duration" required="true" value="">
+    The maximum duration to wait before marking the health check as failed. 
+    Expressed as a Go duration, e.g. `1s` = 1 second, `100ms` = 100 milliseconds.
+  </Property>
+
+  <Property name="pods" type="[]string" required="true" value="">
+    An array of kubernetes selector syntax. The healthcheck ensures that all
+    containers defined by the selector are running before passing the healthcheck.
+  </Property>
+
 </Properties>
 
 <MetaProperties/>
@@ -34,7 +139,7 @@ https://shipyard.run/docs/resources/helm
 
 ```hcl
 resource "helm" "consul" {
-  cluster = resource.k8s_cluster.k3s.id
+  cluster = resource.k8s_cluster.k3s
 
   repository {
     name = "hashicorp"
@@ -62,7 +167,7 @@ resource "helm" "consul" {
 
 ```hcl
 resource "helm" "vault" {
-  cluster = resource.k8s_cluster.k3s.id
+  cluster = resource.k8s_cluster.k3s
   chart = "github.com/hashicorp/vault-helm"
 
   values_string = {
@@ -75,7 +180,7 @@ resource "helm" "vault" {
 
 ```hcl
 resource "helm" "vault" {
-  cluster = resource.k8s_cluster.k3s.id
+  cluster = resource.k8s_cluster.k3s
   chart   = "./files/helm/vault"
 
   values_string = {
