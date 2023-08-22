@@ -121,6 +121,9 @@ and client nodes.
     This image is added to the Nomad clients docker cache enabling jobs to use
     images that may not be in the local registry.
 
+    Jumppad tracks changes to copied images, should the image change running
+    `jumppad up` would push any changes to the cluster automatically.
+
     ```hcl
     copy_image {
       name = "mylocalimage:versoin"

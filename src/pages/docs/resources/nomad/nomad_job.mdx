@@ -5,28 +5,30 @@ import MetaProperties from "../shared/meta.mdx"
 <Intro>
 The `nomad_job` resource allows you to apply one or more Nomad job files to
 a cluster.
+
+Jumppad monitors changes to the jobs defined in the `paths` property and 
+automatically recreates this resource when `jumppad up` is called.
 </Intro>
 
 ## Properties
 
 <Properties>
-  <Property name="cluster" type="string" required="true" value="">
-    The id of the cluster to apply the jobs to. Commonly this is set using
-    the interpolated value `id` from the cluster. Setting the cluster id this
-    way ensures that the cluster is created and healthy before any jobs are 
-    applied.
+  <Property name="cluster" type="nomad_cluster" required="true" value="">
+    The reference to a cluster to apply the jobs to. Nomad jobs
+    are only applied when the referenced cluster is created and healthy.
 
     ```hcl
       resource "nomad_job" "example" {
-        cluster = resource.nomad_cluster.dev.id
+        cluster = resource.nomad_cluster.dev
         ...
       }
     ```
   </Property>
-  <Property name="pahts" type="[]string" required="true" value="">
+  <Property name="paths" type="[]string" required="true" value="">
     Paths to the Nomad job files to apply to the cluster.
   </Property>
-  <Property name="paths" type="#health_check" required="false" value="">
+
+  <Property name="health_check" type="#health_check" required="false" value="">
     Optional health check to perform after the jobs have been applied, this resource
     will not complete until the health checks are passing.
   </Property>
