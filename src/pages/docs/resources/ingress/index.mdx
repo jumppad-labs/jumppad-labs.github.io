@@ -5,13 +5,27 @@ import MetaProperties from "../shared/meta.mdx"
 <Intro>
 The `ingress` resource allows you to expose services in Kubernetes and Nomad
 tasks to the local machine.
+
+It also allows you to expose applications that are running to the local machine
+to a Kubernetes or Nomad cluster.
 </Intro >
 
 ## Properties
 
 <Properties>
   <Property name="port" type="int" required="true" value="">
-    The local port to expose the service on.
+    If the application to be exposed exists on the target then this is the
+    port that will be opened on the local machine that will direct traffic
+    to the remote service.
+
+    If the application exists on the local machine then this is the port
+    where the application is running.
+  </Property>
+  
+  <Property name="expose_local" type="boolean" required="false" value="false">
+    If set to true a service running on the local machine will be exposed to 
+    the target cluster. If false then a service running on the target cluster
+    will be exposed to the local machine.
   </Property>
   
   <Property name="target" type="#traffic_target" required="true" value="">
@@ -22,11 +36,18 @@ tasks to the local machine.
     The unique identifier for the created ingress.
   </Property>
   
-  <Property name="address" type="string" required="false" value="" readonly>
-    The full address where the ingress can be reached from the local network.
+  <Property name="local_address" type="string" required="false" value="" readonly>
+    The full address where the exposed application can be reached from the 
+    local network.
 
     Generally this is the local ip address of the machine running Jumppad and the
-    port where the service is exposed.
+    port where the application is exposed.
+  </Property>
+  
+  <Property name="remote_address" type="string" required="false" value="" readonly>
+    The address of the exposed service as it would be rechable from the target
+    cluster. This is generally a kubernetes service reference and port or for Nomad
+    a rechable IP address and port.
   </Property>
 </Properties>
 
@@ -35,8 +56,27 @@ tasks to the local machine.
 ## traffic_target
 
 <Properties>
-  <Property name="id" type="string" required="true" value="">
-    The id of the `nomad_cluster` or `kubernetes_cluster` resource.
+  <Property name="resource" type="remote cluster" required="true" value="">
+    A reference to the `nomad_cluster` or `kubernetes_cluster` resource.
+
+    ```hcl
+    resource "k8s_cluster" "dev" {
+    }
+
+    resource "ingress" "consul_http" {
+      port = 18500
+
+      target {
+        resource = resource.k8s_cluster.dev
+        port     = 8500
+
+        config = {
+          service   = "consul-consul-server"
+          namespace = "default"
+        }
+      }
+    }
+    ```
   </Property>
   
   <Property name="port" type="int" required="true" value="">
@@ -46,7 +86,7 @@ tasks to the local machine.
   </Property>
   
   <Property name="named_port" type="string" required="true" value="">
-    The streing reference for the target service port.
+    The string reference for the target service port.
 
     Either `port` or `named_port` must be specified.
   </Property>
@@ -74,7 +114,7 @@ tasks to the local machine.
 
 ## Examples
 
-### Nomad Ingress
+### Nomad Remote Service
 
 Exposes the the `http` port for the task `fake_service` in the group `fake_service` 
 in the job `example_1` locally on port `19090`
@@ -84,7 +124,7 @@ resource "ingress" "fake_service_1" {
   port = 19090
 
   target {
-    id         = resource.nomad_cluster.dev.id
+    resource   = resource.nomad_cluster.dev
     named_port = "http"
 
     config = {
@@ -96,7 +136,7 @@ resource "ingress" "fake_service_1" {
 }
 ```
 
-### Kubernets Ingress
+### Kubernets Remote Service
 
 Exposes the Kubernets port `9090` for the Kubernetes service `fake-service` 
 in the `default` namespace locally on port `19090`.
@@ -106,12 +146,44 @@ resource "ingress" "fake_service_1" {
   port = 19090
 
   target {
-    id   = resource.k8s_cluster.k3s.id
+    resource = resource.k8s_cluster.k3s.id
     port = 9090
 
     config = {
       service   = "fake-service"
       namespace = "default"
+    }
+  }
+}
+```
+
+### Kubernets Local Service
+
+Exposes the local port `9090` used by the app container, as a the Kubernetes service `fake-service` 
+in the `jumppad` namespace on port `80`.
+
+```hcl
+resource "container" "app" {
+  image {
+    name = variable.image
+  }
+
+  port {
+    local  = 9090
+    remote = 9090
+    host = 9090 
+  }
+}
+
+resource "ingress" "fake_service_1" {
+  port = 9090
+
+  target {
+    resource = resource.k8s_cluster.k3s
+    port = 80
+
+    config = {
+      service   = "fake-service"
     }
   }
 }
