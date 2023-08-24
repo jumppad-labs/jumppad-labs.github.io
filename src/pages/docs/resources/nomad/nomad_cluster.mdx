@@ -30,6 +30,10 @@ and client nodes.
     with `n` clients. `client_nodes` can be updated, if the value changes and the
     user runs `jumppad up`, jumppad will attempt to nondestructively scale the cluster. 
   </Property>
+  
+  <Property name="datacenter" type="string" required="false" value="dc1">
+    Nomad datacenter for the clients, defaults to `dc1` 
+  </Property>
 
   <Property name="image" type="#image" required="false" value="">
     Image defines a Docker image to use when creating the container. By default the nomad
