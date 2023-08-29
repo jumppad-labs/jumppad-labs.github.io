@@ -37,4 +37,10 @@ the file declaring the container.
 
     For more information please see the Docker documentation [https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation)
   </Property>
+  <Property name="selinux_relabel" type="string" required="false" value="">
+    Configures Selinux relabeling for the container (usually specified as :z or :Z) and can be one of the following values:
+
+    - shared (Equivalent to :z)
+    - private (Equivalent to :Z)
+  </Property>
 </Properties>
