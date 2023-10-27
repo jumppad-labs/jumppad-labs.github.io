@@ -13,7 +13,7 @@ import { ModeToggle } from '@/components/ModeToggle'
 import { Navigation, TopLevelNavItem } from '@/components/Navigation'
 
 const navigation = [
-  { name: 'Docs', href: '/docs' },
+  { name: 'Docs', href: '/docs/introduction/installation' },
 ]
 
 export const Header = forwardRef(function Header({ className }, ref) {
