@@ -1,0 +1,232 @@
+import MetaProperties from "../shared/meta.mdx"
+import NetworkAttachment from "../shared/network_attachment.mdx"
+import Image from "../shared/image.mdx"
+import Volume from "../shared/volume.mdx"
+
+# Exec
+
+<Intro>
+The `exec` resource allows the execution of arbitrary commands and scripts.
+Depending on the parameters specified, the commands are executed either on the 
+local machine or inside of a container. 
+
+When either the `image` or `target` fields are specified, the command is executed
+inside of a container. When neither of these fields are specified, the command is
+executed on the local machine.
+</Intro>
+
+## Local execution
+
+When running on the local machine, the command runs in the local user space, and 
+has access to all the environment variables that the user executing jumppad run 
+has access too. Additional environment variables, and the working directory for 
+the command can be specified as part of the resource.
+
+Log files for an exec running on the local machine are written to `$HOME/.jumppad/logs/exec_[name].log` 
+and the rendered script can be found in the jumppad temp directory `$HOME/.jumppad/tmp/exec[name].sh`.
+
+## Remote execution
+
+Execution can either be in a stand alone container or can target an existing 
+and running container. When targeting an existing container, the `target` field
+must be specified. When running in a stand alone container, the `image` block must
+be specified.
+
+## Properties
+
+<Properties>
+  <Property name="script" type="string" required="true" value=""> 
+    The script to execute.
+
+    ```hcl
+    resource "exec" "inline" {
+      script = <<-EOF
+      #!/bin/bash
+      ls -lha
+      EOF
+    }
+
+    resource "exec" "file" {
+      script = file("script.sh")
+    }
+
+    resource "exec" "template" {
+      script = template_file("script.sh.tpl", {
+        foo = "bar"
+      })
+    }
+    ```
+  </Property>
+
+  <Property name="working_directory" type="string" required="optional" value=""> 
+    The working directory to execute the script in.
+  </Property>
+
+  <Property name="timeout" type="string" required="optional" value="0s"> 
+    The timeout for the script to execute as a duration e.g. 30s.
+  </Property>
+
+  <Property name="environment" type="map[string]string" required="optional" value=""> 
+    Environment variables to set for the script.
+
+    ```hcl
+    resource "exec" "env" {
+      environment = {
+        FOO = "bar"
+      }
+
+      script = <<-EOF
+      #!/bin/bash
+      echo $${FOO}
+      EOF
+    }
+    ```
+  </Property>
+</Properties>
+
+---
+
+### The following properties are only valid for local execution.
+
+<Properties>
+  <Property name="daemon" type="bool" required="false" value="false"> 
+    The process will be run as a daemon if set to true.
+  </Property>
+
+  <Property name="pid" type="int" readonly required="false" value=""> 
+    This is the pid of the parent process.
+  </Property>
+</Properties>
+
+---
+
+### The following properties are only valid for remote execution in a target container.
+
+<Properties>
+  <Property name="target" type="ref" required="false" value=""> 
+    A reference to a target `container` resource to execute the script in.
+
+    ```hcl
+    resource "container" "alpine" {
+      image {
+        name = "alpine"
+      }
+    }
+
+    resource "exec" "uname" {
+      target = resource.container.alpine
+
+      script = <<-EOF
+      #!/bin/bash
+      uname -a
+      EOF
+    }
+    ```
+  </Property>
+</Properties>
+
+---
+
+### The following properties are only valid for remote execution in a standalone container.
+
+<Properties>
+  <Property name="image" type="#image" required="false" value=""> 
+    The image to use for the container.
+  </Property>
+
+  <Property name="network" type="#network_attachment" required="false" value=""> 
+    The network to attach the container to.
+  </Property>
+
+  <Property name="volume" type="#volume" required="false" value=""> 
+    The volumes to mount to the container.
+  </Property>
+
+  <Property name="run_as" type="#user" required="false" value=""> 
+    The user to run the script as.
+  </Property>
+</Properties>
+
+<Image/>
+<NetworkAttachment />
+<Volume/>
+
+---
+
+### run_as
+
+User and Group configuration to be used when running a container, by default Docker runs commands in the container as root id 0.
+
+<Properties>
+  <Property name="user" type="string" required="false" value="">
+    Linux user ID or user name to run the container as, this overrides the default user configured in the container image. 
+  </Property>
+  <Property name="group" type="string" required="false" value="">
+    Linux group ID or group name to run the container as, this overrides the default group configured in the container image.
+  </Property>
+</Properties>
+
+---
+
+<MetaProperties/>
+
+---
+
+## Examples
+
+```hcl
+resource "exec" "install" {
+  script = <<-EOF
+  #!/bin/sh
+  OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+  ARCH=$(uname -m | tr '[:upper:]' '[:lower:]')
+
+  if [ ! -f /tmp/consul ]; then
+    curl -L -o /tmp/consul.zip \
+      https://releases.hashicorp.com/consul/1.16.2/consul_1.16.2_$${OS}_$${ARCH}.zip
+    cd /tmp && unzip ./consul.zip
+  fi
+  EOF
+}
+
+resource "exec" "run" {
+  depends_on = ["resource.exec.install"]
+
+  script = <<-EOF
+  #!/bin/sh
+  /tmp/consul agent -dev
+  EOF
+
+  daemon = true
+}
+```
+
+```hcl
+resource "container" "alpine" {
+  image {
+    name = "alpine"
+  }
+
+  command = ["tail", "-f", "/dev/null"]
+}
+
+resource "exec" "in_container" {
+  target = resource.container.alpine
+
+  script = <<-EOF
+  #/bin/sh
+  ls -las
+  EOF
+}
+
+resource "exec" "standalone" {
+  image {
+    name = "alpine"
+  }
+
+  script = <<-EOF
+  #/bin/sh
+  ls -las
+  EOF
+}
+```
