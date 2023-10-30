@@ -15,7 +15,7 @@ inside of a container. When neither of these fields are specified, the command i
 executed on the local machine.
 </Intro>
 
-## Local execution
+### Local execution
 
 When running on the local machine, the command runs in the local user space, and 
 has access to all the environment variables that the user executing jumppad run 
@@ -25,7 +25,7 @@ the command can be specified as part of the resource.
 Log files for an exec running on the local machine are written to `$HOME/.jumppad/logs/exec_[name].log` 
 and the rendered script can be found in the jumppad temp directory `$HOME/.jumppad/tmp/exec[name].sh`.
 
-## Remote execution
+### Remote execution
 
 Execution can either be in a stand alone container or can target an existing 
 and running container. When targeting an existing container, the `target` field
