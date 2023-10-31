@@ -13,10 +13,10 @@ jumppad up <file|directory|url> [flags]
 ## Flags
 
 <Properties>
-  <Property name="force-update" type="boolean" required="false" value="false">
+  <Property name="force-update" type="bool" required="false" value="false">
     Jumppad caches Docker images, Helm Charts, and Blueprints downloaded from external sources. In the instance you would like to force jumppad to redownload this resource, for example you have a docker container using the `latest` tag and would like to update it to the most recent checksum. You can use the `force-update` flag.
   </Property>
-  <Property name="no-browser" type="boolean" required="false" value="false">
+  <Property name="no-browser" type="bool" required="false" value="false">
     Jumppad allows you to optionally override the behavior of resources which have browser open parameters. Setting this flag to true stops Jumppad from opening browser windows.
   </Property>
   <Property name="var" type="string" required="true">
@@ -26,7 +26,7 @@ jumppad up <file|directory|url> [flags]
   <Property name="vars-file" type="string" required="false">
     Allows you to specify the location of a variable file. By default Jumppad will attempt to load a `*.vars` file from the Blueprint folder, this flag allows you to specify an additional variables value file.
   </Property>
-  <Property name="y" type="boolean" required="false">
+  <Property name="y" type="bool" required="false">
     When specified, answers `yes` to any confirmation prompts for the user.
   </Property>
 </Properties>

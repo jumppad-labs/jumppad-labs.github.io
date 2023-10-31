@@ -97,11 +97,11 @@ to the target container.
     ```
   </Property>
 
-  <Property name="privileged" type="boolean" required="false" value="false">
+  <Property name="privileged" type="bool" required="false" value="false">
     Should the container run in Docker privileged mode?
   </Property>
   
-  <Property name="max_restart_count" type="number" required="false" value="0">
+  <Property name="max_restart_count" type="int" required="false" value="0">
     The maximum number of times a container will be restarted when it exits with a status code other than 0
   </Property>
   
@@ -347,10 +347,10 @@ If the command or script receives an exit code `0` the check passes.
 A resources type allows you to configure the maximum resources which can be consumed.
 
 <Properties>
-  <Property name="cpu" type="number" required="false" value="">
+  <Property name="cpu" type="int" required="false" value="">
     Set the maximum CPU which can be consumed by the container in MHz, 1 CPU == 1000MHz.
   </Property>
-  <Property name="cpu_pin" type="[]number" required="false" value="">
+  <Property name="cpu_pin" type="[]int" required="false" value="">
     Pin the container CPU consumption to one or more logical CPUs. For example to pin the container to the core 1 and 4.
 
     ```

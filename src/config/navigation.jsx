@@ -1,11 +1,5 @@
 export const navigation = [
   {
-    title: 'Index',
-    links: [
-      { title: 'Index', href: '/docs' },
-    ],
-  },
-  {
     title: 'Introduction',
     links: [
       { title: 'Installation', href: '/docs/introduction/installation' },
@@ -50,12 +44,12 @@ export const navigation = [
       { title: 'Container', href: '/docs/resources/container/container' },
       { title: 'Copy', href: '/docs/resources/copy' },
       { title: 'Docs', href: '/docs/resources/docs/docs' },
+      { title: 'Exec', href: '/docs/resources/exec' },
       { title: 'Helm', href: '/docs/resources/helm' },
       { title: 'Ingress', href: '/docs/resources/ingress' },
       { title: 'Kubernetes Cluster', href: '/docs/resources/k8s/kubernetes_cluster' },
       { title: 'Kubernetes Config', href: '/docs/resources/k8s/kubernetes_config' },
       { title: 'Leaf Certificate', href: '/docs/resources/cert/certificate_leaf' },
-      { title: 'Local Exec', href: '/docs/resources/exec/local_exec' },
       { title: 'Network', href: '/docs/resources/network' },
       { title: 'Nomad Cluster', href: '/docs/resources/nomad/nomad_cluster' },
       { title: 'Nomad Job', href: '/docs/resources/nomad/nomad_job' },
@@ -63,7 +57,6 @@ export const navigation = [
       { title: 'Random Number', href: '/docs/resources/random/random_number' },
       { title: 'Random Password', href: '/docs/resources/random/random_password' },
       { title: 'Random UUID', href: '/docs/resources/random/random_uuid' },
-      { title: 'Remote Exec', href: '/docs/resources/exec/remote_exec' },
       { title: 'Root Certificate', href: '/docs/resources/cert/certificate_ca' },
       { title: 'Sidecar', href: '/docs/resources/container/sidecar' },
       { title: 'Task', href: '/docs/resources/docs/task' },
