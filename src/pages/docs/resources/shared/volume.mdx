@@ -37,4 +37,10 @@ the file declaring the container.
     even worse it will be writable (since only the toplevel bind is set readonly, not the children). If `bind_propagation_non_recursive` is set to `true` then the container will only see an
     empty `/host/run`, meaning the `tmpfs` which is typically mounted to `/run` on the host is not propagated into the container.
   </Property>
+  <Property name="selinux_relabel" type="string" required="false" value="">
+    Configures Selinux relabeling for the container (usually specified as :z or :Z) and can be one of the following values:
+
+    - shared (Equivalent to :z)
+    - private (Equivalent to :Z)
+  </Property>
 </Properties>
