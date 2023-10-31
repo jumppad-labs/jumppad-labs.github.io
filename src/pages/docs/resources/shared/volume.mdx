@@ -31,10 +31,10 @@ the file declaring the container.
 
     For more information please see the Docker documentation [https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation)
   </Property>
-  <Property name="bind_propagation_non_recursive" type="bool" required="false" value="false">
-    We are going to be 100% honest, we have no idea what this option does, but it is a thing so we made it configuable. 
-    Would love a PR if you actually know how this is supposed to work.
-
-    For more information please see the Docker documentation [https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation)
+  <Property name="bind_propagation_non_recursive" type="boolean" required="false" value="false">
+    Configures recursiveness of the bind mount. By default Docker mounts with the equivalent of `mount --rbind` meaning that mounts below the the source directory are visible in the container. 
+    For instance running `docker run --rm --mount type=bind,src=/,target=/host,readonly busybox` will make `/run` of the host available as `/host/run` in the container -- and to make matters
+    even worse it will be writable (since only the toplevel bind is set readonly, not the children). If `bind_propagation_non_recursive` is set to `true` then the container will only see an
+    empty `/host/run`, meaning the `tmpfs` which is typically mounted to `/run` on the host is not propagated into the container.
   </Property>
 </Properties>
