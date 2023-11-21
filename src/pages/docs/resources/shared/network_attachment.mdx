@@ -38,4 +38,9 @@ Network attachment defines a network to which the container is attached.
   <Property name="name" type="string" required="false" value="" readonly>
     Name will equal the name of the network as created by jumppad.
   </Property>
+
+  <Property name="assigned_address" type="string" required="false" value="" readonly>
+    assigned_address will equal the assigned IP address for the network. This will equal
+    ip_address if set; otherwise, this is the automatically assigned ip_address.
+  </Property>
 </Properties>
