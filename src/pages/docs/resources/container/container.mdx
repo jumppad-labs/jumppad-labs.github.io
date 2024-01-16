@@ -362,7 +362,7 @@ The following example creates a container from an existing registry image.
 ```hcl
 resource "container" "unique_name" {
     network {
-        id         = resource.network.cloud.id
+        id         = resource.network.cloud.resource_id
         ip_address = "10.16.0.203"
         aliases    = ["my_unique_name_ip_address"]
     }
@@ -380,7 +380,7 @@ resource "container" "unique_name" {
     depends_on = ["resource.container.another"]
 
     network {
-        id         = resource.network.cloud.id
+        id         = resource.network.cloud.resource_id
         ip_address = "10.16.0.200"
         aliases    = ["my_unique_name_ip_address"]
     }

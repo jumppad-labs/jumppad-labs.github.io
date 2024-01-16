@@ -23,7 +23,7 @@ to the target container.
     The id of a container to attach the sidecar to.
 
     ```hcl
-      resource.container.mine.id
+      resource.container.mine.resource_id
     ```
   </Property>
 
@@ -419,7 +419,7 @@ resource "container" "consul" {
   }
 
   network {
-    id         = resource.network.onprem.id
+    id         = resource.network.onprem.resource_id
     ip_address = "10.6.0.200" // optional
     aliases    = ["myalias"]
   }
@@ -441,7 +441,7 @@ resource "container" "consul" {
 }
 
 resource "sidecar" "envoy" {
-  target = resource.container.consul.id
+  target = resource.container.consul.resource_id
 
   image {
     name = "envoyproxy/envoy:v${variable.envoy_version}"

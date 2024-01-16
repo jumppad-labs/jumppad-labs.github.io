@@ -45,20 +45,12 @@ following properties.
     If set to false the resource will not be created.
   </Property>
 
-  <Property name="id" type="string" required="false" value="" readonly>
-    The unique `id` for the resource, this value can be used in interpolation
+  <Property name="resource_id" type="string" required="false" value="" readonly>
+    The unique `resource_id` for the resource, this value can be used in interpolation
     syntax to reference properties for a resource.
-
-    ```
-      resource.container.nic
-      ouput.myoutput
-      module.mine.submodule.resource.container.nic
-      module.mine.submodule.ouput.myoutput
-
-    ```
   </Property>
   
-  <Property name="name" type="string" required="false" value="" readonly>
+  <Property name="resource_name" type="string" required="false" value="" readonly>
     The name of the resource, *note:* this value is not unique and does not
     take into account if the resource is embedded in a module.
 
@@ -69,7 +61,7 @@ following properties.
     ```
   </Property>
   
-  <Property name="type" type="string" required="true" value="" readonly>
+  <Property name="resource_type" type="string" required="true" value="" readonly>
     The string type of the resource.
     
     This value is the same as the `type` field of the resource. i.e. "container"
@@ -79,7 +71,7 @@ following properties.
     ```
   </Property>
   
-  <Property name="module" type="string" required="false" value="" readonly>
+  <Property name="resource_module" type="string" required="false" value="" readonly>
     The full module path for the resource. Should the resource be included 
     in a module, this value will be the name of the module and any parent 
     modules that the resource is embedded in.
@@ -100,7 +92,7 @@ following properties.
     ```
   </Property>
   
-  <Property name="file" type="string" required="false" value="" readonly>
+  <Property name="resource_file" type="string" required="false" value="" readonly>
     The absolute path of the file that contains this resource
   </Property>
   

@@ -37,7 +37,7 @@ contained in module `parent`. Then the FQRN and the name within docker would be:
 
     ```hcl
       variables = {
-        network_id  = resource.network.cloud.id
+        network_id  = resource.network.cloud.resource_id
         consul_port = 18501
       }
     ```
@@ -61,7 +61,7 @@ module "consul_dc1" {
   source = "./module_k3s"
 
   variables = {
-    network_id  = resource.network.cloud.id
+    network_id  = resource.network.cloud.resource_id
     consul_port = 18500
   }
 }
@@ -74,7 +74,7 @@ module "consul_dc2" {
   source = "./module_k3s"
 
   variables = {
-    network_id  = resource.network.cloud.id
+    network_id  = resource.network.cloud.resource_id
     consul_port = 18501
   }
 }

@@ -146,7 +146,7 @@ resource "ingress" "fake_service_1" {
   port = 19090
 
   target {
-    resource = resource.k8s_cluster.k3s.id
+    resource = resource.k8s_cluster.k3s.resource_id
     port = 9090
 
     config = {

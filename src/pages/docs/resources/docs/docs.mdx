@@ -82,7 +82,7 @@ Logo defines a logo image to use in the docs.
 ```hcl
 resource "docs" "docs" {
   network {
-    id = resource.network.main.id
+    id = resource.network.main.resource_id
   }
 
   image {

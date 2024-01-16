@@ -1,0 +1,113 @@
+import MetaProperties from "../shared/meta.mdx"
+
+# Container Registry `container_registry`
+
+<Intro>
+Jumppad automatically caches container images in a registry to speed up 
+load times and to save bandwidth when using `nomad_cluster` and `k8s_cluster`
+resources.
+
+To ensure immutability for environments `nomad_cluster` and `k8s_cluster` resources
+do not use the hosts local docker daemon. Each node in the cluster has its own
+docker daemon and image cache. Because of this, images must be pulled from a
+remote source when the cluster is created. 
+
+To save bandwidth and speed up cluster creation times Jumppad automatically launches
+a docker pull through cache. Any image pulled from a remote source is pulled
+through this cache. This cache is global to all Nomad and Kubernetes clusters 
+created with Jumppad. This means that if you pull an image for one cluster, it
+will be available for all clusters.
+
+By default this cache only allows unauthenticated pulls from the following 
+registries:
+
+- docker.io
+- k8s.gcr.io
+- gcr.io
+- asia.gcr.io
+- eu.gcr.io
+- us.gcr.io
+- quay.io
+- ghcr.io
+- docker.pkg.github.com"
+
+If you need to pull images from a private registry, or from a registry which
+is not in the default list, you can use the `container_registry` resource.
+
+**Note:**: To clear the global cache you can use the `jumppad purge` command.
+</Intro>
+
+## Properties
+
+<Properties>
+  <Property name="hostname" type="string" required="true" value=""> 
+    Hostname for the remote registry, this value is the DNS or IP
+    for the registry.
+
+    **Note:** Due to the way the image cache works, if using a DNS name for the
+    hostname, the DNS name must be externally resolvable. You can not use
+    jumppad domains or Docker DNS for the hostname.
+  </Property>
+  <Property name="auth" type="#auth" required="false" value=""> 
+    Authentication credentials for the remote registry.
+  </Property>
+</Properties>
+
+## auth
+
+The `auth` stanza allows yout o specify authentication credentials for the
+remote registry. If you do not specify authentication credentials, Jumppad
+will attempt to pull the image without authentication.
+
+<Properties>
+  <Property name="hostname" type="string" required="false" value=""> 
+    Hostname for the remote registry, this value overrides the hostname
+    specified in the parent resource. It allows authentication to a remote
+    registry when the authentication host is different from the DNS or IP address.
+
+    By default this value is the same as the parent resource.
+  </Property>
+  <Property name="username" type="#auth" required="true" value=""> 
+    Username to use when authenticating to the remote registry.
+  </Property>
+  <Property name="password" type="#auth" required="true" value=""> 
+    Password to use for authentication to the remote registry.
+  </Property>
+</Properties>
+
+<MetaProperties/>
+
+## Examples
+
+### Registry with no authentication
+
+```hcl
+resource "container_registry" "auth" {
+  hostname = "auth-registry.demo.gs"
+}
+```
+
+### Registry with authentication
+
+```hcl
+resource "container_registry" "auth" {
+  hostname = "auth-registry.demo.gs"
+  auth {
+    username = "admin"
+    password = "password"
+  }
+}
+```
+
+### Registry with authentication and hostname override
+
+```hcl
+resource "container_registry" "auth" {
+  hostname = "auth-registry.demo.gs"
+  auth {
+    hostname = "registry.demo.gs"
+    username = "admin"
+    password = "password"
+  }
+}
+```
