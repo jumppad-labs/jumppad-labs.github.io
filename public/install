@@ -39,7 +39,7 @@ fi
 version="$(curl -s -L https://jumppad.dev/latest)"
 binary="jumppad_${version}_${JUMPPAD_OS}_${JUMPPAD_ARCH}.${JUMPPAD_EXT}"
 
-repo="https://github.com/jumppad-labs/jumppad/releases/download/v${version}"
+repo="https://github.com/jumppad-labs/jumppad/releases/download/${version}"
 
 echo "Downloading $repo/$binary"
 rm -f /tmp/jumppad.${JUMPPAD_EXT}
