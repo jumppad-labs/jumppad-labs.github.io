@@ -46,9 +46,9 @@ Leaf Certificates have a pre-set Common Name corresponding to the name of the re
       dns_names = [
         "localhost",
         "server.${variable.cd_consul_dc}.consul",
-        "1.consul.server.container.jumppad.dev",
-        "2.consul.server.container.jumppad.dev",
-        "3.consul.server.container.jumppad.dev"
+        "1.consul.server.container.local.jmpd.in",
+        "2.consul.server.container.local.jmpd.in",
+        "3.consul.server.container.local.jmpd.in"
       ]
     ```
   </Property>
@@ -109,9 +109,9 @@ resource "certificate_leaf" "cd_consul_server" {
   dns_names = [
     "localhost",
     "server.${var.cd_consul_dc}.consul",
-    "1.consul.server.container.jumppad.dev",
-    "2.consul.server.container.jumppad.dev",
-    "3.consul.server.container.jumppad.dev"
+    "1.consul.server.container.local.jmpd.in",
+    "2.consul.server.container.local.jmpd.in",
+    "3.consul.server.container.local.jmpd.in"
   ]
 
   output = data("certs")

@@ -10,7 +10,7 @@ All resources contained within a module are scoped to the name of the containing
 module. For example, if a module `mine` contains a kubernetes cluster called `dev`
 then the FQRN and the name within docker would be:
 
-`server.dev.mine.k8s-cluster.jumppad.dev`
+`server.dev.mine.k8s-cluster.local.jmpd.in`
 
 Modules can also contain modules, to ensure that resouce references are unique
 resources always take on the name of their module including any parent modules.
@@ -18,7 +18,7 @@ resources always take on the name of their module including any parent modules.
 For example, if a module `mine` contains a kubernetes cluster called `dev` was
 contained in module `parent`. Then the FQRN and the name within docker would be:
 
-`server.dev.parent.mine.k8s-cluster.jumppad.dev`
+`server.dev.parent.mine.k8s-cluster.local.jmpd.in`
 </Intro>
 
 ## Properties
@@ -37,7 +37,7 @@ contained in module `parent`. Then the FQRN and the name within docker would be:
 
     ```hcl
       variables = {
-        network_id  = resource.network.cloud.id
+        network_id  = resource.network.cloud.meta.id
         consul_port = 18501
       }
     ```
@@ -61,7 +61,7 @@ module "consul_dc1" {
   source = "./module_k3s"
 
   variables = {
-    network_id  = resource.network.cloud.id
+    network_id  = resource.network.cloud.meta.id
     consul_port = 18500
   }
 }
@@ -74,7 +74,7 @@ module "consul_dc2" {
   source = "./module_k3s"
 
   variables = {
-    network_id  = resource.network.cloud.id
+    network_id  = resource.network.cloud.meta.id
     consul_port = 18501
   }
 }

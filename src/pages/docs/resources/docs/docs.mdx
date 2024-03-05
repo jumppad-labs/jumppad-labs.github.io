@@ -9,7 +9,7 @@ import Port from "../shared/port.mdx"
 The docs resource allows you to embed documentation and guides into your blueprints.
 The docs are authored in markdown and can be enriched using React components and html.
 
-Once the docs resource is created, the content will be available at `http://<resource-name>.docs.jumppad.dev:3000`.
+Once the docs resource is created, the content will be available at `http://<resource-name>.docs.local.jmpd.in:3000`.
 </Intro>
 
 ## Properties
@@ -82,7 +82,7 @@ Logo defines a logo image to use in the docs.
 ```hcl
 resource "docs" "docs" {
   network {
-    id = resource.network.main.id
+    id = resource.network.main.meta.id
   }
 
   image {

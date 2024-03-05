@@ -39,14 +39,14 @@ resource "random_id" "id" {
 }
 
 output "id_base64" {
-    value = resource.random_id.id.base64
+    value = resource.random_id.meta.id.base64
 }
 
 output "id_hex" {
-    value = resource.random_id.id.hex
+    value = resource.random_id.meta.id.hex
 }
 
 output "id_dec" {
-    value = resource.random_id.id.dec
+    value = resource.random_id.meta.id.dec
 }
 ```

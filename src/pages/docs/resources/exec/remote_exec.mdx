@@ -26,7 +26,7 @@ resource "remote_exec" "exec_standalone" {
   }
   
   network {
-    id = resource.network.local.id
+    id = resource.network.local.meta.id
   }
 
   command = [
@@ -52,7 +52,7 @@ resource "remote_exec" "exec_standalone" {
 
 ```hcl
 resource "remote_exec" "exec_standalone" {
-  target = resource.container.consul.id
+  target = resource.container.consul.meta.id
 
   command = [
     "consul"

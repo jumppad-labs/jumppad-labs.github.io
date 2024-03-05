@@ -150,7 +150,7 @@ resource "network" "cloud" {
 
 resource "k8s_cluster" "k3s" {
   network {
-    id = resource.network.cloud.id
+    id = resource.network.cloud.meta.id
   }
 }
 
@@ -176,7 +176,7 @@ resource "k8s_cluster" "k3s" {
   nodes = 1 // default
 
   network {
-    id = resource.network.cloud.id
+    id = resource.network.cloud.meta.id
   }
 
   copy_image {
@@ -185,7 +185,7 @@ resource "k8s_cluster" "k3s" {
 }
 
 resource "k8s_config" "fake_service" {
-  cluster = resource.k8s_cluster.k3s.id
+  cluster = resource.k8s_cluster.k3s.meta.id
 
   paths = ["./fake_service.yaml"]
 
@@ -196,7 +196,7 @@ resource "k8s_config" "fake_service" {
 }
 
 resource "helm" "vault" {
-  cluster = resource.k8s_cluster.k3s.id
+  cluster = resource.k8s_cluster.k3s.meta.id
 
   repository {
     name = "hashicorp"
@@ -218,7 +218,7 @@ resource "ingress" "vault_http" {
   port = 18200
 
   target {
-    id   = resource.k8s_cluster.k3s.id
+    id   = resource.k8s_cluster.k3s.meta.id
     port = 8200
 
     config = {
@@ -232,7 +232,7 @@ resource "ingress" "fake_service" {
   port = 19090
 
   target {
-    id   = resource.k8s_cluster.k3s.id
+    id   = resource.k8s_cluster.k3s.meta.id
     port = 9090
 
     config = {

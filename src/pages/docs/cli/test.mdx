@@ -57,8 +57,8 @@ Scenario: Single Container from Local Blueprint
     | consul                    | container |
     | envoy                     | sidecar   |
     | consul-container-http     | ingress   |
-  And a HTTP call to "http://consul.container.jumppad.dev:8500/v1/status/leader" should result in status 200
-  And a HTTP call to "http://consul-http.ingress.jumppad.dev:28500/v1/status/leader" should result in status 200
+  And a HTTP call to "http://consul.container.local.jmpd.in:8500/v1/status/leader" should result in status 200
+  And a HTTP call to "http://consul-http.ingress.local.jmpd.in:28500/v1/status/leader" should result in status 200
 ```
 
 ### Running Tests
@@ -85,8 +85,8 @@ Feature: Docker Container
       | consul                | container |
       | envoy                 | sidecar   |
       | consul-container-http | ingress   |
-    And a HTTP call to "http://consul.container.jumppad.dev:8500/v1/status/leader" should result in status 200     # test.go:277 -> *CucumberRunner
-    And a HTTP call to "http://consul-http.ingress.jumppad.dev:28500/v1/status/leader" should result in status 200 # test.go:277 -> *CucumberRunner
+    And a HTTP call to "http://consul.container.local.jmpd.in:8500/v1/status/leader" should result in status 200     # test.go:277 -> *CucumberRunner
+    And a HTTP call to "http://consul-http.ingress.local.jmpd.in:28500/v1/status/leader" should result in status 200 # test.go:277 -> *CucumberRunner
 ```
 
 ## Testing Statements
@@ -219,7 +219,7 @@ This statement allows you to make an HTTP request to a URI and to check the HTTP
 ```javascript
 Scenario: Single Container from Local Blueprint
   Given I have a running blueprint
-  Then a HTTP call to "http://consul-http.ingress.jumppad.dev:8500/v1/status/leader" should result in status 200
+  Then a HTTP call to "http://consul-http.ingress.local.jmpd.in:8500/v1/status/leader" should result in status 200
   And the response body should contain "10.6.0.200"
 ```
 
@@ -230,7 +230,7 @@ In addition to check the HTTP status code you can also check that a paricular te
 ```javascript
 Scenario: Single Container from Local Blueprint
   Given I have a running blueprint
-  Then a HTTP call to "http://consul-http.ingress.jumppad.dev:8500/v1/status/leader" should result in status 200
+  Then a HTTP call to "http://consul-http.ingress.local.jmpd.in:8500/v1/status/leader" should result in status 200
   And the response body should contain "10.6.0.200"
 ```
 
@@ -347,7 +347,7 @@ Scenario: Single Container from Local Blueprint with multiple runs
     | consul                    | container |
     | envoy                     | sidecar   |
     | consul-container-http     | ingress   |
-  And a HTTP call to "http://consul-http.ingress.jumppad.dev:8500/v1/status/leader" should result in status 200
+  And a HTTP call to "http://consul-http.ingress.local.jmpd.in:8500/v1/status/leader" should result in status 200
   And the response body should contain "10.6.0.200"
   Examples:
     | consul            | envoy    |

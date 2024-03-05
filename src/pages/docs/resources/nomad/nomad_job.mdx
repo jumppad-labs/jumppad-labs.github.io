@@ -67,12 +67,12 @@ health_check {
 ```hcl
 resource "nomad_cluster" "dev" {
   network {
-    id = resource.network.cloud.id
+    id = resource.network.cloud.meta.id
   }
 }
 
 resource "nomad_job" "example" {
-  cluster = resource.nomad_cluster.dev.id
+  cluster = resource.nomad_cluster.dev.meta.id
 
   paths = ["./app_config/example1.nomad"]
 

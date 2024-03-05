@@ -96,7 +96,7 @@ resource "container" "app" {
   }
 
   network {
-    id = resource.network.onprem.id
+    id = resource.network.onprem.meta.id
   }
 }
 ```

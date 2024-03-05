@@ -42,7 +42,7 @@ resource "local_exec" "exec_standalone" {
   ]
 
   environment = {
-    CONSUL_HTTP_ADDR = "http://consul.container.jumppad.dev:8500"
+    CONSUL_HTTP_ADDR = "http://consul.container.local.jmpd.in:8500"
   }
 
   timeout = "30s"
