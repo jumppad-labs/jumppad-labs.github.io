@@ -334,7 +334,34 @@ A resources type allows you to configure the maximum resources which can be cons
   <Property name="memory" type="string" required="false" value="">
     Maximum  memory which a container can consume, specified in Megabytes.
   </Property>
+  <Property name="gpu" type="#gpu" required="false" value="">
+    GPU settings to pass through to container
+  </Property>
 </Properties>
+
+### gpu
+
+GPU support allows you to pass through GPU devices to the container, this is useful for running GPU accelerated workloads.
+
+For more information on GPU support in Docker see the [official documentation](https://docs.docker.com/desktop/gpu/).
+
+<Properties>
+  <Property name="driver" type="string" required="false" value="">
+    The GPU driver to use, i.e "nvidia", note: This has not been tested this with AMD or other GPUs.
+  </Property>
+  <Property name="device_ids" type="[]string" required="false" value="">
+    The GPUs to pass to the container, i.e "0", "1", "2".
+  </Property>
+</Properties>
+
+```
+  resources {
+    gpu {
+      driver = "nvidia"
+      device_ids = ["0", "1"]
+    }
+  }
+```
 
 ---
 

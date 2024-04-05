@@ -95,10 +95,6 @@ clusters running in Docker containers using K3s.
     you will need to override this value.
   </Property>
 
-  <Property name="kubeconfig" type="int" required="false" value="" readonly>
-    Path to the Kubenetes config file that can be used to interact with the 
-    cluster.
-  </Property>
   
   <Property name="connector_port" type="int" required="false" value="" readonly>
     The port where the Jumppad connector is exposed to the host, this property 
@@ -106,8 +102,13 @@ clusters running in Docker containers using K3s.
     building blueprints.
   </Property>
   
-  <Property name="fqrn" type="string" required="false" value="" readonly>
-    The fully qualified resource name for the Nomad server, this value can be
+  <Property name="kube_config" type="#kube_config" required="false" value="" readonly>
+    Details for the Kubenetes config file that can be used to interact with the 
+    cluster.
+  </Property>
+  
+  <Property name="container_name" type="string" required="false" value="" readonly>
+    The fully qualified resource name for the Kubernetes cluster, this value can be
     used to address the server from the Docker network. It is also the name
     of the Docker container.
 
@@ -121,18 +122,75 @@ clusters running in Docker containers using K3s.
     `NOAMD_ADDR` on the Jumppad client.
 
     ```hcl
-      output "NOMAD_ADDR" {
-        value = "http://${resource.nomad_cluster.dev.external_ip}:${resource.nomad_cluster.dev.api_port}"
+      output "K8S_ADDR" {
+        value = "https://${resource.k8s_cluster.dev.external_ip}:${resource.k8s_cluster.dev.api_port}"
       }
     ```
   </Property>
 </Properties>
+
+---
+
+### config
+Specifies the configuration for the Kubernetes cluster.
+
+<Properties>
+  <Property name="docker" type="#docker_config" required="false" value="">
+    Docker configuration for the Kubernetes cluster.
+  </Property>
+</Properties>
+
+```hcl
+  config {
+    docker {
+      no_proxy            = ["insecure.container.local.jmpd.in"]
+      insecure_registries = ["insecure.container.local.jmpd.in:5003"]
+    }
+  }
+```
+
+---
+
+### docker_config
+
+Specifies the configuration for the Docker engine in the cluster.
+
+<Properties>
+  <Property name="no_proxy" type="[]string" required="false" value="">
+    A list of docker registries that should not be proxied.
+  </Property>
+  <Property name="insecure_registries" type="[]string" required="false" value="">
+    A list of insecure docker registries.
+  </Property>
+</Properties>
+
+---
 
 <NetworkAttachment/>
 <Image/>
 <Volume/>
 <Port/>
 <PortRange/>
+
+### kube_config
+
+The kube_config stanza provides the the details that can be used to interact with the cluster.
+
+<Properties>
+  <Property name="path" type="string" required="false" value="" readonly>
+    The path to the kubeconfig file.
+  </Property>
+  <Property name="ca" type="string" required="false" value="" readonly>
+    The certificate authority used to secure the cluster API. This value is base64 encoded.
+  </Property>
+  <Property name="client_certificate" type="string" required="false" value="" readonly>
+    The client certificate authority used authenticate to the cluster API. This value is base64 encoded.
+  </Property>
+  <Property name="client_key" type="string" required="false" value="" readonly>
+    The private key used authenticate to the cluster API. This value is base64 encoded.
+  </Property>
+</Properties>
+---
 
 <MetaProperties/>
 
@@ -155,7 +213,7 @@ resource "k8s_cluster" "k3s" {
 }
 
 output "KUBECONFIG" {
-  value = resource.k8s_cluster.k3s.kubeconfig
+  value = resource.k8s_cluster.k3s.kube_config.path
 }
 ```
 
@@ -171,10 +229,6 @@ resource "network" "cloud" {
 }
 
 resource "k8s_cluster" "k3s" {
-  driver = "k3s" // default
-
-  nodes = 1 // default
-
   network {
     id = resource.network.cloud.meta.id
   }
@@ -185,7 +239,7 @@ resource "k8s_cluster" "k3s" {
 }
 
 resource "k8s_config" "fake_service" {
-  cluster = resource.k8s_cluster.k3s.meta.id
+  cluster = resource.k8s_cluster.k3s
 
   paths = ["./fake_service.yaml"]
 
@@ -196,7 +250,7 @@ resource "k8s_config" "fake_service" {
 }
 
 resource "helm" "vault" {
-  cluster = resource.k8s_cluster.k3s.meta.id
+  cluster = resource.k8s_cluster.k3s
 
   repository {
     name = "hashicorp"
@@ -218,7 +272,7 @@ resource "ingress" "vault_http" {
   port = 18200
 
   target {
-    id   = resource.k8s_cluster.k3s.meta.id
+    resource = resource.k8s_cluster.k3s
     port = 8200
 
     config = {
@@ -232,7 +286,7 @@ resource "ingress" "fake_service" {
   port = 19090
 
   target {
-    id   = resource.k8s_cluster.k3s.meta.id
+    resource = resource.k8s_cluster.k3s
     port = 9090
 
     config = {
@@ -247,15 +301,15 @@ output "VAULT_ADDR" {
 }
 
 output "KUBECONFIG" {
-  value = resource.k8s_cluster.k3s.kubeconfig
+  value = resource.k8s_cluster.k3s.kube_config.path
 }
 ```
 
 ## Image Caching
-Nomad clusters do not share the local machines Docker image cache. Each 
+Kubernetes clusters do not share the local machines Docker image cache. Each 
 node in a cluster has it's own unqiue cache.
 
-To save bandwidth all containers launched in the Nomad cluster pulled through
+To save bandwidth all containers launched in the Kubernetes cluster pulled through
 an image cache that runs in Docker. After the first pull all images are subsequently
 pulled from the image cache not the public internet. This cache is global to
 all Nomad and Kubernetes clusters created with Jumppad.
