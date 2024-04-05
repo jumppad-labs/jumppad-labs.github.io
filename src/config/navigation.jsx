@@ -42,6 +42,7 @@ export const navigation = [
       { title: 'Build', href: '/docs/resources/build/' },
       { title: 'Chapter', href: '/docs/resources/docs/chapter' },
       { title: 'Container', href: '/docs/resources/container/container' },
+      { title: 'Container Registry', href: '/docs/resources/registry/container_registry' },
       { title: 'Copy', href: '/docs/resources/copy' },
       { title: 'Docs', href: '/docs/resources/docs/docs' },
       { title: 'Exec', href: '/docs/resources/exec' },

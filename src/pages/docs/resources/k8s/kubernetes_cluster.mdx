@@ -297,7 +297,7 @@ resource "ingress" "fake_service" {
 }
 
 output "VAULT_ADDR" {
-  value = resource.ingress.vault_http.address
+  value = "http://${resource.ingress.vault_http.local_address}"
 }
 
 output "KUBECONFIG" {
@@ -314,14 +314,4 @@ an image cache that runs in Docker. After the first pull all images are subseque
 pulled from the image cache not the public internet. This cache is global to
 all Nomad and Kubernetes clusters created with Jumppad.
 
-Currently images from the following registries are cached:
-* k8s.gcr.io
-* gcr.io
-* asia.gcr.io
-* eu.gcr.io
-* us.gcr.io
-* quay.io
-* ghcr.io"
-* docker.io
-
-To clear the cache, you can use the `jumppad purge`.
+For more information on the image cache see the [container_registry](/docs/resources/registry/container_registry) resource.

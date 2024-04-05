@@ -1,0 +1,73 @@
+import MetaProperties from "../shared/meta.mdx"
+
+# Container Registry `container_registry`
+
+<Intro>
+To save bandwidth all containers launched in Kubernetes and Nomad clusters are pulled through
+an image cache that is automatically started whenever you run `jumppad up`. After the first 
+pull all images are subsequently pulled from the image cache not the public internet. 
+
+Currently `public` images from the following registries are cached:
+* docker.io 
+* k8s.gcr.io 
+* gcr.io 
+* asia.gcr.io
+* eu.gcr.io 
+* us.gcr.io 
+* quay.io
+* ghcr.io
+* docker.pkg.github.com
+
+To cache private images or to enable the pull through cache for registires that are not listed above, 
+you can use the `container_registry` resource.
+
+</Intro>
+
+<Properties>
+  <Property name="hostname" type="string" required="true" value="">
+  The hostname of the registry to add to the pull through cache.
+  </Property>
+  <Property name="auth" type="#registry_auth" required="false" value="">
+  The authentication information for the registry, if not provided the registry is assumed to be public.
+  </Property>
+</Properties>
+
+### registry_auth
+
+<Properties>
+  <Property name="hostname" type="string" required="false" value="">
+  The hostname to use for authentication, if not provided the hostname of the registry is used.
+  </Property>
+  <Property name="username" type="string" required="true" value="">
+  The username to authenticate with the registry.
+  </Property>
+  <Property name="password" type="string" required="true" value="">
+  The password to authenticate with the registry.
+  </Property>
+</Properties>
+
+
+<MetaProperties/>
+
+## Examples
+
+### Unauthenticated Registry
+
+```hcl
+resource "container_registry" "noauth" {
+  hostname = "noauth-registry.demo.gs" // cache can not resolve local jumppad.dev dns for some reason, 
+  // using external dns mapped to the local ip address
+}
+```
+
+### Authenticated Registry
+
+```hcl
+resource "container_registry" "auth" {
+  hostname = "auth-registry.demo.gs"
+  auth {
+    username = "admin"
+    password = "password"
+  }
+}
+```
