@@ -32,6 +32,32 @@ and running container. When targeting an existing container, the `target` field
 must be specified. When running in a stand alone container, the `image` block must
 be specified.
 
+### Setting outputs
+
+Output variables for the exec resource can be set by echoing a key value pair
+to the output file inside the script. An environment variable `${EXEC_OUTPUT}`
+is automatically added to the environment of the script and points to the output.
+
+Any outputs set in the script are automatically parsed into a map
+and are available via the `output` parameter.
+
+The following example demonstrates how to set an output variable in a script.
+
+```hcl
+resource "exec" "inline" {
+  script = <<-EOF
+  #!/bin/bash
+  ls -lha
+
+  echo "FOO=BAR" > ${EXEC_OUTPUT}
+  EOF
+}
+
+output "foo" {
+  value = resource.exec.inline.output.FOO
+}
+```
+
 ## Properties
 
 <Properties>
@@ -78,6 +104,19 @@ be specified.
       script = <<-EOF
       #!/bin/bash
       echo $${FOO}
+      EOF
+    }
+    ```
+  </Property>
+
+  <Property name="output" type="map[string]string" required="false" value="" readonly> 
+    Map of output variables set by echoing key value pairs to the output file from the execs
+    script.
+
+    ```hcl
+    resource "exec" "inline" {
+      script = <<-EOF
+      echo "FOO=BAR" > ${EXEC_OUTPUT}
       EOF
     }
     ```
