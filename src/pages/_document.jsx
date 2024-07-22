@@ -40,6 +40,7 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <script dangerouslySetInnerHTML={{ __html: modeScript }} />
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="6ea0771b-a94e-4958-acdf-b99bca18157d"></script>
       </Head>
       <body className="bg-white antialiased dark:bg-zinc-900">
         <Main />

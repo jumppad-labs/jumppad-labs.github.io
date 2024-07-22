@@ -1,48 +1,17 @@
-import { useEffect } from 'react'
 import Head from 'next/head'
-import { Router, useRouter } from 'next/router'
 import { MDXProvider } from '@mdx-js/react'
-import * as Fathom from 'fathom-client'
 
 // Website
 import { Index } from '@/components/Index'
 
 // Docs
 import * as mdxComponents from '@/components/mdx'
-import { useMobileNavigationStore } from '@/components/docs/MobileNavigation'
 import { Layout as Docs } from '@/components/docs/Layout'
 
 import '@/styles/tailwind.css'
 import 'focus-visible'
 
-function onRouteChange() {
-  useMobileNavigationStore.getState().close()
-}
-
-Router.events.on('routeChangeStart', onRouteChange)
-Router.events.on('hashChangeStart', onRouteChange)
-
 export default function App({ Component, pageProps }) {
-  let router = useRouter()
-
-  useEffect(() => {
-    // Initialize Fathom when the app loads
-    Fathom.load('UIDSVFCJ', {
-      includedDomains: ['jumppad.dev'],
-    });
-
-    function onRouteChangeComplete() {
-      Fathom.trackPageview();
-    }
-
-    // Record a pageview when route changes
-    router.events.on('routeChangeComplete', onRouteChangeComplete);
-    return () => {
-      router.events.off('routeChangeComplete', onRouteChangeComplete);
-    };
-
-  }, [router.events]);
-
   return (
     <>
       <Head>
@@ -52,7 +21,6 @@ export default function App({ Component, pageProps }) {
           <title>{`${pageProps.title} - Jumppad`}</title>
         )}
         <meta name="description" content={pageProps.description} />
-        <script defer src="https://cloud.umami.is/script.js" data-website-id="6ea0771b-a94e-4958-acdf-b99bca18157d"></script>
       </Head>
       {router.pathname === '/' ? (
           <Index></Index>
