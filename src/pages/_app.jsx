@@ -52,6 +52,7 @@ export default function App({ Component, pageProps }) {
           <title>{`${pageProps.title} - Jumppad`}</title>
         )}
         <meta name="description" content={pageProps.description} />
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="6ea0771b-a94e-4958-acdf-b99bca18157d"></script>
       </Head>
       {router.pathname === '/' ? (
           <Index></Index>
