@@ -4,6 +4,7 @@ export const navigation = [
     links: [
       { title: 'Installation', href: '/docs/introduction/installation' },
       { title: 'Running', href: '/docs/introduction/running' },
+      { title: 'Context7 MCP Server', href: '/docs/introduction/context7' },
     ],
   },
   {

@@ -1,0 +1,91 @@
+# Adding Context7 MCP Server
+
+<Intro>
+Context7 is a Model Context Protocol (MCP) server that provides AI assistants with comprehensive access to Jumppad documentation, examples, and best practices.
+</Intro>
+
+## What is Context7?
+
+Context7 is an MCP server that allows AI assistants like Claude to access real-time, comprehensive information about Jumppad resources, configuration patterns, and documentation. This enables more accurate and up-to-date assistance when working with Jumppad configurations.
+
+## Installation
+
+### Claude Desktop
+
+To add the Context7 MCP server to your Claude Desktop configuration, you'll need to modify your Claude Desktop configuration file.
+
+#### Configuration
+
+Add the following configuration to your Claude Desktop MCP settings:
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["@context7/mcp-server"]
+    }
+  }
+}
+```
+
+#### Configuration File Locations
+
+The Claude Desktop configuration file is located at:
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+### Claude Code
+
+For Claude Code users, you can easily add the Context7 MCP server using the built-in MCP management command:
+
+```shell
+claude mcp add --transport sse context7 https://mcp.context7.com/sse
+```
+
+This command will automatically configure the Context7 MCP server for use with Claude Code.
+
+### VS Code
+
+For VS Code users, you can add the Context7 MCP server to GitHub Copilot by adding this configuration to your VS Code settings:
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "context7": {
+        "type": "http",
+        "url": "https://mcp.context7.com/mcp"
+      }
+    }
+  }
+}
+```
+
+## Usage
+
+Once configured, the Context7 MCP server will automatically provide Claude with access to:
+
+- Complete Jumppad documentation
+- Resource configuration examples
+- Best practices and patterns
+- Latest updates and changes
+
+When asking Claude about Jumppad-related topics, it will automatically query the Context7 server to provide the most accurate and current information.
+
+## Project Configuration
+
+The Context7 server uses the `context7.json` configuration file in the repository root to understand the project structure and documentation scope. This file defines which folders and file types to include when providing context about Jumppad.
+
+## Troubleshooting
+
+If you encounter issues with the Context7 MCP server:
+
+1. Ensure you have Node.js installed on your system
+2. Verify the configuration file path is correct for your operating system
+3. Restart Claude Desktop after making configuration changes
+4. Check that the `context7.json` file exists in your project repository
+
+For additional support, refer to the [Context7 documentation](https://context7.com) or the [MCP specification](https://modelcontextprotocol.io).
