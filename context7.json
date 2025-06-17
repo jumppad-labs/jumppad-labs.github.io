@@ -1,0 +1,26 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Jumppad",
+  "description": "A tool for creating lightweight development environments without the complexity of containers or virtual machines",
+  "folders": [
+    "src/pages/docs"
+  ],
+  "excludeFolders": [
+    "node_modules",
+    ".next",
+    "public/certificates"
+  ],
+  "fileTypes": [
+    ".mdx",
+    ".jsx",
+    ".js"
+  ],
+  "excludeFileTypes": [
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".svg",
+    ".ico"
+  ]
+}
