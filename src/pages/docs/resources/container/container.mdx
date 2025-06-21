@@ -85,7 +85,7 @@ The `container` resource allows you to create Docker containers.
     The following example would create 11 ports from 80 to 90 (inclusive) and expose them to the host machine.
 
     ```hcl
-      port {
+      port_range {
         range       = "80-90"
         enable_host = true
       }
@@ -138,6 +138,36 @@ The `container` resource allows you to create Docker containers.
         user = "1000"
         group = "nicj"
       }
+    ```
+  </Property>
+
+  <Property name="labels" type="map[string]string" required="false" value="">
+    Docker labels to add to the container.
+
+    ```hcl
+    labels = {
+      "com.example.version" = "1.0"
+      "com.example.app" = "myapp"
+    }
+    ```
+  </Property>
+
+  <Property name="dns" type="[]string" required="false" value="">
+    Custom DNS servers for the container.
+
+    ```hcl
+    dns = ["8.8.8.8", "8.8.4.4"]
+    ```
+  </Property>
+
+  <Property name="capabilities" type="#capabilities" required="false" value="">
+    Linux capabilities to add or drop for the container.
+
+    ```hcl
+    capabilities {
+      add = ["NET_ADMIN", "SYS_TIME"]
+      drop = ["MKNOD"]
+    }
     ```
   </Property>
   
@@ -248,9 +278,6 @@ http {
   </Property>
   <Property name="method" type="string" required="false" value="GET">
     HTTP method to use when executing the check 
-  </Property>
-  <Property name="body" type="string" required="false" value="">
-    HTTP body to send with the request
   </Property>
   <Property name="body" type="string" required="false" value="">
     HTTP body to send with the request
@@ -377,6 +404,28 @@ User and Group configuration to be used when running a container, by default Doc
     Linux group ID or group name to run the container as, this overrides the default group configured in the container image.
   </Property>
 </Properties>
+
+---
+
+### capabilities
+
+Linux capabilities control what system operations a container can perform. By default, Docker containers run with a restricted set of capabilities.
+
+<Properties>
+  <Property name="add" type="[]string" required="false" value="">
+    List of capabilities to add to the container.
+  </Property>
+  <Property name="drop" type="[]string" required="false" value="">
+    List of capabilities to remove from the container.
+  </Property>
+</Properties>
+
+```hcl
+capabilities {
+  add = ["NET_ADMIN", "SYS_TIME"]
+  drop = ["MKNOD", "SETUID"]
+}
+```
 
 ---
 

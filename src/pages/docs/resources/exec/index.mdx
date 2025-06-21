@@ -88,7 +88,7 @@ output "foo" {
     The working directory to execute the script in.
   </Property>
 
-  <Property name="timeout" type="string" required="optional" value="0s"> 
+  <Property name="timeout" type="string" required="false" value="300s"> 
     The timeout for the script to execute as a duration e.g. 30s.
   </Property>
 
@@ -120,6 +120,14 @@ output "foo" {
       EOF
     }
     ```
+  </Property>
+
+  <Property name="exit_code" type="int" required="false" value="" readonly> 
+    The exit code returned by the executed script.
+  </Property>
+
+  <Property name="checksum" type="string" required="false" value="" readonly> 
+    A checksum of the script content used to determine if the script has changed.
   </Property>
 </Properties>
 

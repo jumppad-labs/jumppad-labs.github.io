@@ -55,8 +55,8 @@ to the target container.
     Allows you to set environment variables in the container.
 
     ```hcl
-    env {
-      PATH = "/user/local/bin"
+    environment = {
+      PATH = "/usr/local/bin"
     }
     ```
   </Property>
@@ -90,7 +90,7 @@ to the target container.
     The following example would create 11 ports from 80 to 90 (inclusive) and expose them to the host machine.
 
     ```hcl
-      port {
+      port_range {
         range       = "80-90"
         enable_host = true
       }
