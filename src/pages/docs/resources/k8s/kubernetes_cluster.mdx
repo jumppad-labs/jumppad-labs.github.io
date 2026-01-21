@@ -24,17 +24,16 @@ clusters running in Docker containers using K3s.
   </Property>
 
   <Property name="image" type="#image" required="false" value="">
-    Image defines a Docker image to use when creating the container. By default the nomad
+    Image defines a Docker image to use when creating the container. By default the Kubernetes
     cluster resource will be created using the latest Jumppad container image.
   </Property>
   
   <Property name="environment" type="map[string]string" required="false" value="">
-    An env stanza allows you to set environment variables in the container. This stanza can be specified multiple times.
+    Allows you to set environment variables in the container.
 
     ```hcl
-    env {
-      key   = "PATH"
-      value = "/usr/local/bin"
+    environment = {
+      PATH = "/usr/local/bin"
     }
     ```
   </Property>
@@ -52,8 +51,8 @@ clusters running in Docker containers using K3s.
   
   <Property name="copy_image" type="#image" required="false" value="">
     Docker image in the local Docker image cache to copy to the cluster on creation.
-    This image is added to the Nomad clients docker cache enabling jobs to use
-    images that may not be in the local registry.
+    This image is added to the Kubernetes cluster's docker cache enabling pods to use
+    images that may not be in a remote registry.
 
     Jumppad tracks changes to copied images, should the image change running
     `jumppad up` would push any changes to the cluster automatically.
@@ -113,13 +112,13 @@ clusters running in Docker containers using K3s.
     of the Docker container.
 
     ```
-      server.name.k8s-cluster.jumpad.dev
+      server.name.k8s-cluster.local.jmpd.in
     ```
   </Property>
   
   <Property name="external_ip" type="string" required="false" value="" readonly>
-    Local IP address of the Nomad server, this property can be used to set the 
-    `NOAMD_ADDR` on the Jumppad client.
+    Local IP address of the Kubernetes cluster, this property can be used to
+    construct the Kubernetes API address.
 
     ```hcl
       output "K8S_ADDR" {

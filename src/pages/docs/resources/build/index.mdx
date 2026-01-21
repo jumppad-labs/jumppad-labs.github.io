@@ -22,6 +22,15 @@ container, the product of which can be copied to the local file system using the
   <Property name="output" type="#output" value="">
     Copy artifacts from the built container image to the local filesystem.
   </Property>
+  <Property name="registry" type="#registry" value="">
+    Registry credentials for pushing images to a remote registry.
+  </Property>
+  <Property name="image" type="string" value="" readonly>
+    The built image reference that can be used by other resources.
+  </Property>
+  <Property name="build_checksum" type="string" value="" readonly>
+    A checksum of the build context used to determine if the image needs to be rebuilt.
+  </Property>
 </Properties>
 
 ---
@@ -48,6 +57,9 @@ container {
   <Property name="args" type="map[string]string" value="">
     Build args to pass to the build.
   </Property>
+  <Property name="ignore" type="[]string" value="">
+    Patterns to ignore when calculating the build context checksum (similar to .dockerignore format).
+  </Property>
 </Properties>
 
 ---
@@ -69,6 +81,34 @@ output {
     The location to copy the files or directory to
   </Property>
 </Properties>
+
+---
+
+## registry
+
+Registry credentials for pushing images to a remote registry.
+
+```hcl
+registry {
+  name     = "docker.io/myuser/myimage"
+  username = "myuser"
+  password = "mypassword"
+}
+```
+
+<Properties>
+  <Property name="name" type="string" value="">
+    The full image name including registry (e.g., docker.io/myuser/myimage).
+  </Property>
+  <Property name="username" type="string" value="">
+    Username for registry authentication.
+  </Property>
+  <Property name="password" type="string" value="">
+    Password for registry authentication.
+  </Property>
+</Properties>
+
+<MetaProperties/>
 
 ## Examples
 
@@ -116,7 +156,9 @@ resource "build" "app" {
   }
 }
 
-resource "local_exec" "app" {
-  command = ["jumppad", "up", "./config"]
+resource "exec" "app" {
+  script = <<-EOF
+    jumppad up ./config
+  EOF
 }
 ```

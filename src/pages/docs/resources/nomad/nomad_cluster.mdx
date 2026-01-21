@@ -41,14 +41,17 @@ and client nodes.
   </Property>
   
   <Property name="environment" type="map[string]string" required="false" value="">
-    An env stanza allows you to set environment variables in the container. This stanza can be specified multiple times.
+    Allows you to set environment variables in the container.
 
     ```hcl
-    env {
-      key   = "PATH"
-      value = "/usr/local/bin"
+    environment = {
+      PATH = "/usr/local/bin"
     }
     ```
+  </Property>
+
+  <Property name="open_in_browser" type="bool" required="false" value="false">
+    Should the Nomad UI be automatically opened in the browser when the cluster is created.
   </Property>
 
   <Property name="server_config" type="string" required="false" value="">
@@ -175,17 +178,17 @@ and client nodes.
     Local directory where the server and client configuration is stored.
   </Property>
   
-  <Property name="server_fqrn" type="string" required="false" value="" readonly>
+  <Property name="server_container_name" type="string" required="false" value="" readonly>
     The fully qualified resource name for the Nomad server, this value can be
     used to address the server from the Docker network. It is also the name
     of the Docker container.
 
     ```
-      server.name.nomad-cluster.jumpad.dev
+      server.name.nomad-cluster.local.jmpd.in
     ```
   </Property>
-  
-  <Property name="client_fqrn" type="[]string" required="false" value="" readonly>
+
+  <Property name="client_container_name" type="[]string" required="false" value="" readonly>
     The fully qualified resource names for the Nomad clients, this value can be
     used to address the client from the Docker network. It is also the name
     of the Docker container.
@@ -194,16 +197,16 @@ and client nodes.
 
     ```
     [
-      abse42wsdff.client.name.nomad-cluster.jumpad.dev,
-      kjdf23123.client.name.nomad-cluster.jumpad.dev,
-      123dfkjs.client.name.nomad-cluster.jumpad.dev,
+      abse42wsdff.client.name.nomad-cluster.local.jmpd.in,
+      kjdf23123.client.name.nomad-cluster.local.jmpd.in,
+      123dfkjs.client.name.nomad-cluster.local.jmpd.in,
     ]
     ```
   </Property>
   
   <Property name="external_ip" type="string" required="false" value="" readonly>
-    Local IP address of the Nomad server, this property can be used to set the 
-    `NOAMD_ADDR` on the Jumppad client.
+    Local IP address of the Nomad server, this property can be used to set the
+    `NOMAD_ADDR` environment variable.
 
     ```hcl
       output "NOMAD_ADDR" {
@@ -212,6 +215,44 @@ and client nodes.
     ```
   </Property>
 </Properties>
+
+---
+
+### config
+
+Specifies the configuration for the Nomad cluster.
+
+<Properties>
+  <Property name="docker" type="#docker_config" required="false" value="">
+    Docker configuration for the Nomad cluster.
+  </Property>
+</Properties>
+
+```hcl
+  config {
+    docker {
+      no_proxy            = ["insecure.container.local.jmpd.in"]
+      insecure_registries = ["insecure.container.local.jmpd.in:5003"]
+    }
+  }
+```
+
+---
+
+### docker_config
+
+Specifies the configuration for the Docker engine in the cluster.
+
+<Properties>
+  <Property name="no_proxy" type="[]string" required="false" value="">
+    A list of docker registries that should not be proxied.
+  </Property>
+  <Property name="insecure_registries" type="[]string" required="false" value="">
+    A list of insecure docker registries.
+  </Property>
+</Properties>
+
+---
 
 <NetworkAttachment/>
 <Image/>

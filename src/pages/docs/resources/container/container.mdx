@@ -237,7 +237,7 @@ checks are not executed. The execution order is `http`, `tcp`, `exec.
 
     Can be specified more than once.
   </Property>
-  <Property name="tcp" type="#tpc_health_check" required="false" value="">
+  <Property name="tcp" type="#tcp_health_check" required="false" value="">
     TCP Health Check block defining the address to test.
 
     Can be specified more than once.
@@ -354,7 +354,7 @@ A resources type allows you to configure the maximum resources which can be cons
 
     ```
     resources {
-      cpi_pin = [1,4]
+      cpu_pin = [1,4]
     }
     ```
   </Property>

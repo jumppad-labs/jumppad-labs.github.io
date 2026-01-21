@@ -19,6 +19,9 @@ jumppad up <file|directory|url> [flags]
   <Property name="no-browser" type="bool" required="false" value="false">
     Jumppad allows you to optionally override the behavior of resources which have browser open parameters. Setting this flag to true stops Jumppad from opening browser windows.
   </Property>
+  <Property name="no-cache" type="bool" required="false" value="false">
+    When set to true, Jumppad will not create the image cache proxy. Clusters will pull images directly from registries instead of through the local cache.
+  </Property>
   <Property name="var" type="string" required="true">
     The `var` flag allows you to set the value for Jumppad variables from the command line. Setting a variable with this flag takes precedence over any environment variables or variable files.  
     This flag may be specified multiple times.

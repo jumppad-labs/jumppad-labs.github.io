@@ -3,12 +3,12 @@ import MetaProperties from "../shared/meta.mdx"
 # Template `template`
 
 <Intro>
-The Template resource allows the processing of templates, outputing
+The Template resource allows the processing of templates, outputting
 the result as a file.
 
-Templating uses the Handlebars language which is Mustache template language can be found at the following
-location:
-[Mustache templating language details](https://mustache.github.io/mustache.5.html)
+Templating uses the Handlebars syntax (a superset of Mustache). Variables are
+referenced using double curly braces: `{{variable_name}}`. For more details see:
+[Handlebars templating language](https://handlebarsjs.com/guide/)
 </Intro>
 
 ## Properties
@@ -34,9 +34,9 @@ location:
     The destination to write the processed template to.
   </Property>
   
-  <Property name="variables" type="map[string]interface" required="false" value=""> 
+  <Property name="variables" type="map[string]interface" required="false" value="">
     Variables to use with the template, variables are available to be used
-    within the template using the go template syntax.
+    within the template using Handlebars syntax.
 
     ```hcl
       variables = {
@@ -44,12 +44,16 @@ location:
       }
     ```
 
-    Given the above variables, these could be used within a template with the 
+    Given the above variables, these could be used within a template with the
     following convention.
 
-    ```go
+    ```handlebars
       data_dir = "{{data_dir}}"
     ```
+  </Property>
+
+  <Property name="checksum" type="string" required="false" value="" readonly>
+    A checksum of the rendered template content, used to determine if the template output has changed.
   </Property>
 </Properties>
 
@@ -199,10 +203,10 @@ resource "template" "consul_config" {
 
 ### quote [string]
 
-Returns the original string wrapped in quotations, quote can be used with 
-the Go template pipe modifier.
+Returns the original string wrapped in quotations, quote can be used with
+the Handlebars pipe modifier.
 
-```go
+```handlebars
 // given the string abc
 
 quote "abc" // would return the value "abc"
@@ -210,10 +214,10 @@ quote "abc" // would return the value "abc"
 
 ### trim [string]
 
-Removes whitespace such as carrige returns and spaces from the begining and 
-the end of the string, can be used with the Go template pipe modifier.
+Removes whitespace such as carriage returns and spaces from the beginning and
+the end of the string, can be used with the Handlebars pipe modifier.
 
-```go
+```handlebars
 // given the string abc
 
 trim " abc " // would return the value "abc"

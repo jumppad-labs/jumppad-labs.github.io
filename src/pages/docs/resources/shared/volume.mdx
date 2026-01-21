@@ -20,6 +20,9 @@ the file declaring the container.
     - volume: source is a Docker volume
     - tmpfs: create a temporary filesystem
   </Property>
+  <Property name="read_only" type="bool" required="false" value="false">
+    Mount the volume as read-only.
+  </Property>
   <Property name="bind_propagation" type="string" required="false" value="rprivate">
     Configures bind propagation for Docker volume mounts, only applies to bind mounts, can be one of the following values:
 
