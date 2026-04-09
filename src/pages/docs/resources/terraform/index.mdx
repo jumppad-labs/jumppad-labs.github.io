@@ -1,0 +1,184 @@
+import MetaProperties from "../shared/meta.mdx"
+import NetworkAttachment from "../shared/network_attachment.mdx"
+import Volume from "../shared/volume.mdx"
+
+# Terraform `terraform`
+
+<Intro>
+The `terraform` resource allows Terraform configurations to be executed inside 
+a Docker container. The resource runs `terraform init`, `terraform apply`, and 
+captures any outputs defined in the Terraform configuration, making them 
+available to other Jumppad resources.
+
+Terraform state is persisted between runs, and the resource will re-apply 
+if changes to the source directory are detected.
+</Intro>
+
+## Properties
+
+<Properties>
+  <Property name="source" type="string" required="true" value=""> 
+    The source directory containing the Terraform configuration files. Can be
+    specified as a relative or absolute path. Relative paths are resolved 
+    relative to the file declaring the resource.
+
+    ```hcl
+    resource "terraform" "example" {
+      source = "./terraform_config"
+    }
+    ```
+  </Property>
+
+  <Property name="version" type="string" required="optional" value="1.14.8"> 
+    The version of Terraform to use.
+  </Property>
+
+  <Property name="working_directory" type="string" required="optional" value="./"> 
+    The working directory to run Terraform commands in. If not an absolute path,
+    it will be prefixed with `/`.
+  </Property>
+
+  <Property name="environment" type="map[string]string" required="optional" value=""> 
+    Environment variables to set when executing Terraform. Useful for passing 
+    provider credentials or configuration.
+
+    ```hcl
+    resource "terraform" "example" {
+      environment = {
+        VAULT_TOKEN = "root"
+        VAULT_ADDR  = "http://vault:8200"
+      }
+
+      source = "./workspace"
+    }
+    ```
+  </Property>
+
+  <Property name="variables" type="map" required="optional" value=""> 
+    Variables to pass to the Terraform configuration. These are written to a
+    `terraform.tfvars` file and passed via `-var-file`. Variables can be simple
+    values or complex nested structures.
+
+    ```hcl
+    resource "terraform" "example" {
+      variables = {
+        name  = "example"
+        count = 3
+        config = {
+          enabled = true
+          region  = "us-east-1"
+        }
+      }
+
+      source = "./workspace"
+    }
+    ```
+  </Property>
+
+  <Property name="network" type="#network_attachment" required="optional" value=""> 
+    Network to attach the Terraform container to. This allows Terraform to
+    communicate with other resources on the same network.
+  </Property>
+
+  <Property name="volume" type="#volume" required="optional" value=""> 
+    Volumes to mount into the Terraform container.
+  </Property>
+
+  <Property name="output" type="object" required="false" value="" readonly> 
+    Output values returned from the Terraform execution. These correspond to
+    `output` blocks defined in the Terraform configuration and can be referenced
+    by other Jumppad resources.
+
+    ```hcl
+    output "my_value" {
+      value = resource.terraform.example.output.my_key
+    }
+    ```
+  </Property>
+
+  <Property name="apply_output" type="string" required="false" value="" readonly> 
+    The raw output from the `terraform apply` command.
+  </Property>
+</Properties>
+
+<NetworkAttachment/>
+<Volume/>
+
+<MetaProperties/>
+
+## Examples
+
+### Minimal Example
+
+```hcl
+resource "terraform" "example" {
+  source = "./workspace"
+
+  variables = {
+    name = "test"
+  }
+}
+
+output "result" {
+  value = resource.terraform.example.output.name
+}
+```
+
+### Full Example with Network and Environment
+
+```hcl
+resource "network" "main" {
+  subnet = "10.10.0.0/16"
+}
+
+resource "container" "vault" {
+  image {
+    name = "vault:1.13.3"
+  }
+
+  network {
+    id = resource.network.main.meta.id
+  }
+
+  port {
+    local = 8200
+    host  = 8200
+  }
+
+  environment = {
+    VAULT_DEV_ROOT_TOKEN_ID = "root"
+  }
+}
+
+resource "terraform" "configure_vault" {
+  network {
+    id = resource.network.main.meta.id
+  }
+
+  environment = {
+    VAULT_TOKEN = "root"
+    VAULT_ADDR  = "http://${resource.container.vault.container_name}:8200"
+  }
+
+  variables = {
+    first  = "one"
+    second = 2
+    third = {
+      x = 3
+      y = 4
+    }
+  }
+
+  source            = "./workspace"
+  working_directory = "/"
+  version           = "1.14.8"
+}
+
+output "first" {
+  value = resource.terraform.configure_vault.output.first
+}
+
+output "vault_secret" {
+  value = resource.terraform.configure_vault.output.vault_secret
+}
+```

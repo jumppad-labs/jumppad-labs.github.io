@@ -63,6 +63,7 @@ export const navigation = [
       { title: 'Sidecar', href: '/docs/resources/container/sidecar' },
       { title: 'Task', href: '/docs/resources/docs/task' },
       { title: 'Template', href: '/docs/resources/template' },
+      { title: 'Terraform', href: '/docs/resources/terraform' },
     ]
   }
 ]
